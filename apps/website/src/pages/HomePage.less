@@ -1,4 +1,7 @@
 .home-page {
+	// 确保黑色主题背景
+	background: var(--background-dark);
+	min-height: 100vh;
 	// 科技感背景动画
 	position: relative;
 	overflow: hidden;
@@ -94,10 +97,12 @@
 		align-items: center;
 		justify-content: space-between;
 		min-height: 80vh;
-		padding: 60px 0;
+		padding: 80px 24px;
 		position: relative;
 		overflow: hidden;
 		z-index: 1;
+		max-width: 1200px;
+		margin: 0 auto;
 
 		&::before {
 			content: '';
@@ -241,6 +246,12 @@
 		position: relative;
 		z-index: 1;
 
+		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 24px;
+		}
+
 		.section-title {
 			text-align: center;
 			font-size: 2.5rem;
@@ -343,6 +354,12 @@
 		position: relative;
 		z-index: 1;
 
+		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 24px;
+		}
+
 		.cta-card {
 			text-align: center;
 			border: 1px solid var(--border-color);
@@ -422,13 +439,38 @@
 	}
 }
 
+@keyframes backgroundShift {
+	0%,
+	100% {
+		transform: translateX(0) translateY(0);
+	}
+	25% {
+		transform: translateX(20px) translateY(-10px);
+	}
+	50% {
+		transform: translateX(-10px) translateY(20px);
+	}
+	75% {
+		transform: translateX(10px) translateY(-20px);
+	}
+}
+
+@keyframes gridMove {
+	0% {
+		transform: translateX(0) translateY(0);
+	}
+	100% {
+		transform: translateX(60px) translateY(60px);
+	}
+}
+
 // 响应式设计
 @media (max-width: 768px) {
 	.home-page {
 		.hero-section {
 			flex-direction: column;
 			text-align: center;
-			padding: 40px 0;
+			padding: 40px 16px;
 
 			.hero-content {
 				max-width: 100%;
@@ -453,6 +495,10 @@
 		.features-section {
 			padding: 60px 0;
 
+			.container {
+				padding: 0 16px;
+			}
+
 			.section-title {
 				font-size: 2rem;
 			}
@@ -460,6 +506,10 @@
 
 		.cta-section {
 			padding: 60px 0;
+
+			.container {
+				padding: 0 16px;
+			}
 
 			.cta-card {
 				padding: 40px 20px;

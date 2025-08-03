@@ -118,30 +118,32 @@ const HomePage: React.FC = () => {
 				animate={{ opacity: 1 }}
 				transition={{ duration: 0.8, delay: 0.3 }}
 			>
-				<Title level={2} className="section-title">
-					核心特性
-				</Title>
-				<Row gutter={[24, 24]}>
-					{features.map((feature, index) => (
-						<Col xs={24} sm={12} lg={6} key={index}>
-							<motion.div
-								initial={{ opacity: 0, y: 30 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.5, delay: index * 0.1 }}
-							>
-								<Card className="feature-card sci-fi-card">
-									<div className="feature-icon">{feature.icon}</div>
-									<Title level={4} className="feature-title">
-										{feature.title}
-									</Title>
-									<Paragraph className="feature-description">
-										{feature.description}
-									</Paragraph>
-								</Card>
-							</motion.div>
-						</Col>
-					))}
-				</Row>
+				<div className="container">
+					<Title level={2} className="section-title">
+						核心特性
+					</Title>
+					<Row gutter={[24, 24]}>
+						{features.map((feature, index) => (
+							<Col xs={24} sm={12} lg={6} key={index}>
+								<motion.div
+									initial={{ opacity: 0, y: 30 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.5, delay: index * 0.1 }}
+								>
+									<Card className="feature-card sci-fi-card">
+										<div className="feature-icon">{feature.icon}</div>
+										<Title level={4} className="feature-title">
+											{feature.title}
+										</Title>
+										<Paragraph className="feature-description">
+											{feature.description}
+										</Paragraph>
+									</Card>
+								</motion.div>
+							</Col>
+						))}
+					</Row>
+				</div>
 			</motion.section>
 
 			{/* CTA Section */}
@@ -151,22 +153,24 @@ const HomePage: React.FC = () => {
 				animate={{ opacity: 1 }}
 				transition={{ duration: 0.8, delay: 0.6 }}
 			>
-				<Card className="cta-card sci-fi-card">
-					<Title level={2} className="cta-title">
-						准备开始了吗？
-					</Title>
-					<Paragraph className="cta-description">
-						立即体验 Easy Page 的强大功能，开始构建你的下一个项目
-					</Paragraph>
-					<Space size="large">
-						<Button type="primary" size="large" className="sci-fi-button">
-							快速开始
-						</Button>
-						<Button size="large" className="outline-button">
-							查看示例
-						</Button>
-					</Space>
-				</Card>
+				<div className="container">
+					<Card className="cta-card sci-fi-card">
+						<Title level={2} className="cta-title">
+							准备开始了吗？
+						</Title>
+						<Paragraph className="cta-description">
+							立即体验 Easy Page 的强大功能，开始构建你的下一个项目
+						</Paragraph>
+						<Space size="large">
+							<Button type="primary" size="large" className="sci-fi-button">
+								快速开始
+							</Button>
+							<Button size="large" className="outline-button">
+								查看示例
+							</Button>
+						</Space>
+					</Card>
+				</div>
 			</motion.section>
 		</div>
 	);
