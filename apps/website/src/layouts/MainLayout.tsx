@@ -312,7 +312,6 @@ const MainLayout: React.FC = () => {
 						animate={{ opacity: 1 }}
 						transition={{ duration: 0.3, delay: 0.4 }}
 					>
-						<Divider className="footer-divider" />
 						<div className="footer-content">
 							<div className="version-info">
 								<span className="version-text">v1.0.0</span>
