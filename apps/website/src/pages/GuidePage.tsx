@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import PageContainer from '../components/PageContainer';
 import CoreConcepts from './guide/CoreConcepts';

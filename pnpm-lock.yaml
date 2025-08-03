@@ -100,6 +100,12 @@ importers:
       '@ant-design/icons':
         specifier: ^6.0.0
         version: 6.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@easy-page/core':
+        specifier: workspace:*
+        version: link:../../packages/easy-page-core
+      '@easy-page/pc':
+        specifier: workspace:*
+        version: link:../../packages/easy-page-pc
       antd:
         specifier: ^5.4.0
         version: 5.26.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

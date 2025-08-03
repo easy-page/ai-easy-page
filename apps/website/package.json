@@ -12,6 +12,8 @@
 	"dependencies": {
 		"@ant-design/icons": "^6.0.0",
 		"antd": "^5.4.0",
+		"@easy-page/core": "workspace:*",
+		"@easy-page/pc": "workspace:*",
 		"framer-motion": "^10.12.16",
 		"lucide-react": "^0.263.1",
 		"prismjs": "^1.29.0",

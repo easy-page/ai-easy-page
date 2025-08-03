@@ -24,441 +24,180 @@ import {
 	PlayCircleOutlined,
 } from '@ant-design/icons';
 import CodeHighlight from '../../../components/CodeHighlight';
+import DemoContainer from '../../../components/DemoContainer';
+import {
+	DynamicFormDemo,
+	LinkageDemo,
+	StateManagementDemo,
+	PerformanceDemo,
+	ExtensibilityDemo,
+	StateControlDemo,
+	ConfigModeDemo,
+	VisibilityControlDemo,
+} from '../../../demos';
 import './FrameworkFeatures.less';
 
 const { Title, Paragraph, Text } = Typography;
-const { TabPane } = Tabs;
 
-// Demo 组件示例
-const DynamicFormDemo = () => {
-	return (
-		<div className="demo-container">
-			<CodeHighlight language="tsx">
-				{`import { Form, FormItem } from '@easy-page/core';
+// 获取demo源代码的函数
+const getDemoSourceCode = (demoKey: string): string => {
+	const codeMap: Record<string, string> = {
+		'dynamic-form': `import React, { useState } from 'react';
+import { Form, FormItem } from '@easy-page/core';
 import { DynamicForm, Input, Select } from '@easy-page/pc';
+import { Button, Space, message, Card } from 'antd';
 
-<Form onSubmit={handleSubmit}>
-  <DynamicForm
-    id="userInfos"
-    maxRow={5}
-    minRow={1}
-    containerType="table" // 支持 tab、table、自定义容器
-    rows={[
-      {
-        rowIndexs: [1, 2, 3, 4, 5],
-        fields: [
-          <FormItem id="name" label="姓名" required>
-            <Input placeholder="请输入姓名" />
-          </FormItem>,
-          <FormItem id="email" label="邮箱">
-            <Input placeholder="请输入邮箱" />
-          </FormItem>,
-          <FormItem id="role" label="角色">
-            <Select options={roleOptions} />
-          </FormItem>,
+const DynamicFormDemo: React.FC = () => {
+  const [formData, setFormData] = useState<any>(null);
+
+  const handleSubmit = async (values: any) => {
+    console.log('动态表单提交:', values);
+    setFormData(values);
+    message.success('提交成功！');
+  };
+
+  return (
+    <Form
+      initialValues={{
+        userInfos: [
+          {
+            name: '张三',
+            email: 'zhangsan@example.com',
+            role: 'admin',
+          },
         ],
-      },
-    ]}
-  />
-</Form>`}
-			</CodeHighlight>
-			<Alert
-				message="动态表单特性"
-				description="支持 Tab 布局、表格布局、自定义容器等多种展示方式，可动态添加删除表单行，支持复杂的行间联动和验证。"
-				type="info"
-				showIcon
-				style={{ marginTop: 16 }}
-			/>
-		</div>
-	);
-};
+      }}
+      onSubmit={handleSubmit}
+    >
+      <DynamicForm
+        id="userInfos"
+        maxRow={5}
+        minRow={1}
+        containerType="table"
+        rows={[
+          {
+            rowIndexs: [1, 2, 3, 4, 5],
+            fields: [
+              <FormItem
+                key="name"
+                id="name"
+                label="姓名"
+                required
+                validate={[{ required: true, message: '请输入姓名' }]}
+              >
+                <Input placeholder="请输入姓名" />
+              </FormItem>,
+              <FormItem
+                key="email"
+                id="email"
+                label="邮箱"
+                validate={[
+                  {
+                    pattern: /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/,
+                    message: '邮箱格式不正确',
+                  },
+                ]}
+              >
+                <Input placeholder="请输入邮箱" />
+              </FormItem>,
+              <FormItem key="role" id="role" label="角色">
+                <Select
+                  placeholder="请选择角色"
+                  options={[
+                    { label: '管理员', value: 'admin' },
+                    { label: '用户', value: 'user' },
+                    { label: '访客', value: 'guest' },
+                  ]}
+                />
+              </FormItem>,
+            ],
+          },
+        ]}
+      />
 
-const LinkageDemo = () => {
-	return (
-		<div className="demo-container">
-			<CodeHighlight language="tsx">
-				{`<FormItem
-  id="country"
-  label="国家"
-  effects={[
-    {
-      effectedKeys: ['province', 'city'],
-      handler: async ({ store }) => {
-        const country = store.getValue('country');
-        return {
-          province: { fieldValue: '', fieldProps: {} },
-          city: { fieldValue: '', fieldProps: {} },
-        };
-      },
-    },
-  ]}
->
-  <Select options={countryOptions} />
-</FormItem>
-
-<FormItem
-  id="province"
-  label="省份"
-  actions={[
-    {
-      effectedBy: ['country'],
-      handler: async ({ store }) => {
-        const country = store.getValue('country');
-        const options = await fetchProvinces(country);
-        return {
-          fieldValue: '',
-          fieldProps: { options, placeholder: '请选择省份' },
-        };
-      },
-    },
-  ]}
->
-  <Select options={[]} />
-</FormItem>`}
-			</CodeHighlight>
-			<Alert
-				message="联动机制"
-				description="Effects（副作用）配置在变化的字段上，Actions（动作）配置在被影响的字段上。支持多级联动、条件联动、异步数据处理。"
-				type="success"
-				showIcon
-				style={{ marginTop: 16 }}
-			/>
-		</div>
-	);
-};
-
-const StateManagementDemo = () => {
-	return (
-		<div className="demo-container">
-			<CodeHighlight language="tsx">
-				{`import { createFormStore } from '@easy-page/core';
-
-// 创建表单 Store
-const store = createFormStore({
-  username: '',
-  email: '',
-  permissions: [],
-});
-
-// 统一管理 effects、actions、apis
-<Form
-  store={store}
-  initReqs={{
-    userDetail: {
-      req: async ({ store }) => {
-        const result = await fetchUserDetail();
-        return result;
-      },
-      mode: ['edit', 'view'],
-    },
-    permissions: {
-      req: async ({ store, effectedData }) => {
-        const userDetail = effectedData?.userDetail;
-        return await fetchPermissions(userDetail.role);
-      },
-      depends: ['userDetail'],
-    },
-  }}
->
-  {/* 表单内容 */}
-</Form>`}
-			</CodeHighlight>
-			<Alert
-				message="统一状态管理"
-				description="基于 MobX 的响应式状态管理，将 effects、actions、apis 统一管理，支持请求依赖、并发控制、状态同步。"
-				type="warning"
-				showIcon
-				style={{ marginTop: 16 }}
-			/>
-		</div>
-	);
-};
-
-const PerformanceDemo = () => {
-	return (
-		<div className="demo-container">
-			<CodeHighlight language="tsx">
-				{`// MobX 响应式更新 - 只更新变化的字段
-const FormStoreImpl = makeAutoObservable({
-  state: {
-    values: {},
-    fields: {},
-    processing: false,
-  },
-
-  setValue(field: string, value: any) {
-    runInAction(() => {
-      this.state.values[field] = value;
-      // 只触发相关字段的更新
-    });
-
-    // 异步触发联动，不阻塞 UI
-    setTimeout(() => {
-      this.triggerEffectsAndActions(field);
-    }, 0);
-  },
-});
-
-// 调度中心控制并发
-class Scheduler {
-  private maxConcurrent = 5;
-  private running = new Set();
-  private queue: Array<() => Promise<any>> = [];
-
-  async add<T>(task: () => Promise<T>): Promise<T> {
-    if (this.running.size < this.maxConcurrent) {
-      return this.execute(task);
-    }
-    // 超出并发限制，加入队列
-    return new Promise((resolve, reject) => {
-      this.queue.push(() => this.execute(task).then(resolve).catch(reject));
-    });
-  }
-}`}
-			</CodeHighlight>
-			<Alert
-				message="性能优化"
-				description="基于 MobX 的精准渲染，调度中心控制并发，循环检测防止死循环，条件触发避免不必要计算。"
-				type="error"
-				showIcon
-				style={{ marginTop: 16 }}
-			/>
-		</div>
-	);
-};
-
-const ExtensibilityDemo = () => {
-	return (
-		<div className="demo-container">
-			<CodeHighlight language="tsx">
-				{`// 扩展任意组件库
-// packages/easy-page-pc - Ant Design 适配
-export const Input: React.FC<InputProps> = ({ id, ...props }) => {
-  const { store } = useFormContext();
-  const value = store.getValue(id);
-
-  return (
-    <AntInput
-      {...props}
-      value={value}
-      onChange={(e) => store.setValue(id, e.target.value)}
-    />
+      <Space style={{ marginTop: 16 }}>
+        <Button type="primary" htmlType="submit">
+          提交表单
+        </Button>
+        <Button htmlType="reset">重置表单</Button>
+      </Space>
+    </Form>
   );
 };
 
-// packages/easy-page-mobile - Ant Design Mobile 适配
-export const Input: React.FC<InputProps> = ({ id, ...props }) => {
-  const { store } = useFormContext();
-  const value = store.getValue(id);
+export default DynamicFormDemo;`,
+		linkage: `import React, { useState } from 'react';
+import { Form, FormItem, FormStore } from '@easy-page/core';
+import { Select, Input } from '@easy-page/pc';
+import { Button, Space, message, Card, Alert } from 'antd';
+
+const LinkageDemo: React.FC = () => {
+  const [formData, setFormData] = useState<any>(null);
+
+  const handleSubmit = async (values: any) => {
+    console.log('联动表单提交:', values);
+    setFormData(values);
+    message.success('提交成功！');
+  };
 
   return (
-    <AntMobileInput
-      {...props}
-      value={value}
-      onChange={(value) => store.setValue(id, value)}
-    />
+    <Form
+      initialValues={{
+        country: '',
+        province: '',
+        city: '',
+        district: '',
+      }}
+      onSubmit={handleSubmit}
+    >
+      <FormItem
+        id="country"
+        label="国家"
+        effects={[
+          {
+            effectedKeys: ['province', 'city', 'district'],
+            handler: async (params: {
+              store: FormStore;
+              rowInfo?: any;
+              value: any;
+              rowValue: any;
+            }) => {
+              const { store } = params;
+              const country = store.getValue('country');
+              console.log('国家变化:', country);
+
+              // 模拟异步操作
+              await new Promise((resolve) => setTimeout(resolve, 500));
+
+              return {
+                province: { fieldValue: '', fieldProps: {} },
+                city: { fieldValue: '', fieldProps: {} },
+                district: { fieldValue: '', fieldProps: {} },
+              };
+            },
+          },
+        ]}
+      >
+        <Select
+          placeholder="请选择国家"
+          options={[
+            { label: '中国', value: 'china' },
+            { label: '美国', value: 'usa' },
+            { label: '日本', value: 'japan' },
+          ]}
+        />
+      </FormItem>
+
+      {/* 更多字段... */}
+    </Form>
   );
 };
 
-// 自定义验证器扩展
-const validator = new FormValidator();
-validator.addRule('customPhone', async (value, rule, store) => {
-  const phoneRegex = /^1[3-9]\\d{9}$/;
-  if (!phoneRegex.test(value)) {
-    return { valid: false, message: '手机号格式不正确' };
-  }
-  return { valid: true };
-});`}
-			</CodeHighlight>
-			<Alert
-				message="超强扩展性"
-				description="核心逻辑与 UI 解耦，可轻松适配任意组件库。支持自定义验证器、自定义组件、自定义联动逻辑。"
-				type="info"
-				showIcon
-				style={{ marginTop: 16 }}
-			/>
-		</div>
-	);
-};
+export default LinkageDemo;`,
+		// 其他demo的源代码...
+	};
 
-const StateControlDemo = () => {
-	return (
-		<div className="demo-container">
-			<CodeHighlight language="tsx">
-				{`// 全局禁用状态控制
-const store = createFormStore({ username: '', email: '' });
-
-// 一键禁用整个表单
-store.setDisabled(true);
-
-// 与外部状态联动
-useExternalStateListener(store, activityStatus, [
-  {
-    fields: ['username', 'email'],
-    handler: async (externalState, store) => {
-      if (externalState === 'maintenance') {
-        store.setDisabled(true);
-      } else if (externalState === 'active') {
-        store.setDisabled(false);
-      }
-
-      return {
-        username: {
-          fieldProps: {
-            placeholder: externalState === 'active'
-              ? '请输入用户名'
-              : '系统维护中...'
-          }
-        }
-      };
-    },
-  },
-]);
-
-// 字段级别的状态控制
-<FormItem
-  id="userType"
-  effects={[{
-    effectedKeys: ['company', 'school'],
-    handler: async ({ store }) => {
-      const userType = store.getValue('userType');
-      return {
-        company: {
-          fieldProps: { disabled: userType !== 'company' }
-        },
-        school: {
-          fieldProps: { disabled: userType !== 'student' }
-        },
-      };
-    },
-  }]}
->`}
-			</CodeHighlight>
-			<Alert
-				message="灵活状态控制"
-				description="支持全局禁用状态、字段级别状态控制、外部状态联动，适应各种业务场景的状态管理需求。"
-				type="success"
-				showIcon
-				style={{ marginTop: 16 }}
-			/>
-		</div>
-	);
-};
-
-const ConfigModeDemo = () => {
-	return (
-		<div className="demo-container">
-			<CodeHighlight language="tsx">
-				{`// 开发模式 - JSX 声明式
-<Form onSubmit={handleSubmit}>
-  <FormItem id="username" label="用户名" required>
-    <Input placeholder="请输入用户名" />
-  </FormItem>
-  <FormItem id="email" label="邮箱">
-    <Input placeholder="请输入邮箱" />
-  </FormItem>
-</Form>
-
-// 配置模式 - JSON 驱动
-const formConfig = {
-  fields: [
-    {
-      id: 'username',
-      label: '用户名',
-      type: 'input',
-      required: true,
-      props: { placeholder: '请输入用户名' },
-      validate: [{ required: true, message: '请输入用户名' }],
-    },
-    {
-      id: 'email',
-      label: '邮箱',
-      type: 'input',
-      props: { placeholder: '请输入邮箱' },
-      validate: [{ pattern: /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/, message: '邮箱格式不正确' }],
-    },
-  ],
-  effects: [
-    {
-      field: 'username',
-      effectedKeys: ['email'],
-      handler: 'resetEmailWhenUsernameChange',
-    },
-  ],
-};
-
-<ConfigurableForm config={formConfig} onSubmit={handleSubmit} />`}
-			</CodeHighlight>
-			<Alert
-				message="开发配置双模式"
-				description="既支持 JSX 声明式开发，也支持 JSON 配置驱动。可实现表单配置的动态下发和渲染。"
-				type="warning"
-				showIcon
-				style={{ marginTop: 16 }}
-			/>
-		</div>
-	);
-};
-
-const VisibilityControlDemo = () => {
-	return (
-		<div className="demo-container">
-			<CodeHighlight language="tsx">
-				{`// When 组件 - 条件显示
-<When
-  effectedBy={['userType', 'region']}
-  show={({ effectedValues }) => {
-    return effectedValues.userType === 'vip' && effectedValues.region === 'china';
-  }}
->
-  <FormItem id="vipLevel" label="VIP 等级">
-    <Select options={vipLevelOptions} />
-  </FormItem>
-</When>
-
-// Container 组件 - 容器级别显隐
-<Container
-  containerType="Card"
-  title="高级设置"
-  effectedBy={['userType']}
-  show={({ effectedValues }) => effectedValues.userType === 'admin'}
->
-  <FormItem id="adminSetting1" label="管理员设置1">
-    <Input />
-  </FormItem>
-  <FormItem id="adminSetting2" label="管理员设置2">
-    <Input />
-  </FormItem>
-</Container>
-
-// 动态表单中的显隐控制
-<DynamicForm
-  rows={[
-    {
-      rowIndexs: [1, 2],
-      fields: [
-        <When
-          effectedBy={['showAdvanced']}
-          show={({ effectedValues }) => effectedValues.showAdvanced}
-        >
-          <FormItem id="advancedField" label="高级字段">
-            <Input />
-          </FormItem>
-        </When>
-      ],
-    },
-  ]}
-/>`}
-			</CodeHighlight>
-			<Alert
-				message="智能显隐控制"
-				description="When 组件支持精准的依赖监听，Container 组件支持容器级别显隐，动态表单支持行级别显隐控制。"
-				type="info"
-				showIcon
-				style={{ marginTop: 16 }}
-			/>
-		</div>
-	);
+	return codeMap[demoKey] || '// 源代码加载中...';
 };
 
 const FrameworkFeatures: React.FC = () => {
@@ -655,7 +394,14 @@ const FrameworkFeatures: React.FC = () => {
 							<Title level={4} style={{ color: '#fff', marginBottom: '16px' }}>
 								技术实现与示例
 							</Title>
-							{currentFeature?.component}
+							<DemoContainer
+								sourceCode={getDemoSourceCode(currentFeature?.key || '')}
+								sourceFile={`${currentFeature?.key}Demo.tsx`}
+								githubUrl={`https://github.com/easy-page/ai-easy-page/blob/main/apps/website/src/demos/${currentFeature?.key}Demo.tsx`}
+								highlights={currentFeature?.highlights}
+							>
+								{currentFeature?.component}
+							</DemoContainer>
 						</div>
 					</motion.div>
 				</Col>
