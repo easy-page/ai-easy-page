@@ -7,6 +7,7 @@ import {
 	BookOutlined,
 	StarOutlined,
 } from '@ant-design/icons';
+import CodeHighlight from '../components/CodeHighlight';
 import './HomePage.less';
 
 const { Title, Paragraph } = Typography;
@@ -84,9 +85,14 @@ const HomePage: React.FC = () => {
 								</div>
 							</div>
 							<div className="code-content">
-								<pre>
-									<code>
-										{`import { Form, FormItem, When } from '@easy-page/core';
+								<CodeHighlight
+									language="tsx"
+									customStyle={{
+										fontSize: '13px',
+										lineHeight: '1.4',
+									}}
+								>
+									{`import { Form, FormItem, When } from '@easy-page/core';
 import { Input, Select } from '@easy-page/pc';
 
 <Form onSubmit={async (values) => console.log(values)}>
@@ -118,8 +124,7 @@ import { Input, Select } from '@easy-page/pc';
     />
   </FormItem>
 </Form>`}
-									</code>
-								</pre>
+								</CodeHighlight>
 							</div>
 						</div>
 					</motion.div>

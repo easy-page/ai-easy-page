@@ -217,6 +217,16 @@
 					.code-content {
 						padding: 20px;
 						background: var(--background-dark);
+						overflow: visible;
+
+						// 确保语法高亮器正确显示
+						div {
+							background: transparent !important;
+							border: none !important;
+							padding: 0 !important;
+							margin: 0 !important;
+							overflow: visible !important;
+						}
 
 						pre {
 							margin: 0;
@@ -224,6 +234,12 @@
 							font-size: 14px;
 							line-height: 1.5;
 							color: var(--text-primary);
+							background: transparent !important;
+							border: none !important;
+							padding: 0 !important;
+							overflow: visible !important;
+							white-space: pre-wrap;
+							word-wrap: break-word;
 
 							code {
 								background: transparent;

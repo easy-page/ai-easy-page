@@ -61,12 +61,51 @@
 		border-radius: 8px;
 		padding: 1rem;
 		margin: 1rem 0;
-		overflow-x: auto;
+		overflow: visible;
+		word-wrap: break-word;
+		white-space: pre-wrap;
 
 		code {
 			background: transparent;
 			padding: 0;
 			color: var(--text-primary);
+		}
+	}
+
+	// 语法高亮器容器样式
+	.code-block {
+		background: var(--background-light);
+		border: 1px solid var(--border-color);
+		border-radius: 8px;
+		padding: 1rem;
+		margin: 1rem 0;
+		overflow: visible;
+
+		// 重置语法高亮器内部样式
+		> div {
+			background: transparent !important;
+			border: none !important;
+			border-radius: 0 !important;
+			padding: 0 !important;
+			margin: 0 !important;
+			overflow: visible !important;
+
+			pre {
+				background: transparent !important;
+				border: none !important;
+				border-radius: 0 !important;
+				padding: 0 !important;
+				margin: 0 !important;
+				overflow: visible !important;
+				white-space: pre-wrap;
+				word-wrap: break-word;
+
+				code {
+					background: transparent !important;
+					padding: 0 !important;
+					border: none !important;
+				}
+			}
 		}
 	}
 
