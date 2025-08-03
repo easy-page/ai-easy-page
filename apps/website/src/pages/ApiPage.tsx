@@ -1,12 +1,35 @@
 import React from 'react';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Layout, Menu, Typography } from 'antd';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import './ApiPage.less';
+
+const { Sider, Content } = Layout;
+const { Title } = Typography;
 
 const ApiPage: React.FC = () => {
-	const content = `
-# API 文档
+	const location = useLocation();
+
+	const menuItems = [
+		{
+			key: '/api/components',
+			label: <Link to="/api/components">组件 API</Link>,
+		},
+		{
+			key: '/api/hooks',
+			label: <Link to="/api/hooks">Hooks API</Link>,
+		},
+		{
+			key: '/api/types',
+			label: <Link to="/api/types">类型定义</Link>,
+		},
+	];
+
+	const componentsContent = `
+# 组件 API
 
 ## DynamicForm
 
@@ -53,6 +76,56 @@ const MyForm = () => {
   );
 };
 \`\`\`
+  `;
+
+	const hooksContent = `
+# Hooks API
+
+## useForm
+
+表单 Hook，用于获取表单实例。
+
+\`\`\`tsx
+import { useForm } from 'easy-page-core';
+
+const MyForm = () => {
+  const [form] = useForm();
+  
+  const handleSubmit = async () => {
+    try {
+      const values = await form.validateFields();
+      console.log('表单数据:', values);
+    } catch (error) {
+      console.error('验证失败:', error);
+    }
+  };
+  
+  return (
+    <DynamicForm 
+      form={form}
+      schema={schema}
+      onSubmit={handleSubmit}
+    />
+  );
+};
+\`\`\`
+
+### FormInstance 方法
+
+| 方法 | 参数 | 返回值 | 说明 |
+|------|------|--------|------|
+| validateFields | (nameList?: string[]) | Promise<any> | 验证表单字段 |
+| getFieldValue | (name: string) | any | 获取字段值 |
+| setFieldValue | (name: string, value: any) | void | 设置字段值 |
+| getFieldsValue | (nameList?: string[]) | Record<string, any> | 获取多个字段值 |
+| setFieldsValue | (values: Record<string, any>) | void | 设置多个字段值 |
+| resetFields | (nameList?: string[]) | void | 重置字段 |
+| clearValidate | (nameList?: string[]) | void | 清除验证状态 |
+| scrollToField | (name: string) | void | 滚动到指定字段 |
+  `;
+
+	const typesContent = `
+# 类型定义
 
 ## FormSchema
 
@@ -154,53 +227,9 @@ interface ActionConfig {
   props?: Record<string, any>;
 }
 \`\`\`
-
-## Hooks
-
-### useForm
-
-表单 Hook，用于获取表单实例。
-
-\`\`\`tsx
-import { useForm } from 'easy-page-core';
-
-const MyForm = () => {
-  const [form] = useForm();
-  
-  const handleSubmit = async () => {
-    try {
-      const values = await form.validateFields();
-      console.log('表单数据:', values);
-    } catch (error) {
-      console.error('验证失败:', error);
-    }
-  };
-  
-  return (
-    <DynamicForm 
-      form={form}
-      schema={schema}
-      onSubmit={handleSubmit}
-    />
-  );
-};
-\`\`\`
-
-### FormInstance 方法
-
-| 方法 | 参数 | 返回值 | 说明 |
-|------|------|--------|------|
-| validateFields | (nameList?: string[]) | Promise<any> | 验证表单字段 |
-| getFieldValue | (name: string) | any | 获取字段值 |
-| setFieldValue | (name: string, value: any) | void | 设置字段值 |
-| getFieldsValue | (nameList?: string[]) | Record<string, any> | 获取多个字段值 |
-| setFieldsValue | (values: Record<string, any>) | void | 设置多个字段值 |
-| resetFields | (nameList?: string[]) | void | 重置字段 |
-| clearValidate | (nameList?: string[]) | void | 清除验证状态 |
-| scrollToField | (name: string) | void | 滚动到指定字段 |
   `;
 
-	return (
+	const MarkdownContent: React.FC<{ content: string }> = ({ content }) => (
 		<motion.div
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
@@ -213,7 +242,7 @@ const MyForm = () => {
 							const match = /language-(\w+)/.exec(className || '');
 							return !inline && match ? (
 								<SyntaxHighlighter
-									style={tomorrow}
+									style={tomorrow as any}
 									language={match[1]}
 									PreTag="div"
 									{...props}
@@ -232,6 +261,54 @@ const MyForm = () => {
 				</ReactMarkdown>
 			</div>
 		</motion.div>
+	);
+
+	return (
+		<div className="api-page">
+			<motion.div
+				initial={{ opacity: 0, y: 20 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.5 }}
+			>
+				<Title level={1} className="page-title">
+					API 文档
+				</Title>
+				<Title level={4} className="page-subtitle">
+					完整的 API 参考文档
+				</Title>
+			</motion.div>
+
+			<Layout className="api-layout">
+				<Sider className="api-sider" width={250}>
+					<Menu
+						mode="inline"
+						selectedKeys={[location.pathname]}
+						items={menuItems}
+						className="api-menu"
+					/>
+				</Sider>
+				<Content className="api-content">
+					<Routes>
+						<Route
+							path="components"
+							element={<MarkdownContent content={componentsContent} />}
+						/>
+						<Route
+							path="hooks"
+							element={<MarkdownContent content={hooksContent} />}
+						/>
+						<Route
+							path="types"
+							element={<MarkdownContent content={typesContent} />}
+						/>
+						<Route
+							index
+							element={<MarkdownContent content={componentsContent} />}
+						/>
+					</Routes>
+				</Content>
+			</Layout>
+		</div>
 	);
 };
 

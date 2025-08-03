@@ -37,6 +37,13 @@ const HomePage: React.FC = () => {
 
 	return (
 		<div className="home-page">
+			{/* 浮动粒子效果 */}
+			<div className="particle" />
+			<div className="particle" />
+			<div className="particle" />
+			<div className="particle" />
+			<div className="particle" />
+
 			{/* Hero Section */}
 			<motion.section
 				className="hero-section"

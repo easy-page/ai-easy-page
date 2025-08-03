@@ -1,4 +1,94 @@
 .home-page {
+	// 科技感背景动画
+	position: relative;
+	overflow: hidden;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: radial-gradient(
+				circle at 20% 80%,
+				rgba(0, 212, 255, 0.05) 0%,
+				transparent 50%
+			),
+			radial-gradient(
+				circle at 80% 20%,
+				rgba(124, 58, 237, 0.05) 0%,
+				transparent 50%
+			),
+			radial-gradient(
+				circle at 40% 40%,
+				rgba(0, 212, 255, 0.03) 0%,
+				transparent 50%
+			);
+		animation: backgroundShift 25s ease-in-out infinite;
+		z-index: 0;
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-image: linear-gradient(
+				90deg,
+				transparent 98%,
+				rgba(0, 212, 255, 0.05) 100%
+			),
+			linear-gradient(0deg, transparent 98%, rgba(124, 58, 237, 0.05) 100%);
+		background-size: 60px 60px;
+		animation: gridMove 20s linear infinite;
+		opacity: 0.2;
+		z-index: 0;
+	}
+
+	// 浮动粒子效果
+	.particle {
+		position: absolute;
+		width: 4px;
+		height: 4px;
+		background: var(--primary-color);
+		border-radius: 50%;
+		opacity: 0.6;
+		animation: float 6s ease-in-out infinite;
+
+		&:nth-child(1) {
+			top: 20%;
+			left: 10%;
+			animation-delay: 0s;
+		}
+
+		&:nth-child(2) {
+			top: 60%;
+			left: 80%;
+			animation-delay: 2s;
+		}
+
+		&:nth-child(3) {
+			top: 80%;
+			left: 20%;
+			animation-delay: 4s;
+		}
+
+		&:nth-child(4) {
+			top: 30%;
+			left: 70%;
+			animation-delay: 1s;
+		}
+
+		&:nth-child(5) {
+			top: 70%;
+			left: 30%;
+			animation-delay: 3s;
+		}
+	}
+
 	.hero-section {
 		display: flex;
 		align-items: center;
@@ -7,6 +97,7 @@
 		padding: 60px 0;
 		position: relative;
 		overflow: hidden;
+		z-index: 1;
 
 		&::before {
 			content: '';
@@ -123,16 +214,20 @@
 
 					.code-content {
 						padding: 20px;
+						background: var(--background-dark);
 
 						pre {
 							margin: 0;
-							background: transparent;
+							font-family: 'Fira Code', monospace;
+							font-size: 14px;
+							line-height: 1.5;
+							color: var(--text-primary);
 
 							code {
-								color: var(--text-primary);
-								font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
-								font-size: 14px;
-								line-height: 1.5;
+								background: transparent;
+								padding: 0;
+								border-radius: 0;
+								font-family: inherit;
 							}
 						}
 					}
@@ -143,21 +238,19 @@
 
 	.features-section {
 		padding: 80px 0;
-		text-align: center;
+		position: relative;
+		z-index: 1;
 
 		.section-title {
+			text-align: center;
 			font-size: 2.5rem;
 			font-weight: 700;
 			margin-bottom: 60px;
 			color: var(--text-primary);
-			position: relative;
 
 			&::after {
 				content: '';
-				position: absolute;
-				bottom: -16px;
-				left: 50%;
-				transform: translateX(-50%);
+				display: block;
 				width: 60px;
 				height: 4px;
 				background: linear-gradient(
@@ -165,29 +258,69 @@
 					var(--primary-color),
 					var(--secondary-color)
 				);
+				margin: 20px auto 0;
 				border-radius: 2px;
 			}
 		}
 
 		.feature-card {
 			height: 100%;
-			text-align: center;
-			padding: 32px 24px;
 			border: 1px solid var(--border-color);
+			border-radius: 16px;
+			padding: 32px 24px;
+			text-align: center;
 			transition: all 0.3s ease;
+			position: relative;
+			overflow: hidden;
+
+			&::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: -100%;
+				width: 100%;
+				height: 100%;
+				background: linear-gradient(
+					90deg,
+					transparent,
+					rgba(0, 212, 255, 0.1),
+					transparent
+				);
+				transition: left 0.5s;
+			}
 
 			&:hover {
 				transform: translateY(-8px);
+				box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 				border-color: var(--primary-color);
-				box-shadow: var(--shadow-glow);
+
+				&::before {
+					left: 100%;
+				}
+
+				.feature-icon {
+					transform: scale(1.1) rotate(5deg);
+					box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+				}
 			}
 
 			.feature-icon {
-				font-size: 3rem;
-				color: var(--primary-color);
-				margin-bottom: 24px;
+				width: 80px;
+				height: 80px;
+				margin: 0 auto 24px;
+				background: linear-gradient(
+					135deg,
+					var(--primary-color),
+					var(--secondary-color)
+				);
+				border-radius: 20px;
 				display: flex;
+				align-items: center;
 				justify-content: center;
+				font-size: 32px;
+				color: white;
+				transition: all 0.3s ease;
+				box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
 			}
 
 			.feature-title {
@@ -200,32 +333,51 @@
 			.feature-description {
 				color: var(--text-secondary);
 				line-height: 1.6;
-				margin: 0;
+				font-size: 1rem;
 			}
 		}
 	}
 
 	.cta-section {
 		padding: 80px 0;
-		text-align: center;
+		position: relative;
+		z-index: 1;
 
 		.cta-card {
-			max-width: 800px;
-			margin: 0 auto;
-			padding: 60px 40px;
 			text-align: center;
+			border: 1px solid var(--border-color);
+			border-radius: 20px;
+			padding: 60px 40px;
 			background: linear-gradient(
 				135deg,
-				var(--background-card),
-				var(--background-light)
+				rgba(0, 212, 255, 0.05),
+				rgba(124, 58, 237, 0.05)
 			);
-			border: 1px solid var(--border-color);
+			position: relative;
+			overflow: hidden;
+
+			&::before {
+				content: '';
+				position: absolute;
+				top: -50%;
+				left: -50%;
+				width: 200%;
+				height: 200%;
+				background: radial-gradient(
+					circle,
+					rgba(0, 212, 255, 0.1) 0%,
+					transparent 70%
+				);
+				animation: rotate 20s linear infinite;
+			}
 
 			.cta-title {
 				font-size: 2.5rem;
 				font-weight: 700;
 				margin-bottom: 24px;
 				color: var(--text-primary);
+				position: relative;
+				z-index: 1;
 			}
 
 			.cta-description {
@@ -233,20 +385,40 @@
 				color: var(--text-secondary);
 				margin-bottom: 40px;
 				line-height: 1.6;
-			}
-
-			.outline-button {
-				border: 2px solid var(--border-color);
-				color: var(--text-primary);
-				background: transparent;
-
-				&:hover {
-					border-color: var(--primary-color);
-					color: var(--primary-color);
-					box-shadow: var(--shadow-glow);
-				}
+				position: relative;
+				z-index: 1;
 			}
 		}
+	}
+}
+
+// 动画定义
+@keyframes float {
+	0%,
+	100% {
+		transform: translateY(0px) translateX(0px);
+		opacity: 0.6;
+	}
+	25% {
+		transform: translateY(-20px) translateX(10px);
+		opacity: 0.8;
+	}
+	50% {
+		transform: translateY(-10px) translateX(-10px);
+		opacity: 0.4;
+	}
+	75% {
+		transform: translateY(-30px) translateX(5px);
+		opacity: 0.9;
+	}
+}
+
+@keyframes rotate {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
 	}
 }
 
@@ -259,6 +431,9 @@
 			padding: 40px 0;
 
 			.hero-content {
+				max-width: 100%;
+				margin-bottom: 40px;
+
 				.hero-title {
 					font-size: 2.5rem;
 				}
@@ -269,12 +444,8 @@
 			}
 
 			.hero-visual {
-				margin-top: 40px;
-
 				.floating-card {
-					.code-preview {
-						max-width: 100%;
-					}
+					max-width: 100%;
 				}
 			}
 		}
@@ -291,7 +462,7 @@
 			padding: 60px 0;
 
 			.cta-card {
-				padding: 40px 24px;
+				padding: 40px 20px;
 
 				.cta-title {
 					font-size: 2rem;

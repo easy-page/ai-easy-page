@@ -1,0 +1,219 @@
+.api-page {
+	.page-title {
+		color: var(--text-primary);
+		margin-bottom: 8px;
+		font-weight: 700;
+		background: linear-gradient(
+			135deg,
+			var(--primary-color),
+			var(--secondary-color)
+		);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	.page-subtitle {
+		color: var(--text-secondary);
+		margin-bottom: 32px;
+		font-weight: 400;
+	}
+
+	.api-layout {
+		background: transparent;
+		min-height: calc(100vh - 200px);
+
+		.api-sider {
+			background: var(--background-card);
+			border-radius: 12px;
+			border: 1px solid var(--border-color);
+			margin-right: 24px;
+			position: sticky;
+			top: 88px;
+			height: fit-content;
+			max-height: calc(100vh - 120px);
+			overflow-y: auto;
+
+			.api-menu {
+				background: transparent;
+				border: none;
+				padding: 16px 0;
+
+				.ant-menu-item {
+					color: var(--text-secondary);
+					border-radius: 8px;
+					margin: 4px 12px;
+					height: 44px;
+					line-height: 44px;
+					font-weight: 500;
+					transition: all 0.3s ease;
+
+					&:hover {
+						color: var(--primary-color);
+						background: rgba(0, 212, 255, 0.08);
+						transform: translateX(4px);
+					}
+
+					&.ant-menu-item-selected {
+						background: linear-gradient(
+							135deg,
+							rgba(0, 212, 255, 0.15),
+							rgba(124, 58, 237, 0.15)
+						);
+						color: var(--primary-color);
+						box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2);
+						border: 1px solid rgba(0, 212, 255, 0.3);
+					}
+				}
+			}
+		}
+
+		.api-content {
+			background: var(--background-card);
+			border-radius: 12px;
+			border: 1px solid var(--border-color);
+			padding: 32px;
+			min-height: calc(100vh - 200px);
+
+			.markdown-content {
+				color: var(--text-primary);
+				line-height: 1.6;
+
+				h1 {
+					color: var(--text-primary);
+					font-size: 28px;
+					font-weight: 700;
+					margin-bottom: 24px;
+					padding-bottom: 12px;
+					border-bottom: 2px solid var(--border-color);
+				}
+
+				h2 {
+					color: var(--text-primary);
+					font-size: 24px;
+					font-weight: 600;
+					margin: 32px 0 16px 0;
+					padding-top: 16px;
+				}
+
+				h3 {
+					color: var(--text-primary);
+					font-size: 20px;
+					font-weight: 600;
+					margin: 24px 0 12px 0;
+				}
+
+				h4 {
+					color: var(--text-primary);
+					font-size: 18px;
+					font-weight: 600;
+					margin: 20px 0 10px 0;
+				}
+
+				p {
+					color: var(--text-secondary);
+					margin-bottom: 16px;
+					font-size: 14px;
+				}
+
+				code {
+					background: var(--background-dark);
+					color: var(--accent-color);
+					padding: 2px 6px;
+					border-radius: 4px;
+					font-size: 13px;
+					border: 1px solid var(--border-color);
+				}
+
+				pre {
+					background: var(--background-dark);
+					border: 1px solid var(--border-color);
+					border-radius: 8px;
+					padding: 16px;
+					margin: 16px 0;
+					overflow-x: auto;
+
+					code {
+						background: transparent;
+						border: none;
+						padding: 0;
+						color: var(--text-primary);
+						font-size: 13px;
+					}
+				}
+
+				table {
+					width: 100%;
+					border-collapse: collapse;
+					margin: 16px 0;
+					background: var(--background-dark);
+					border-radius: 8px;
+					overflow: hidden;
+					border: 1px solid var(--border-color);
+
+					th {
+						background: var(--background-light);
+						color: var(--text-primary);
+						font-weight: 600;
+						padding: 12px 16px;
+						text-align: left;
+						border-bottom: 1px solid var(--border-color);
+					}
+
+					td {
+						color: var(--text-secondary);
+						padding: 12px 16px;
+						border-bottom: 1px solid var(--border-color);
+						font-size: 13px;
+
+						&:last-child {
+							border-bottom: none;
+						}
+					}
+
+					tr:hover {
+						background: rgba(0, 212, 255, 0.05);
+					}
+				}
+
+				ul,
+				ol {
+					color: var(--text-secondary);
+					margin: 16px 0;
+					padding-left: 24px;
+
+					li {
+						margin-bottom: 8px;
+						font-size: 14px;
+					}
+				}
+
+				blockquote {
+					border-left: 4px solid var(--primary-color);
+					padding-left: 16px;
+					margin: 16px 0;
+					color: var(--text-secondary);
+					font-style: italic;
+					background: rgba(0, 212, 255, 0.05);
+					padding: 12px 16px;
+					border-radius: 0 8px 8px 0;
+				}
+			}
+		}
+	}
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+	.api-page {
+		.api-layout {
+			.api-sider {
+				display: none;
+			}
+
+			.api-content {
+				padding: 20px;
+			}
+		}
+	}
+}
