@@ -102,7 +102,6 @@
 
 		.sider-header {
 			padding: 24px 20px 20px;
-			border-bottom: 1px solid var(--border-color);
 			background: linear-gradient(
 				135deg,
 				rgba(0, 212, 255, 0.1),
@@ -468,6 +467,16 @@
 				background: transparent;
 				border: none;
 				line-height: 64px;
+				min-width: 300px; // 确保有足够宽度显示所有菜单项
+
+				// 禁用溢出处理
+				.ant-menu-overflow {
+					display: flex !important;
+				}
+
+				.ant-menu-overflow-item {
+					display: flex !important;
+				}
 
 				.ant-menu-item {
 					color: var(--text-secondary);
@@ -478,6 +487,12 @@
 					padding: 0 20px;
 					border-bottom: 2px solid transparent;
 					transition: all 0.3s ease;
+					flex-shrink: 0; // 防止菜单项被压缩
+
+					// 移除::after伪元素，避免双重横线
+					&::after {
+						display: none !important;
+					}
 
 					&:hover {
 						color: var(--primary-color);
@@ -489,6 +504,11 @@
 						border-bottom-color: var(--primary-color);
 						background: transparent;
 					}
+				}
+
+				// 隐藏溢出指示器
+				.ant-menu-overflow-item-rest {
+					display: none !important;
 				}
 			}
 		}

@@ -17,132 +17,178 @@ import './MainLayout.less';
 
 const { Header, Sider, Content } = Layout;
 
+// 菜单配置 - 更具扩展性的设计
+const menuConfig = {
+	// 顶部导航菜单配置
+	topNav: [
+		{
+			key: 'home',
+			path: '/',
+			label: '首页',
+			icon: <HomeOutlined />,
+		},
+		{
+			key: 'guide',
+			path: '/guide/core-concepts',
+			label: '指南',
+			icon: <BookOutlined />,
+		},
+		{
+			key: 'api',
+			path: '/api/components',
+			label: 'API',
+			icon: <ApiOutlined />,
+		},
+	],
+
+	// 侧边栏菜单配置
+	sideNav: {
+		guide: [
+			{
+				key: '/guide/core-concepts',
+				label: <Link to="/guide/core-concepts">核心概念</Link>,
+				children: [
+					{
+						key: '/guide/core-concepts/framework-features',
+						label: (
+							<Link to="/guide/core-concepts/framework-features">框架特点</Link>
+						),
+					},
+					{
+						key: '/guide/core-concepts/design-philosophy',
+						label: (
+							<Link to="/guide/core-concepts/design-philosophy">设计理念</Link>
+						),
+					},
+					{
+						key: '/guide/core-concepts/architecture',
+						label: <Link to="/guide/core-concepts/architecture">整体架构</Link>,
+					},
+				],
+			},
+			{
+				key: '/guide/basics',
+				label: <Link to="/guide/basics">基础</Link>,
+				children: [
+					{
+						key: '/guide/basics/basic-usage',
+						label: <Link to="/guide/basics/basic-usage">基本使用</Link>,
+					},
+					{
+						key: '/guide/basics/field-capabilities',
+						label: (
+							<Link to="/guide/basics/field-capabilities">字段完整能力</Link>
+						),
+					},
+					{
+						key: '/guide/basics/common-components',
+						label: <Link to="/guide/basics/common-components">常用组件</Link>,
+					},
+					{
+						key: '/guide/basics/component-extension',
+						label: <Link to="/guide/basics/component-extension">组件扩展</Link>,
+					},
+				],
+			},
+			{
+				key: '/guide/advanced',
+				label: <Link to="/guide/advanced">进阶</Link>,
+				children: [
+					{
+						key: '/guide/advanced/linkage',
+						label: <Link to="/guide/advanced/linkage">联动</Link>,
+					},
+					{
+						key: '/guide/advanced/validation',
+						label: <Link to="/guide/advanced/validation">校验</Link>,
+					},
+					{
+						key: '/guide/advanced/request-management',
+						label: (
+							<Link to="/guide/advanced/request-management">请求管理</Link>
+						),
+					},
+					{
+						key: '/guide/advanced/dynamic-form',
+						label: <Link to="/guide/advanced/dynamic-form">动态表单</Link>,
+					},
+				],
+			},
+		],
+		api: [
+			{
+				key: '/api/components',
+				label: <Link to="/api/components">组件 API</Link>,
+			},
+			{
+				key: '/api/hooks',
+				label: <Link to="/api/hooks">Hooks API</Link>,
+			},
+			{
+				key: '/api/types',
+				label: <Link to="/api/types">类型定义</Link>,
+			},
+		],
+	},
+};
+
 const MainLayout: React.FC = () => {
 	const [collapsed, setCollapsed] = useState(false);
 	const [mobileDrawerVisible, setMobileDrawerVisible] = useState(false);
 	const location = useLocation();
 
-	// 判断当前在哪个主要分类
-	const isGuide = location.pathname.startsWith('/guide');
-	const isApi = location.pathname.startsWith('/api');
-	const isHome = location.pathname === '/';
+	// 根据路径获取当前激活的顶级菜单
+	const getCurrentTopNavKey = () => {
+		const currentPath = location.pathname;
 
-	// 指南的子菜单
-	const guideMenuItems = [
-		{
-			key: '/guide/core-concepts',
-			label: <Link to="/guide/core-concepts">核心概念</Link>,
-			children: [
-				{
-					key: '/guide/core-concepts/framework-features',
-					label: (
-						<Link to="/guide/core-concepts/framework-features">框架特点</Link>
-					),
-				},
-				{
-					key: '/guide/core-concepts/design-philosophy',
-					label: (
-						<Link to="/guide/core-concepts/design-philosophy">设计理念</Link>
-					),
-				},
-				{
-					key: '/guide/core-concepts/architecture',
-					label: <Link to="/guide/core-concepts/architecture">整体架构</Link>,
-				},
-			],
-		},
-		{
-			key: '/guide/basics',
-			label: <Link to="/guide/basics">基础</Link>,
-			children: [
-				{
-					key: '/guide/basics/basic-usage',
-					label: <Link to="/guide/basics/basic-usage">基本使用</Link>,
-				},
-				{
-					key: '/guide/basics/field-capabilities',
-					label: (
-						<Link to="/guide/basics/field-capabilities">字段完整能力</Link>
-					),
-				},
-				{
-					key: '/guide/basics/common-components',
-					label: <Link to="/guide/basics/common-components">常用组件</Link>,
-				},
-				{
-					key: '/guide/basics/component-extension',
-					label: <Link to="/guide/basics/component-extension">组件扩展</Link>,
-				},
-			],
-		},
-		{
-			key: '/guide/advanced',
-			label: <Link to="/guide/advanced">进阶</Link>,
-			children: [
-				{
-					key: '/guide/advanced/linkage',
-					label: <Link to="/guide/advanced/linkage">联动</Link>,
-				},
-				{
-					key: '/guide/advanced/validation',
-					label: <Link to="/guide/advanced/validation">校验</Link>,
-				},
-				{
-					key: '/guide/advanced/request-management',
-					label: <Link to="/guide/advanced/request-management">请求管理</Link>,
-				},
-				{
-					key: '/guide/advanced/dynamic-form',
-					label: <Link to="/guide/advanced/dynamic-form">动态表单</Link>,
-				},
-			],
-		},
-	];
+		// 精确匹配首页
+		if (currentPath === '/') return 'home';
 
-	// API的子菜单
-	const apiMenuItems = [
-		{
-			key: '/api/components',
-			label: <Link to="/api/components">组件 API</Link>,
-		},
-		{
-			key: '/api/hooks',
-			label: <Link to="/api/hooks">Hooks API</Link>,
-		},
-		{
-			key: '/api/types',
-			label: <Link to="/api/types">类型定义</Link>,
-		},
-	];
+		// 匹配其他路径
+		for (const item of menuConfig.topNav) {
+			if (item.key !== 'home' && currentPath.startsWith(`/${item.key}`)) {
+				return item.key;
+			}
+		}
 
-	// 顶栏菜单
-	const topMenuItems = [
-		{
-			key: '/',
-			icon: <HomeOutlined />,
-			label: <Link to="/">首页</Link>,
-		},
-		{
-			key: 'guide',
-			icon: <BookOutlined />,
-			label: <Link to="/guide/core-concepts">指南</Link>,
-		},
-		{
-			key: 'api',
-			icon: <ApiOutlined />,
-			label: <Link to="/api/components">API</Link>,
-		},
-	];
+		return 'home';
+	};
 
-	// 根据当前路径获取左侧菜单项
+	// 根据路径获取当前页面类型
+	const getCurrentPageType = () => {
+		const currentPath = location.pathname;
+		if (currentPath === '/') return 'home';
+		if (currentPath.startsWith('/guide')) return 'guide';
+		if (currentPath.startsWith('/api')) return 'api';
+		return 'home';
+	};
+
+	// 获取面包屑文本
+	const getBreadcrumbText = () => {
+		const pageType = getCurrentPageType();
+		const navItem = menuConfig.topNav.find((item) => item.key === pageType);
+		return navItem?.label || '首页';
+	};
+
+	// 获取侧边栏菜单项
 	const getSideMenuItems = () => {
-		if (isGuide) {
-			return guideMenuItems;
-		}
-		if (isApi) {
-			return apiMenuItems;
-		}
-		return [];
+		const pageType = getCurrentPageType();
+		return (
+			menuConfig.sideNav[pageType as keyof typeof menuConfig.sideNav] || []
+		);
+	};
+
+	// 获取侧边栏标题
+	const getSidebarTitle = () => {
+		const pageType = getCurrentPageType();
+		const navItem = menuConfig.topNav.find((item) => item.key === pageType);
+		return navItem?.label || '';
+	};
+
+	// 判断是否需要显示侧边栏
+	const shouldShowSidebar = () => {
+		const pageType = getCurrentPageType();
+		return pageType !== 'home' && getSideMenuItems().length > 0;
 	};
 
 	const handleMenuClick = ({ key }: { key: string }) => {
@@ -150,6 +196,10 @@ const MainLayout: React.FC = () => {
 			setMobileDrawerVisible(false);
 		}
 	};
+
+	const currentTopNavKey = getCurrentTopNavKey();
+	const currentPageType = getCurrentPageType();
+	const isHome = currentPageType === 'home';
 
 	return (
 		<Layout className={`main-layout ${isHome ? 'home-layout' : ''}`}>
@@ -174,14 +224,18 @@ const MainLayout: React.FC = () => {
 				<Menu
 					mode="inline"
 					selectedKeys={[location.pathname]}
-					items={topMenuItems}
+					items={menuConfig.topNav.map((item) => ({
+						key: item.key === 'home' ? item.path : item.key,
+						icon: item.icon,
+						label: <Link to={item.path}>{item.label}</Link>,
+					}))}
 					onClick={handleMenuClick}
 					className="mobile-menu"
 				/>
 			</Drawer>
 
-			{/* 桌面端侧边栏 - 只在非主页时显示 */}
-			{!isHome && (
+			{/* 桌面端侧边栏 - 根据页面类型决定是否显示 */}
+			{shouldShowSidebar() && (
 				<Sider
 					trigger={null}
 					collapsible
@@ -230,27 +284,25 @@ const MainLayout: React.FC = () => {
 
 					<div className="sider-content">
 						{/* 显示当前分类标题 */}
-						{!collapsed && (isGuide || isApi) && (
+						{!collapsed && (
 							<motion.div
 								className="category-title"
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
 								transition={{ duration: 0.3 }}
 							>
-								{isGuide ? '指南' : 'API'}
+								{getSidebarTitle()}
 							</motion.div>
 						)}
 
 						{/* 左侧菜单 */}
-						{(isGuide || isApi) && (
-							<Menu
-								mode="inline"
-								selectedKeys={[location.pathname]}
-								items={getSideMenuItems()}
-								onClick={handleMenuClick}
-								className="main-menu"
-							/>
-						)}
+						<Menu
+							mode="inline"
+							selectedKeys={[location.pathname]}
+							items={getSideMenuItems()}
+							onClick={handleMenuClick}
+							className="main-menu"
+						/>
 					</div>
 
 					{/* 固定在左下角的版本号和GitHub按钮 */}
@@ -303,33 +355,19 @@ const MainLayout: React.FC = () => {
 							<div className="breadcrumb">
 								<span className="breadcrumb-item">Easy Page</span>
 								<span className="breadcrumb-separator">/</span>
-								<span className="breadcrumb-item">
-									{location.pathname === '/' && '首页'}
-									{location.pathname.startsWith('/guide') && '指南'}
-									{location.pathname.startsWith('/api') && 'API'}
-								</span>
+								<span className="breadcrumb-item">{getBreadcrumbText()}</span>
 							</div>
 						</div>
 
 						<div className="header-center">
 							<Menu
 								mode="horizontal"
-								selectedKeys={[isGuide ? 'guide' : isApi ? 'api' : 'home']}
+								selectedKeys={[currentTopNavKey]}
 								className="header-nav-menu"
-								items={[
-									{
-										key: 'home',
-										label: <Link to="/">首页</Link>,
-									},
-									{
-										key: 'guide',
-										label: <Link to="/guide/core-concepts">指南</Link>,
-									},
-									{
-										key: 'api',
-										label: <Link to="/api/components">API</Link>,
-									},
-								]}
+								items={menuConfig.topNav.map((item) => ({
+									key: item.key,
+									label: <Link to={item.path}>{item.label}</Link>,
+								}))}
 							/>
 						</div>
 
