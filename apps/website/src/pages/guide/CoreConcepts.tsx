@@ -1,7 +1,11 @@
 import React from 'react';
+import { Typography, Card, Space, Alert } from 'antd';
 import { motion } from 'framer-motion';
-import MarkdownRenderer from '../../components/MarkdownRenderer';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
+const { Title, Paragraph } = Typography;
 const CoreConcepts: React.FC = () => {
 	const content = `
 # 核心概念
@@ -76,7 +80,31 @@ const MyForm = () => {
 			animate={{ opacity: 1 }}
 			transition={{ duration: 0.5 }}
 		>
-			<MarkdownRenderer content={content} />
+			<div className="markdown-content">
+				<ReactMarkdown
+					components={{
+						code({ node, inline, className, children, ...props }) {
+							const match = /language-(\w+)/.exec(className || '');
+							return !inline && match ? (
+								<SyntaxHighlighter
+									style={tomorrow}
+									language={match[1]}
+									PreTag="div"
+									{...props}
+								>
+									{String(children).replace(/\n$/, '')}
+								</SyntaxHighlighter>
+							) : (
+								<code className={className} {...props}>
+									{children}
+								</code>
+							);
+						},
+					}}
+				>
+					{content}
+				</ReactMarkdown>
+			</div>
 		</motion.div>
 	);
 };
