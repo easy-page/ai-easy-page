@@ -278,36 +278,26 @@ interface ActionConfig {
 				</Title>
 			</motion.div>
 
-			<Layout className="api-layout">
-				<Sider className="api-sider" width={250}>
-					<Menu
-						mode="inline"
-						selectedKeys={[location.pathname]}
-						items={menuItems}
-						className="api-menu"
+			<div className="api-content">
+				<Routes>
+					<Route
+						path="components"
+						element={<MarkdownContent content={componentsContent} />}
 					/>
-				</Sider>
-				<Content className="api-content">
-					<Routes>
-						<Route
-							path="components"
-							element={<MarkdownContent content={componentsContent} />}
-						/>
-						<Route
-							path="hooks"
-							element={<MarkdownContent content={hooksContent} />}
-						/>
-						<Route
-							path="types"
-							element={<MarkdownContent content={typesContent} />}
-						/>
-						<Route
-							index
-							element={<MarkdownContent content={componentsContent} />}
-						/>
-					</Routes>
-				</Content>
-			</Layout>
+					<Route
+						path="hooks"
+						element={<MarkdownContent content={hooksContent} />}
+					/>
+					<Route
+						path="types"
+						element={<MarkdownContent content={typesContent} />}
+					/>
+					<Route
+						index
+						element={<MarkdownContent content={componentsContent} />}
+					/>
+				</Routes>
+			</div>
 		</div>
 	);
 };

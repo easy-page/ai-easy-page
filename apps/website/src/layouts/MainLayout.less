@@ -260,25 +260,36 @@
 							left: 100%;
 						}
 					}
-				}
 
-				&.ant-menu-item-selected {
-					background: linear-gradient(
-						135deg,
-						rgba(0, 212, 255, 0.15),
-						rgba(124, 58, 237, 0.15)
-					);
-					color: var(--primary-color);
-					box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
-					border: 1px solid rgba(0, 212, 255, 0.4);
-					transform: translateX(4px);
+					&.ant-menu-item-selected {
+						background: linear-gradient(
+							135deg,
+							rgba(0, 212, 255, 0.12),
+							rgba(124, 58, 237, 0.08)
+						);
+						color: var(--primary-color);
+						box-shadow: 0 4px 15px rgba(0, 212, 255, 0.25);
+						border: 1px solid rgba(0, 212, 255, 0.35);
+						transform: translateX(4px);
 
-					&::before {
-						transform: scaleY(1);
-					}
+						&::before {
+							transform: scaleY(1);
+						}
 
-					&::after {
-						left: 100%;
+						&::after {
+							left: 100%;
+						}
+
+						// 选中状态下的悬浮效果
+						&:hover {
+							background: linear-gradient(
+								135deg,
+								rgba(0, 212, 255, 0.15),
+								rgba(124, 58, 237, 0.1)
+							);
+							box-shadow: 0 6px 20px rgba(0, 212, 255, 0.3);
+							border-color: rgba(0, 212, 255, 0.4);
+						}
 					}
 				}
 
