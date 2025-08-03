@@ -86,23 +86,38 @@ const HomePage: React.FC = () => {
 							<div className="code-content">
 								<pre>
 									<code>
-										{`const schema = {
-  fields: [
-    {
-      name: 'name',
-      label: '姓名',
-      type: 'input'
-    },
-    {
-      name: 'email',
-      label: '邮箱',
-      type: 'input',
-      rules: [
-        { required: true, message: '请输入邮箱' }
-      ]
-    }
-  ]
-}`}
+										{`import { Form, FormItem, When } from '@easy-page/core';
+import { Input, Select } from '@easy-page/pc';
+
+<Form onSubmit={async (values) => console.log(values)}>
+ <FormItem
+    id="province"
+    label="省份"
+    effects={[{
+      effectedKeys: ['city'],
+      handler: async ({ store }) => {
+        const province = store.getValue('province');
+        return {
+          city: {
+            fieldValue: '',
+            fieldProps: {
+              options: await getCities(province)
+            }
+          }
+        };
+      }
+    }]}
+  >
+    <Select
+      placeholder="请选择省份"
+      options={[
+        { label: '北京', value: 'beijing' },
+        { label: '上海', value: 'shanghai' },
+        { label: '广东', value: 'guangdong' }
+      ]}
+    />
+  </FormItem>
+</Form>`}
 									</code>
 								</pre>
 							</div>

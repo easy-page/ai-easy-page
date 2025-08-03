@@ -492,3 +492,5 @@ initReqs={{
 - 指南下面有：核心概念、基础、进阶，下面都还有二级主题
 
 基于：vite + less + react + antd + ts + react-router-dom + react-markdown
+
+## 框架特点
