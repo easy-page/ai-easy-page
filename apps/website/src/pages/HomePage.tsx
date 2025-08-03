@@ -6,6 +6,13 @@ import {
 	CodeOutlined,
 	BookOutlined,
 	StarOutlined,
+	ThunderboltOutlined,
+	ApiOutlined,
+	SettingOutlined,
+	EyeOutlined,
+	CheckCircleOutlined,
+	BranchesOutlined,
+	BlockOutlined,
 } from '@ant-design/icons';
 import CodeHighlight from '../components/CodeHighlight';
 import './HomePage.less';
@@ -16,23 +23,43 @@ const HomePage: React.FC = () => {
 	const features = [
 		{
 			icon: <RocketOutlined />,
-			title: '快速开发',
-			description: '基于配置的表单生成，大幅提升开发效率',
+			title: '强大的动态表单',
+			description: '支持各种动态表单布局场景，轻松应对复杂业务需求',
 		},
 		{
-			icon: <CodeOutlined />,
-			title: '类型安全',
-			description: '完整的 TypeScript 支持，提供优秀的开发体验',
+			icon: <BranchesOutlined />,
+			title: '超强联动能力',
+			description: '多字段联动、父子表单联动、上下文联动校验，游刃有余',
 		},
 		{
 			icon: <BookOutlined />,
-			title: '易于使用',
-			description: '简洁的 API 设计，学习成本低',
+			title: '统一状态管理',
+			description: '将 effects、actions、apis 统一管理，降低复杂度',
 		},
 		{
-			icon: <StarOutlined />,
-			title: '高度可定制',
-			description: '支持自定义组件和样式，满足各种业务需求',
+			icon: <ThunderboltOutlined />,
+			title: '高性能精准渲染',
+			description: '基于 MobX，统一调度管理，所有变更都是精准渲染',
+		},
+		{
+			icon: <ApiOutlined />,
+			title: '超强扩展性',
+			description: '轻松扩展任意组件库，模块化复用，提升开发效率',
+		},
+		{
+			icon: <SettingOutlined />,
+			title: '灵活状态控制',
+			description: '支持字段禁用切换、外部上下文联动，适应各种业务场景',
+		},
+		{
+			icon: <CodeOutlined />,
+			title: '开发配置双模式',
+			description: '既可开发也可配置，支持 JSON 化动态渲染',
+		},
+		{
+			icon: <EyeOutlined />,
+			title: '智能显隐控制',
+			description: '沉淀显示隐藏控制能力，实现各种场景展示需求',
 		},
 	];
 
@@ -143,7 +170,7 @@ import { Input, Select } from '@easy-page/pc';
 				</Title>
 				<Row gutter={[24, 24]}>
 					{features.map((feature, index) => (
-						<Col xs={24} sm={12} lg={6} key={index}>
+						<Col xs={24} sm={12} md={8} lg={6} key={index}>
 							<motion.div
 								initial={{ opacity: 0, y: 30 }}
 								animate={{ opacity: 1, y: 0 }}
