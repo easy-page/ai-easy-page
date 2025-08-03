@@ -479,3 +479,16 @@ initReqs={{
 - 动态表单内外联动
 - 动态表单 tab 之间联动校验，联动选项
 - 基于 form 的 mode 优化一下 disabed 逻辑，现在太复杂了
+
+# 官网
+
+帮我把 apps/pc-demo
+
+帮我写一个表单框架的官网，要求如下：
+
+- 官网风格科幻、深色风格、具备一些合适的动画效果，比如边框、鼠标悬浮等等动画效果。
+  目录结构：
+- 指南和 API
+- 指南下面有：核心概念、基础、进阶，下面都还有二级主题
+
+基于：vite + less + react + antd + ts + react-router-dom + react-markdown

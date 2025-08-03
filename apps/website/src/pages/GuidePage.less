@@ -1,0 +1,87 @@
+.guide-page {
+	.page-title {
+		font-size: 2.5rem;
+		font-weight: 700;
+		margin-bottom: 16px;
+		color: var(--text-primary);
+	}
+
+	.page-subtitle {
+		color: var(--text-secondary);
+		margin-bottom: 40px;
+		font-weight: 400;
+	}
+
+	.guide-layout {
+		background: transparent;
+		min-height: calc(100vh - 200px);
+
+		.guide-sider {
+			background: var(--background-card);
+			border-right: 1px solid var(--border-color);
+			border-radius: 12px;
+			margin-right: 24px;
+			position: sticky;
+			top: 100px;
+			height: fit-content;
+
+			.guide-menu {
+				background: transparent;
+				border: none;
+				padding: 16px 0;
+
+				.ant-menu-item {
+					color: var(--text-secondary);
+					border-radius: 8px;
+					margin: 4px 16px;
+					height: 48px;
+					line-height: 48px;
+
+					&:hover {
+						color: var(--primary-color);
+						background: rgba(0, 212, 255, 0.1);
+					}
+
+					&.ant-menu-item-selected {
+						background: linear-gradient(
+							135deg,
+							var(--primary-color),
+							var(--secondary-color)
+						);
+						color: white;
+						box-shadow: var(--shadow-glow);
+					}
+				}
+			}
+		}
+
+		.guide-content {
+			background: var(--background-card);
+			border-radius: 12px;
+			padding: 32px;
+			border: 1px solid var(--border-color);
+			min-height: 600px;
+		}
+	}
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+	.guide-page {
+		.page-title {
+			font-size: 2rem;
+		}
+
+		.guide-layout {
+			.guide-sider {
+				margin-right: 0;
+				margin-bottom: 24px;
+				position: static;
+			}
+
+			.guide-content {
+				padding: 24px 16px;
+			}
+		}
+	}
+}
