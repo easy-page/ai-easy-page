@@ -1,0 +1,266 @@
+// 表单基础样式
+.easy-form {
+	position: relative;
+
+	// 全局请求loading状态
+	&.easy-form-requesting {
+		pointer-events: none;
+
+		.easy-form-loading-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(255, 255, 255, 0.9);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 1000;
+			backdrop-filter: blur(2px);
+
+			.easy-form-loading-spinner {
+				padding: 24px 32px;
+				background: rgba(0, 0, 0, 0.8);
+				color: white;
+				border-radius: 8px;
+				font-size: 14px;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 12px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+				.easy-form-loading-icon {
+					width: 32px;
+					height: 32px;
+					border: 3px solid rgba(255, 255, 255, 0.3);
+					border-top: 3px solid #1890ff;
+					border-radius: 50%;
+					animation: spin 1s linear infinite;
+				}
+
+				.easy-form-loading-text {
+					font-size: 14px;
+					font-weight: 500;
+				}
+			}
+		}
+	}
+}
+
+// 表单项样式
+.form-item {
+	position: relative;
+	margin-bottom: 16px;
+
+	// 处理中状态
+	&.form-item-processing {
+		.form-item-processing-indicator {
+			color: #1890ff;
+			font-size: 12px;
+			margin-left: 8px;
+		}
+	}
+
+	// 禁用状态
+	&.form-item-disabled {
+		opacity: 0.6;
+		pointer-events: none;
+	}
+
+	// 请求中状态
+	&.form-item-requesting {
+		.form-item-requesting-indicator {
+			color: #1890ff;
+			font-size: 12px;
+			margin-left: 8px;
+		}
+
+		.form-item-control {
+			position: relative;
+
+			.form-item-requesting-overlay {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: rgba(255, 255, 255, 0.8);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				z-index: 10;
+
+				.form-item-requesting-spinner {
+					width: 16px;
+					height: 16px;
+					border: 2px solid #f3f3f3;
+					border-top: 2px solid #1890ff;
+					border-radius: 50%;
+					animation: spin 1s linear infinite;
+				}
+			}
+		}
+	}
+
+	// 水平布局
+	&.form-item-horizontal {
+		display: flex;
+		align-items: flex-start;
+		gap: 8px;
+
+		.form-item-label {
+			flex-shrink: 0;
+		}
+
+		.form-item-control {
+			flex: 1;
+		}
+	}
+
+	// 垂直布局
+	&.form-item-vertical {
+		.form-item-label {
+			display: block;
+			margin-bottom: 4px;
+		}
+	}
+
+	.form-item-label {
+		font-size: 14px;
+		color: #333;
+
+		.form-item-required {
+			color: #ff4d4f;
+			margin-left: 2px;
+		}
+
+		.form-item-help {
+			margin-left: 4px;
+			cursor: help;
+
+			.form-item-help-icon {
+				display: inline-block;
+				width: 14px;
+				height: 14px;
+				line-height: 14px;
+				text-align: center;
+				background: #d9d9d9;
+				color: #666;
+				border-radius: 50%;
+				font-size: 10px;
+			}
+		}
+
+		.form-item-tips {
+			margin-left: 8px;
+			color: #999;
+			font-size: 12px;
+		}
+	}
+
+	.form-item-control {
+		position: relative;
+	}
+
+	.form-item-error {
+		margin-top: 4px;
+
+		.form-item-error-message {
+			color: #ff4d4f;
+			font-size: 12px;
+			line-height: 1.5;
+		}
+	}
+
+	.form-item-extra {
+		margin-top: 4px;
+		font-size: 12px;
+		color: #666;
+	}
+}
+
+// 加载动画
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.dynamic-form {
+	.dynamic-form-row {
+		display: flex;
+		align-items: flex-start;
+		gap: 16px;
+
+		.dynamic-form-content {
+			flex: 1;
+		}
+
+		.dynamic-form-actions {
+			flex-shrink: 0;
+			margin-top: 8px;
+		}
+	}
+}
+
+// 动画效果
+@keyframes pulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.5;
+	}
+}
+
+// 联动表单样式
+.form-linkage {
+	.form-item-linked {
+		border-left: 3px solid #1890ff;
+		padding-left: 12px;
+		margin-left: -12px;
+	}
+
+	.form-item-dependent {
+		background-color: #fafafa;
+		border-radius: 4px;
+		padding: 8px;
+	}
+}
+
+// 处理状态样式
+.form-processing {
+	position: relative;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(255, 255, 255, 0.6);
+		z-index: 10;
+		pointer-events: none;
+	}
+
+	&::after {
+		content: '处理中...';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background: rgba(0, 0, 0, 0.7);
+		color: white;
+		padding: 8px 16px;
+		border-radius: 4px;
+		font-size: 14px;
+		z-index: 11;
+	}
+}
