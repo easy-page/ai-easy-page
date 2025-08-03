@@ -1,4 +1,4 @@
-.guide-page {
+.page-container {
 	position: relative;
 	z-index: 1;
 	min-height: 100vh;
@@ -51,7 +51,7 @@
 				rgba(0, 212, 255, 0.05) 0%,
 				transparent 50%
 			);
-		animation: guideBackgroundShift 25s ease-in-out infinite;
+		animation: pageBackgroundShift 25s ease-in-out infinite;
 		z-index: -9;
 	}
 
@@ -72,7 +72,7 @@
 		z-index: 1;
 	}
 
-	.guide-content {
+	.page-content {
 		background: linear-gradient(
 			145deg,
 			rgba(31, 31, 31, 0.95) 0%,
@@ -90,7 +90,7 @@
 		z-index: 1;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-		// 移除悬浮时的花里胡哨效果，改为简洁的提升效果
+		// 简洁的悬浮效果
 		&:hover {
 			transform: translateY(-2px);
 			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3),
@@ -98,10 +98,29 @@
 			border-color: rgba(255, 255, 255, 0.12);
 		}
 	}
+
+	// API 页面特殊样式
+	&.api-page {
+		.page-title {
+			background: linear-gradient(
+				135deg,
+				var(--primary-color),
+				var(--secondary-color)
+			);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+			margin-bottom: 8px;
+		}
+
+		.page-subtitle {
+			margin-bottom: 32px;
+		}
+	}
 }
 
 // 背景动画关键帧
-@keyframes guideBackgroundShift {
+@keyframes pageBackgroundShift {
 	0%,
 	100% {
 		transform: translateX(0) translateY(0) scale(1);
@@ -123,12 +142,12 @@
 
 // 响应式设计
 @media (max-width: 768px) {
-	.guide-page {
+	.page-container {
 		.page-title {
 			font-size: 2rem;
 		}
 
-		.guide-content {
+		.page-content {
 			padding: 24px 16px;
 		}
 	}

@@ -1,33 +1,13 @@
 import React from 'react';
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Layout, Menu, Typography } from 'antd';
+import { Routes, Route } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import PageContainer from '../components/PageContainer';
 import './ApiPage.less';
 
-const { Sider, Content } = Layout;
-const { Title } = Typography;
-
 const ApiPage: React.FC = () => {
-	const location = useLocation();
-
-	const menuItems = [
-		{
-			key: '/api/components',
-			label: <Link to="/api/components">组件 API</Link>,
-		},
-		{
-			key: '/api/hooks',
-			label: <Link to="/api/hooks">Hooks API</Link>,
-		},
-		{
-			key: '/api/types',
-			label: <Link to="/api/types">类型定义</Link>,
-		},
-	];
-
 	const componentsContent = `
 # 组件 API
 
@@ -264,41 +244,30 @@ interface ActionConfig {
 	);
 
 	return (
-		<div className="api-page">
-			<motion.div
-				initial={{ opacity: 0, y: 20 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.5 }}
-			>
-				<Title level={1} className="page-title">
-					API 文档
-				</Title>
-				<Title level={4} className="page-subtitle">
-					完整的 API 参考文档
-				</Title>
-			</motion.div>
-
-			<div className="api-content">
-				<Routes>
-					<Route
-						path="components"
-						element={<MarkdownContent content={componentsContent} />}
-					/>
-					<Route
-						path="hooks"
-						element={<MarkdownContent content={hooksContent} />}
-					/>
-					<Route
-						path="types"
-						element={<MarkdownContent content={typesContent} />}
-					/>
-					<Route
-						index
-						element={<MarkdownContent content={componentsContent} />}
-					/>
-				</Routes>
-			</div>
-		</div>
+		<PageContainer
+			title="API 文档"
+			subtitle="完整的 API 参考文档"
+			className="api-page"
+		>
+			<Routes>
+				<Route
+					path="components"
+					element={<MarkdownContent content={componentsContent} />}
+				/>
+				<Route
+					path="hooks"
+					element={<MarkdownContent content={hooksContent} />}
+				/>
+				<Route
+					path="types"
+					element={<MarkdownContent content={typesContent} />}
+				/>
+				<Route
+					index
+					element={<MarkdownContent content={componentsContent} />}
+				/>
+			</Routes>
+		</PageContainer>
 	);
 };
 
