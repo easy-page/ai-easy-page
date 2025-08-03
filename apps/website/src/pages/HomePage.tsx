@@ -43,6 +43,9 @@ const HomePage: React.FC = () => {
 			<div className="particle" />
 			<div className="particle" />
 			<div className="particle" />
+			<div className="particle" />
+			<div className="particle" />
+			<div className="particle" />
 
 			{/* Hero Section */}
 			<motion.section
