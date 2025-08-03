@@ -4,6 +4,7 @@ import PageContainer from '../components/PageContainer';
 import CoreConcepts from './guide/CoreConcepts';
 import Basics from './guide/Basics';
 import Advanced from './guide/Advanced';
+import FrameworkFeatures from './guide/core-concepts/FrameworkFeatures';
 
 const GuidePage: React.FC = () => {
 	return (
@@ -16,7 +17,7 @@ const GuidePage: React.FC = () => {
 				<Route path="core-concepts" element={<CoreConcepts />} />
 				<Route
 					path="core-concepts/framework-features"
-					element={<div>框架特点</div>}
+					element={<FrameworkFeatures />}
 				/>
 				<Route
 					path="core-concepts/design-philosophy"
