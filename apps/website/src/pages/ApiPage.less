@@ -1,4 +1,9 @@
 .api-page {
+	position: relative;
+	z-index: 1;
+	min-height: 100vh;
+	// 移除背景色，让MainLayout的背景系统处理
+
 	.page-title {
 		color: var(--text-primary);
 		margin-bottom: 8px;
@@ -11,12 +16,16 @@
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
+		position: relative;
+		z-index: 1;
 	}
 
 	.page-subtitle {
 		color: var(--text-secondary);
 		margin-bottom: 32px;
 		font-weight: 400;
+		position: relative;
+		z-index: 1;
 	}
 
 	.api-layout {

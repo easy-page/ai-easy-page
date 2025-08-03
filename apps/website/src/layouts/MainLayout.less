@@ -11,7 +11,7 @@
 		right: 0;
 		bottom: 0;
 		background: var(--background-dark);
-		z-index: -10;
+		z-index: -100; // 更低的z-index，确保在最底层
 	}
 
 	// 主页科技感背景动画
@@ -545,14 +545,27 @@
 	&:not(.home-content) {
 		min-height: 100vh;
 
+		// 主背景层 - 确保整个区域都是黑色
 		&::before {
 			content: '';
-			position: fixed; // 改为fixed定位，确保覆盖整个视口
-			top: 0; // 从顶部开始
-			left: 280px; // 从侧边栏右侧开始
+			position: fixed;
+			top: 0;
+			left: 0; // 从最左侧开始，覆盖整个视口
 			right: 0;
 			bottom: 0;
 			background: var(--background-dark);
+			z-index: -10; // 最底层
+		}
+
+		// 科技感装饰层
+		&::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			min-height: 100vh;
 			background-image: radial-gradient(
 					circle at 10% 20%,
 					rgba(0, 212, 255, 0.03) 0%,
@@ -568,7 +581,7 @@
 					rgba(245, 158, 11, 0.02) 0%,
 					transparent 50%
 				);
-			z-index: -5; // 更低的z-index
+			z-index: -5;
 		}
 	}
 
@@ -706,6 +719,13 @@
 		.main-content {
 			margin-left: 0;
 			padding: 16px;
+
+			// 移动端背景覆盖
+			&:not(.home-content) {
+				&::before {
+					left: 0; // 移动端从左边开始，因为没有侧边栏
+				}
+			}
 		}
 	}
 }
