@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Select, Space, Divider } from 'antd';
+import { Select, Space } from 'antd';
 import {
 	PlayCircleOutlined,
 	EditOutlined,
@@ -23,12 +23,11 @@ const PreviewPanel: FC<PreviewPanelProps> = ({
 				<div className="preview-title">
 					<h3>表单预览</h3>
 					<span className="preview-mode-label">
-						当前模式：
 						{previewMode === 'create'
-							? '创建'
+							? '创建模式'
 							: previewMode === 'edit'
-							? '编辑'
-							: '查看'}
+							? '编辑模式'
+							: '查看模式'}
 					</span>
 				</div>
 				<div className="preview-toolbar">
@@ -51,14 +50,14 @@ const PreviewPanel: FC<PreviewPanelProps> = ({
 					</Space>
 				</div>
 			</div>
-			<Divider style={{ margin: '16px 0' }} />
 			<div className="preview-content">
 				<div className="preview-placeholder">
 					<div className="placeholder-icon">
-						<PlayCircleOutlined style={{ fontSize: 48, color: '#1890ff' }} />
+						<PlayCircleOutlined />
 					</div>
 					<h4>预览区域</h4>
 					<p>请在左侧配置表单结构</p>
+					<p>配置完成后，表单将在此处实时预览</p>
 				</div>
 			</div>
 		</div>

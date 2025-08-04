@@ -36,11 +36,6 @@ const PlaygroundPage: FC = () => {
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.5 }}
 		>
-			<div className="playground-header">
-				<h1>Playground</h1>
-				<p>在线体验 Easy Page 动态表单的强大功能</p>
-			</div>
-
 			<Layout className="playground-layout">
 				<Sider width={480} className="playground-sider">
 					<Card className="sider-card">
