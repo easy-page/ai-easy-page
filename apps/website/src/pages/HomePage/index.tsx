@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { Button, Card, Row, Col, Typography, Space } from 'antd';
 import { motion } from 'framer-motion';
 import {
@@ -14,12 +14,12 @@ import {
 	BranchesOutlined,
 	BlockOutlined,
 } from '@ant-design/icons';
-import CodeHighlight from '../components/CodeHighlight';
-import './HomePage.less';
+import CodeHighlight from '../../components/CodeHighlight';
+import './index.less';
 
 const { Title, Paragraph } = Typography;
 
-const HomePage: React.FC = () => {
+const HomePage: FC = () => {
 	const features = [
 		{
 			icon: <RocketOutlined />,

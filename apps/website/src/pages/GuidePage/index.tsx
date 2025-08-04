@@ -1,12 +1,12 @@
-import React, { useMemo } from 'react';
+import { useMemo, FC } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import PageContainer from '../components/PageContainer';
-import CoreConcepts from './guide/CoreConcepts';
-import Basics from './guide/Basics';
-import Advanced from './guide/Advanced';
-import FrameworkFeatures from './guide/core-concepts/FrameworkFeatures';
+import PageContainer from '../../components/PageContainer';
+import CoreConcepts from '../guide/CoreConcepts';
+import Basics from '../guide/Basics';
+import Advanced from '../guide/Advanced';
+import FrameworkFeatures from '../guide/core-concepts/FrameworkFeatures';
 
-const GuidePage: React.FC = () => {
+const GuidePage: FC = () => {
 	const location = useLocation();
 
 	// 根据当前路径动态设置标题和描述

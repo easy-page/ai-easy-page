@@ -637,3 +637,79 @@ export const store: ParamDescContext = {
 
 1. 水平垂直布局，在 Form 组件上也能控制，优先级：Form < Field
 2. Container 上的 show 属性应该是可选、默认应该是一级标题
+
+## 低代码表单平台
+
+我想做一个基于配置的表单平台，即通过页面配置，动态生成表单页面。
+基本交互流程：
+
+- 点击创建页面，有两个选项：表单/页面。
+- 选择表单默认选择 Form 节点作为根节点，出现关于 Form 的一堆配置。
+- 点击添加按钮，可以添加更多节点，比如 Input、Button 等。
+- 可选择组件后，如果是表单模式，默认开启使用 FormItem，否则关闭。
+- 选择的组件具备：FormItem 组件的配置、组件本身的配置。
+
+根据如上交互，即可生成表单页面，底层原理就是：
+
+- 通过上述操作，生成一个 JSON 配置文件，描述页面结构。
+  - 相关组件的配置用一个表单来展示，不同的组件有不同的配置。
+  - 配置属性里如果有组件或者函数的，统一用字符串表示，然后出现一个编辑器可以进行开发。
+- 再根据一个解析引擎，将 JSON 配置文件解析成如 FullFormDemo 这样的代码，里面结构和属性都是基于 JSON 配置解析出来的。
+
+整体页面结构，左侧配置，右侧预览效果。
+
+要求
+
+- 相关组件定义参考：packages/easy-page-core、packages/easy-page-pc
+
+1. 帮我实现 Schema 描述以及 Schema 解析引擎，SDK 放到 packages 里。
+
+2. 帮我在 apps 下新建一个项目：form-builder，基于：vite + less + antd + ts + react + react-router-dom + react-markdown + MonacoEditor 实现上述需求。
+
+## 在 website 里增加低代码能力
+
+1. 帮我在顶部导航 API 的右边增加：Playground 页面。
+2. 页面是左右结构，左侧分为两个 Tab：AI 搭建、配置搭建，默认是配置搭建。
+3. 右侧是基于搭建 JSON Schema 通过 解析引擎的预览页面，你可以先空着。
+4. 预览部分顶部可以有个菜单栏：模式切换：创建、编辑、查看
+
+左侧配置搭建页面我清空了，我想要这样，左侧搭建页面：
+
+- 首先维护一个空的 Schema: {}, 表示啥都没有。
+- 默认进入的时候，这里有两个选项：创建页面、创建表单，创建页面点击后先空着。
+- 点击创建表单，则在 Schema 中描述一个表单组件，然后写一个简单的 SchemaEngine 基于这个描述解析成：
+
+```tsx
+import React from 'react';
+
+import { Form } from '@easy-page/core';
+
+export const FullFormDemo: React.FC = () => {
+	const handleSubmit = async (values: any, _store: any) => {
+		console.log('基础表单提交:', values);
+	};
+
+	const handleValuesChange = (changedValues: any, allValues: any) => {
+		console.log('值变化:', changedValues, allValues);
+	};
+
+	const EmptyNode = () => <div>暂无内容</div>;
+
+	return (
+		<Form
+			initialValues={{}}
+			onSubmit={handleSubmit}
+			onValuesChange={handleValuesChange}
+		>
+			<EmptyNode />
+		</Form>
+	);
+};
+```
+
+上述大概是这个意思，如何基于 Schema 解析成这样，可能需要写一个引擎，放到：
+
+- apps/website/src/pages/PlaygroundPage/Engine 目录下
+  如何描述这个空表单的 Schema 定义放到：apps/website/src/pages/PlaygroundPage/Schema 目录下
+
+暂时只定义这个表单组件的 Schema，引擎只解析这个表单组件，把上述流程渲染出来

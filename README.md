@@ -131,9 +131,13 @@ const validateRules = [
 ];
 ```
 
+- 操作组件：Button、Space 等
+
 ### 动态表单
 
-支持动态增减表单项：
+- 点击节点选择组件
+  支持动态增减表单项：
+- 表单属性：验证规则、必填、帮助文本等
 
 ```tsx
 import { DynamicForm } from '@easy-page/pc';
@@ -150,7 +154,7 @@ const config = {
 	onAdd: (index) => console.log('添加行:', index),
 	onRemove: (index) => console.log('删除行:', index),
 };
-
+- **查看代码**: 查看生成的 Schema JSON 和 React 代码
 <DynamicForm config={config}>{/* 表单内容 */}</DynamicForm>;
 ```
 
@@ -158,7 +162,7 @@ const config = {
 
 ### PC 端组件
 
-```tsx
+````tsx
 import { Input, Select, DynamicForm } from '@easy-page/pc';
 
 // 基础输入框
@@ -178,16 +182,16 @@ import { Input, Select, DynamicForm } from '@easy-page/pc';
 <DynamicForm config={config}>
   {/* 表单内容 */}
 </DynamicForm>
-```
-
+	styles?: Record<string, string>; // 样式定义
+}
 ### 移动端组件
 
 ```tsx
 import { Input } from '@easy-page/mobile';
 
 <Input placeholder="请输入内容" />;
-```
-
+	children?: SchemaNode[]; // 子节点
+}
 ## 状态管理
 
 基于 MobX 的响应式状态管理：
@@ -212,13 +216,14 @@ const results = await store.validate('username');
 // 检查字段状态
 const isValid = store.isFieldValid('username');
 const isTouched = store.isFieldTouched('username');
-```
-
+	};
+	component?: SchemaNode; // 表单控件
 ## 自定义验证器
+````
 
 ```tsx
 import { FormValidator } from '@easy-page/core';
-
+## 示例
 const validator = new FormValidator();
 
 // 添加自定义验证规则
@@ -233,13 +238,20 @@ validator.addRule('custom', async (value, rule, store) => {
 	}
 	return { valid: true, field: '' };
 });
+}
 ```
 
 ## Effects & Actions 联动功能
 
+## 技术栈
+
 强大的表单联动功能，支持复杂的字段交互：
 
+- **样式**: Less
+
 ### Effects（副作用）
+
+## 开发
 
 当字段变化时对其他字段的影响：
 
@@ -411,24 +423,28 @@ useExternalStateListener(store, activityStatus, [
 
 ### 构建和发布
 
-```bash
 # 构建所有包
+
 pnpm build
 
 # 发布（需要配置 changeset）
+
 pnpm changeset
 pnpm version-packages
 pnpm release
+cd apps/form-builder && pnpm dev
+
 ```
-
 ## 贡献指南
-
+## 贡献
 1. Fork 项目
 2. 创建特性分支
 3. 提交更改
 4. 推送到分支
 5. 创建 Pull Request
+欢迎提交 Issue 和 Pull Request！
 
 ## 许可证
-
 MIT License
+MIT
+```

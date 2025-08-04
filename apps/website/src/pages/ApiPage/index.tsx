@@ -1,11 +1,11 @@
-import React from 'react';
+import { FC } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import MarkdownRenderer from '../components/MarkdownRenderer';
-import PageContainer from '../components/PageContainer';
-import './ApiPage.less';
+import MarkdownRenderer from '../../components/MarkdownRenderer';
+import PageContainer from '../../components/PageContainer';
+import './index.less';
 
-const ApiPage: React.FC = () => {
+const ApiPage: FC = () => {
 	const componentsContent = `
 # 组件 API
 

@@ -39,6 +39,12 @@ const menuConfig = {
 			label: 'API',
 			icon: <ApiOutlined />,
 		},
+		{
+			key: 'playground',
+			path: '/playground',
+			label: 'Playground',
+			icon: <ApiOutlined />,
+		},
 	],
 
 	// 侧边栏菜单配置
