@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import DemoShowcase from './demos';
 import RequestManagementDemo from './demos/RequestManagementDemo';
+import { FullFormDemo } from './fullDemo';
 
 const App: React.FC = () => {
 	return (
@@ -51,6 +52,7 @@ const App: React.FC = () => {
 				<Routes>
 					<Route path="/" element={<DemoShowcase />} />
 					<Route path="/loading-demo" element={<RequestManagementDemo />} />
+					<Route path="/full-demo" element={<FullFormDemo />} />
 				</Routes>
 			</div>
 		</Router>

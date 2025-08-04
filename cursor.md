@@ -528,3 +528,112 @@ initReqs={{
 
 - 开发模式，像正常的组件一样开发即可；JSON 模式，通过 JSON 配置表单，可以实现动态加载；
 - 我们可以和 AI 对话生成表单（代码 / JSON）模式。
+
+## 转化 Schema 的函数属性管理
+
+我们希望通过 AI 生成 SChema 的方式来描述表单，因此需要将表单的一些属性转化成可描述的 Schema，因此我们读取：packages/easy-page-core/src/components 这下面组件的 props，并转化成 Schema 结构到：packages/easy-page-core/src/schema
+
+你先帮我把 packages/easy-page-core/src/components/Form.tsx 这个组件的 Props 转化成 Schema 结构，要求：
+
+- 普通属性字段，按照 Props 定义转换即可
+- 如果是枚举值
+- 遇到了组件属性，则转化成：{type: 'static'| 'dynamic', value: string}
+- 遇到了函数组件，转化成如下结构，参数和返回值具体的参考下面的详细描述：
+
+```ts
+{
+  name: '函数名称',
+	desc: 'xxxx',
+  params: string[],
+	returnResultType: 'object',
+	returnResultDesc: {
+
+	}
+}
+```
+
+### 函数整体结构
+
+1. 要用 Schema 来描述表单，避免不了对函数属性做处理，未来函数属性是 AI 生成，因此需要让 AI 理解函数里的参数含义和可使用的函数定义，所以我们需要用结构描述出函数。
+2. 考虑到函数的参数具有极高的复用性，我们不用为每一个函数参数都详细描述，我们可以整体描述参数，在函数那里进行参数 key 配置，因此函数的描述可以结构化为：
+
+```ts
+{
+  name: '函数名称',
+	desc: 'xxxx',
+  params: string[],
+	returnResultType: 'object',
+	returnResultDesc: {
+
+	}
+}
+```
+
+### 关于参数
+
+参数我们统一放到：packages/easy-page-core/src/schema/context 里进行管理，比如：
+
+```tsx
+	onSubmit?: (
+		values: Record<string, FieldValue>,
+		store: FormStore
+	) => void | Promise<void>;
+```
+
+这个属性是一个函数，有两个参数，返回结果为空，我们可以这样描述：
+
+```ts
+{
+  name: 'onSubmit',
+	desc: '用于表单提交',
+  params: ['values', 'store'],
+	returnResultType: 'void'
+}
+```
+
+其中 values 这个参数，我们可以在：packages/easy-page-core/src/schema/context 新建一个文件：values.ts 来描述，比如：
+
+```ts
+export const values: ParamDescContext = {
+	name: 'values',
+	desc: '表单的值',
+	type: 'object',
+	properties: {
+		// 这里可以描述 values 的结构
+	},
+};
+```
+
+比如 store 参数，则描述为：
+
+```ts
+export const store: ParamDescContext = {
+	name: 'store',
+	desc: '表单的 store',
+	type: 'class',
+	properties: {
+		// 这里可以描述 store 的结构
+	},
+};
+```
+
+整体类型定义参考：packages/easy-page-core/src/schema/context/interface.ts，禁止修改我的这个底层定义
+
+### 关于返回结果
+
+因为返回的结果可能差异挺多，因此具体的描述也可以使用：ParamDescContext 直接放在 Schema 里描述，比如，返回：
+
+```ts
+{
+	name: 'onSubmit',
+	desc: '用于表单提交',
+	params: ['values', 'store'],
+	returnResultType: 'void',
+	returnResultDesc: ParamDescContext
+}
+```
+
+## 问题
+
+1. 水平垂直布局，在 Form 组件上也能控制，优先级：Form < Field
+2. Container 上的 show 属性应该是可选、默认应该是一级标题
