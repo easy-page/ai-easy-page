@@ -64,12 +64,13 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
 	const container =
 		customContainer ||
 		((containerProps: CustomContainerProps) => {
+			if (headers) containerProps.headers = headers;
 			if (containerType === 'grid-table') {
 				const extraProps: any = {};
 				if (gridColumns) extraProps.gridColumns = gridColumns;
-				if (headers) extraProps.headers = headers;
 				return defaultContainer({ ...containerProps, ...extraProps });
 			}
+
 			return defaultContainer(containerProps);
 		});
 
