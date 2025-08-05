@@ -15,6 +15,23 @@ export enum ComponentType {
 	CUSTOM = 'Custom',
 }
 
+// 组件类型数组，用于下拉选择
+export const ComponentTypeOptions = [
+	{ label: '输入框', value: ComponentType.INPUT },
+	{ label: '下拉选择', value: ComponentType.SELECT },
+	{ label: '复选框', value: ComponentType.CHECKBOX },
+	{ label: '复选框组', value: ComponentType.CHECKBOX_GROUP },
+	{ label: '单选框', value: ComponentType.RADIO },
+	{ label: '单选框组', value: ComponentType.RADIO_GROUP },
+	{ label: '文本域', value: ComponentType.TEXTAREA },
+	{ label: '日期选择器', value: ComponentType.DATE_PICKER },
+	{ label: '日期范围选择器', value: ComponentType.DATE_RANGE_PICKER },
+	{ label: '时间选择器', value: ComponentType.TIME_PICKER },
+	{ label: '容器', value: ComponentType.CONTAINER },
+	{ label: '动态表单', value: ComponentType.DYNAMIC_FORM },
+	{ label: '自定义组件', value: ComponentType.CUSTOM },
+];
+
 // 组件显示名称映射
 export const ComponentDisplayNames: Record<ComponentType, string> = {
 	[ComponentType.INPUT]: '输入框',

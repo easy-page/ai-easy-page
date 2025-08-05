@@ -57,11 +57,16 @@ const FormMode: FC<FormModeProps> = ({
 
 		// 更新schema
 		if (schemaData) {
+			// 过滤掉空节点
+			const filteredChildren = (schemaData.properties.children || []).filter(
+				(child) => child.type !== 'EmptyNode'
+			);
+
 			const updatedSchema: FormSchema = {
 				...schemaData,
 				properties: {
 					...schemaData.properties,
-					children: [...(schemaData.properties.children || []), newComponent],
+					children: [...filteredChildren, newComponent],
 				},
 			};
 
@@ -116,7 +121,7 @@ const FormMode: FC<FormModeProps> = ({
 			<AddComponentModal
 				visible={showAddModal}
 				onCancel={() => setShowAddModal(false)}
-				onConfirm={handleAddComponent}
+				onOk={handleAddComponent}
 				defaultIsFormComponent={true}
 			/>
 		</div>

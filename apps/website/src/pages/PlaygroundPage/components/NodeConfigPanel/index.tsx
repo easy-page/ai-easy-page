@@ -9,6 +9,7 @@ import {
 	Divider,
 	Row,
 	Col,
+	Tabs,
 } from 'antd';
 import { RobotOutlined, CloseOutlined } from '@ant-design/icons';
 import { FormSchema } from '../../Schema';
@@ -17,6 +18,8 @@ import {
 	ReactNodeProperty,
 } from '../../Schema/specialProperties';
 import MonacoEditor from '../ConfigBuilder/components/FormMode/MonacoEditor';
+import { ComponentConfigPanelMap, FormItemConfigPanel } from './components';
+import { getDefaultComponentPropsSchema } from '../../Schema/componentProps';
 import './index.less';
 
 const { Text, Title } = Typography;
@@ -108,8 +111,7 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 											?.content || ''
 									}
 									language="jsx"
-									placeholder="请输入加载组件代码"
-									height={80}
+									height="80px"
 									onChange={(value: string) => {
 										onPropertyChange('properties.loadingComponent', {
 											type: 'reactNode',
@@ -145,8 +147,7 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 										(properties.onSubmit as FunctionProperty)?.content || ''
 									}
 									language="javascript"
-									placeholder="请输入提交处理函数"
-									height={80}
+									height="80px"
 									onChange={(value: string) => {
 										onPropertyChange('properties.onSubmit', {
 											type: 'function',
@@ -177,8 +178,7 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 										''
 									}
 									language="javascript"
-									placeholder="请输入值变化处理函数"
-									height={80}
+									height="80px"
 									onChange={(value: string) => {
 										onPropertyChange('properties.onValuesChange', {
 											type: 'function',
@@ -217,50 +217,108 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 
 		if (!component) return null;
 
-		return (
-			<div className="component-properties">
-				<Title level={5}>组件属性</Title>
+		const componentType = component.type;
+		const ComponentConfigPanel =
+			ComponentConfigPanelMap[
+				componentType as keyof typeof ComponentConfigPanelMap
+			];
 
-				<Row gutter={16}>
-					<Col span={24}>
-						<Form.Item label="组件类型">
-							<Input
-								value={component.type || ''}
-								onChange={(e) => {
-									const newChildren = [...children];
-									newChildren[childIndex] = {
-										...newChildren[childIndex],
-										type: e.target.value,
-									};
-									onPropertyChange('properties.children', newChildren);
-								}}
-							/>
-						</Form.Item>
-					</Col>
+		const handleComponentPropsChange = (newProps: any) => {
+			const newChildren = [...children];
+			newChildren[childIndex] = {
+				...newChildren[childIndex],
+				props: newProps,
+			};
+			onPropertyChange('properties.children', newChildren);
+		};
 
-					<Col span={24}>
-						<Form.Item label="组件属性">
-							<TextArea
-								rows={3}
-								placeholder="请输入组件属性 (JSON格式)"
-								value={JSON.stringify(component.props || {}, null, 2)}
-								onChange={(e) => {
-									try {
-										const value = JSON.parse(e.target.value);
+		const handleFormItemPropsChange = (newFormItemProps: any) => {
+			const newChildren = [...children];
+			newChildren[childIndex] = {
+				...newChildren[childIndex],
+				formItem: newFormItemProps,
+			};
+			onPropertyChange('properties.children', newChildren);
+		};
+
+		// 如果没有对应的配置面板，显示默认的JSON编辑器
+		if (!ComponentConfigPanel) {
+			return (
+				<div className="component-properties">
+					<Title level={5}>组件属性</Title>
+					<Row gutter={16}>
+						<Col span={24}>
+							<Form.Item label="组件类型">
+								<Input
+									value={component.type || ''}
+									onChange={(e) => {
 										const newChildren = [...children];
 										newChildren[childIndex] = {
 											...newChildren[childIndex],
-											props: value,
+											type: e.target.value,
 										};
 										onPropertyChange('properties.children', newChildren);
-									} catch (error) {
-										// 解析错误时不更新
-									}
-								}}
-							/>
-						</Form.Item>
-					</Col>
-				</Row>
+									}}
+								/>
+							</Form.Item>
+						</Col>
+						<Col span={24}>
+							<Form.Item label="组件属性">
+								<TextArea
+									rows={3}
+									placeholder="请输入组件属性 (JSON格式)"
+									value={JSON.stringify(component.props || {}, null, 2)}
+									onChange={(e) => {
+										try {
+											const value = JSON.parse(e.target.value);
+											handleComponentPropsChange(value);
+										} catch (error) {
+											// 解析错误时不更新
+										}
+									}}
+								/>
+							</Form.Item>
+						</Col>
+					</Row>
+				</div>
+			);
+		}
+
+		// 使用专门的配置面板
+		const tabItems = [
+			{
+				key: 'component',
+				label: '组件属性',
+				children: (
+					<ComponentConfigPanel
+						props={
+							component.props ||
+							getDefaultComponentPropsSchema(componentType).properties
+						}
+						onChange={handleComponentPropsChange}
+					/>
+				),
+			},
+		];
+
+		// 如果是表单组件，添加FormItem配置
+		if (component.formItem !== undefined) {
+			tabItems.push({
+				key: 'formItem',
+				label: '表单项属性',
+				children: (
+					<FormItemConfigPanel
+						props={component.formItem || {}}
+						onChange={handleFormItemPropsChange}
+					/>
+				),
+			});
+		}
+
+		return (
+			<div className="component-properties">
+				<Title level={5}>组件配置</Title>
+				<Tabs items={tabItems} />
 			</div>
 		);
 	};

@@ -747,3 +747,13 @@ export const FullFormDemo: React.FC = () => {
 - 针对固定组件，他的属性配置表单就是各个属性下的 Props，参考 Form 组件的给我定义一下。
 - 如果选择了是表单组件，则除了组件本身外，还会被包裹 FormItem 组件，所以配置面板里需要是一个 Tab，一个是组件属性，一个是 FormItem 属性。
 - 自定义组件的配置只有一个：组件内容，是一个 monacoreditor，可以编辑函数，有个 AI 编辑按钮，按需实现逻辑。
+
+1. 首先基于：packages/easy-page-pc/src/components 的每个组件的 Props，比如：DatePickerProps
+2. 参考：apps/website/src/pages/PlaygroundPage/Schema/form.ts 组件的定义方式，将这个 Props 转化成 Schema 定义，比如：apps/website/src/pages/PlaygroundPage/Schema/form.ts 中的 FormSchema
+3. 基于这个 Schema 解析成表单配置，比如：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/FormConfigPanel/index.tsx
+   将组件对应的配置面板写在：apps/website/src/pages/PlaygroundPage/components/NodeConfigPanel 里，
+   每个组件单独一个文件夹放自己的配置面板
+
+目前已经实现弹窗逻辑和添加组件的逻辑，还需要补充组件对应配置面板的逻辑。
+
+- 实现了组件 schema 定义：apps/website/src/pages/PlaygroundPage/Schema/componentProps.ts
