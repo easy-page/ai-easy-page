@@ -16,6 +16,8 @@ interface NodeTreeProps {
 	onNodeSelect: (nodeId: string) => void;
 	onAddNode: (parentId: string, nodeType: string) => void;
 	onDeleteNode: (nodeId: string) => void;
+	expandedKeys?: string[];
+	onExpand?: (expandedKeys: string[]) => void;
 }
 
 interface TreeNode {
@@ -30,6 +32,8 @@ const NodeTree: FC<NodeTreeProps> = ({
 	onNodeSelect,
 	onAddNode,
 	onDeleteNode,
+	expandedKeys = [],
+	onExpand,
 }) => {
 	const buildTreeData = (): TreeNode[] => {
 		// 即使没有schema也显示基本的Form节点
@@ -137,6 +141,7 @@ const NodeTree: FC<NodeTreeProps> = ({
 			<Tree
 				treeData={treeData}
 				selectedKeys={selectedNode ? [selectedNode] : []}
+				expandedKeys={expandedKeys}
 				onSelect={(selectedKeys) => {
 					if (selectedKeys.length > 0) {
 						const nodeId = selectedKeys[0] as string;
@@ -146,6 +151,7 @@ const NodeTree: FC<NodeTreeProps> = ({
 						onNodeSelect('');
 					}
 				}}
+				onExpand={onExpand}
 				showLine
 				showIcon={false}
 				className="node-tree-component"

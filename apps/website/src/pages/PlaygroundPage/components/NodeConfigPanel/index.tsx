@@ -4,21 +4,16 @@ import {
 	Input,
 	Select,
 	Button,
-	Space,
 	Typography,
 	Divider,
 	Row,
 	Col,
 	Tabs,
 } from 'antd';
-import { RobotOutlined, CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined } from '@ant-design/icons';
 import { FormSchema } from '../../Schema';
-import {
-	FunctionProperty,
-	ReactNodeProperty,
-} from '../../Schema/specialProperties';
-import MonacoEditor from '../ConfigBuilder/components/FormMode/MonacoEditor';
 import { ComponentConfigPanelMap, FormItemConfigPanel } from './components';
+import FormConfigPanel from './components/FormConfigPanel';
 import { getDefaultComponentPropsSchema } from '../../Schema/componentProps';
 import './index.less';
 
@@ -67,140 +62,10 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 		const properties = schema.properties || {};
 
 		return (
-			<div className="form-properties">
-				<Title level={5}>表单属性</Title>
-
-				<Row gutter={16}>
-					<Col span={24}>
-						<Form.Item label="初始值">
-							<TextArea
-								rows={3}
-								placeholder="请输入初始值 (JSON格式)"
-								value={JSON.stringify(properties.initialValues || {}, null, 2)}
-								onChange={(e) => {
-									try {
-										const value = JSON.parse(e.target.value);
-										onPropertyChange('properties.initialValues', value);
-									} catch (error) {
-										// 解析错误时不更新
-									}
-								}}
-							/>
-						</Form.Item>
-					</Col>
-
-					<Col span={24}>
-						<Form.Item label="表单模式">
-							<Select
-								value={properties.mode || 'default'}
-								onChange={(value) => onPropertyChange('properties.mode', value)}
-							>
-								<Option value="default">默认模式</Option>
-								<Option value="edit">编辑模式</Option>
-								<Option value="view">查看模式</Option>
-							</Select>
-						</Form.Item>
-					</Col>
-
-					<Col span={24}>
-						<Form.Item label="加载组件">
-							<Space direction="vertical" style={{ width: '100%' }}>
-								<MonacoEditor
-									value={
-										(properties.loadingComponent as ReactNodeProperty)
-											?.content || ''
-									}
-									language="jsx"
-									height="80px"
-									onChange={(value: string) => {
-										onPropertyChange('properties.loadingComponent', {
-											type: 'reactNode',
-											content: value,
-										});
-									}}
-								/>
-								<Button
-									type="text"
-									size="small"
-									icon={<RobotOutlined />}
-									onClick={() => {
-										// AI编辑功能暂未实现
-									}}
-								>
-									AI 编辑
-								</Button>
-							</Space>
-						</Form.Item>
-					</Col>
-				</Row>
-
-				<Divider />
-
-				<Title level={5}>事件处理</Title>
-
-				<Row gutter={16}>
-					<Col span={24}>
-						<Form.Item label="提交处理">
-							<Space direction="vertical" style={{ width: '100%' }}>
-								<MonacoEditor
-									value={
-										(properties.onSubmit as FunctionProperty)?.content || ''
-									}
-									language="javascript"
-									height="80px"
-									onChange={(value: string) => {
-										onPropertyChange('properties.onSubmit', {
-											type: 'function',
-											content: value,
-										});
-									}}
-								/>
-								<Button
-									type="text"
-									size="small"
-									icon={<RobotOutlined />}
-									onClick={() => {
-										// AI编辑功能暂未实现
-									}}
-								>
-									AI 编辑
-								</Button>
-							</Space>
-						</Form.Item>
-					</Col>
-
-					<Col span={24}>
-						<Form.Item label="值变化处理">
-							<Space direction="vertical" style={{ width: '100%' }}>
-								<MonacoEditor
-									value={
-										(properties.onValuesChange as FunctionProperty)?.content ||
-										''
-									}
-									language="javascript"
-									height="80px"
-									onChange={(value: string) => {
-										onPropertyChange('properties.onValuesChange', {
-											type: 'function',
-											content: value,
-										});
-									}}
-								/>
-								<Button
-									type="text"
-									size="small"
-									icon={<RobotOutlined />}
-									onClick={() => {
-										// AI编辑功能暂未实现
-									}}
-								>
-									AI 编辑
-								</Button>
-							</Space>
-						</Form.Item>
-					</Col>
-				</Row>
-			</div>
+			<FormConfigPanel
+				properties={properties}
+				onPropertyChange={onPropertyChange}
+			/>
 		);
 	};
 
@@ -236,7 +101,10 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 			const newChildren = [...children];
 			newChildren[childIndex] = {
 				...newChildren[childIndex],
-				formItem: newFormItemProps,
+				formItem: {
+					type: 'formItem' as const,
+					properties: newFormItemProps,
+				},
 			};
 			onPropertyChange('properties.children', newChildren);
 		};
@@ -308,17 +176,21 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 				label: '表单项属性',
 				children: (
 					<FormItemConfigPanel
-						props={component.formItem || {}}
+						props={component.formItem.properties || {}}
 						onChange={handleFormItemPropsChange}
 					/>
 				),
 			});
 		}
 
+		// 如果是表单组件，默认显示FormItem属性面板
+		const defaultActiveKey =
+			component.formItem !== undefined ? 'formItem' : 'component';
+
 		return (
 			<div className="component-properties">
 				<Title level={5}>组件配置</Title>
-				<Tabs items={tabItems} />
+				<Tabs items={tabItems} defaultActiveKey={defaultActiveKey} />
 			</div>
 		);
 	};

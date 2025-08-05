@@ -32,6 +32,7 @@ const FormMode: FC<FormModeProps> = ({
 	const [schemaData, setSchemaData] = useState<FormSchema | null>(schema);
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [currentParentId, setCurrentParentId] = useState<string>('');
+	const [expandedKeys, setExpandedKeys] = useState<string[]>(['form']);
 
 	const handleAddNode = (parentId: string, nodeType: string) => {
 		setCurrentParentId(parentId);
@@ -46,13 +47,17 @@ const FormMode: FC<FormModeProps> = ({
 			type: componentType,
 			props: getDefaultComponentProps(componentType),
 			isFormComponent,
-			formItemProps: isFormComponent
+			formItem: isFormComponent
 				? {
-						label: ComponentDisplayNames[componentType],
-						required: false,
-						labelLayout: 'vertical',
+						type: 'formItem' as const,
+						properties: {
+							id: `${componentType}-${Date.now()}`,
+							label: ComponentDisplayNames[componentType],
+							required: false,
+							labelLayout: 'vertical' as const,
+						},
 				  }
-				: {},
+				: undefined,
 		};
 
 		// 更新schema
@@ -72,6 +77,17 @@ const FormMode: FC<FormModeProps> = ({
 
 			setSchemaData(updatedSchema);
 			onSchemaChange?.(updatedSchema);
+
+			// 关闭弹窗
+			setShowAddModal(false);
+
+			// 自动选中新创建的节点并展开到该节点
+			const newComponentIndex = filteredChildren.length;
+			const newNodeId = `child-${newComponentIndex}`;
+			onNodeSelect?.(newNodeId);
+
+			// 确保父节点展开
+			setExpandedKeys(['form']);
 
 			message.success(`已添加${ComponentDisplayNames[componentType]}组件`);
 			console.log('添加组件:', newComponent);
@@ -114,6 +130,8 @@ const FormMode: FC<FormModeProps> = ({
 						onNodeSelect={onNodeSelect || (() => {})}
 						onAddNode={handleAddNode}
 						onDeleteNode={handleDeleteNode}
+						expandedKeys={expandedKeys}
+						onExpand={setExpandedKeys}
 					/>
 				</Card>
 			</div>

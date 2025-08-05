@@ -12,6 +12,7 @@ import ContainerConfigPanel from './ContainerConfigPanel';
 import DynamicFormConfigPanel from './DynamicFormConfigPanel';
 import CustomConfigPanel from './CustomConfigPanel';
 import FormItemConfigPanel from './FormItemConfigPanel';
+import FormConfigPanel from './FormConfigPanel';
 
 // 组件配置面板映射
 export const ComponentConfigPanelMap = {
@@ -46,4 +47,5 @@ export {
 	DynamicFormConfigPanel,
 	CustomConfigPanel,
 	FormItemConfigPanel,
+	FormConfigPanel,
 };
