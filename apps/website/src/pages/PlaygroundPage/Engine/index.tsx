@@ -20,6 +20,10 @@ import {
 	ReactNodeProperty,
 } from '../Schema/specialProperties';
 import { JSXParser, ComponentMapper } from '../JSXParser';
+import {
+	ComponentQueueManager,
+	useComponentQueue,
+} from './ComponentQueueManager';
 
 // 组件映射表
 const COMPONENT_MAP: Record<string, React.ComponentType<any>> = {
@@ -185,13 +189,28 @@ const processFormItemProps = (
 export class SchemaEngine {
 	private handlers: Record<string, SubmitHandler | ValuesChangeHandler>;
 	private jsxParser: JSXParser;
+	private queueManager?: ComponentQueueManager;
 
 	constructor(
 		customHandlers?: Record<string, SubmitHandler | ValuesChangeHandler>,
-		jsxParser?: JSXParser
+		jsxParser?: JSXParser,
+		queueConfig?: {
+			maxConcurrent?: number;
+			batchSize?: number;
+			delay?: number;
+			priorityLevels?: number;
+		}
 	) {
 		this.handlers = { ...DEFAULT_HANDLERS, ...customHandlers };
 		this.jsxParser = jsxParser || new JSXParser();
+
+		// 初始化队列管理器
+		if (queueConfig) {
+			this.queueManager = new ComponentQueueManager(
+				this.renderComponent.bind(this),
+				queueConfig
+			);
+		}
 	}
 
 	// 渲染单个组件
@@ -232,6 +251,20 @@ export class SchemaEngine {
 		return React.createElement(Component, { key, ...componentProps }, children);
 	}
 
+	// 使用队列渲染组件
+	private async renderComponentWithQueue(
+		schema: ComponentSchema,
+		key?: string,
+		priority: number = 0
+	): Promise<React.ReactNode> {
+		if (!this.queueManager) {
+			// 如果没有队列管理器，直接渲染
+			return this.renderComponent(schema, key);
+		}
+
+		return this.queueManager.addToQueue(schema, key, priority);
+	}
+
 	// 渲染表单
 	public renderForm(schema: FormSchema): React.ReactNode {
 		const { properties } = schema;
@@ -268,6 +301,16 @@ export class SchemaEngine {
 			  }
 			: undefined;
 
+		// 如果有队列管理器，使用异步渲染
+		if (this.queueManager) {
+			return this.renderFormWithQueue(
+				schema,
+				submitHandler,
+				valuesChangeHandler
+			);
+		}
+
+		// 直接渲染
 		return (
 			<Form
 				initialValues={initialValues || {}}
@@ -282,15 +325,166 @@ export class SchemaEngine {
 		);
 	}
 
+	// 使用队列渲染表单
+	private renderFormWithQueue(
+		schema: FormSchema,
+		submitHandler?: SubmitHandler,
+		valuesChangeHandler?: ValuesChangeHandler
+	): React.ReactNode {
+		const { properties } = schema;
+		const { initialValues, mode, children } = properties;
+
+		return (
+			<Form
+				initialValues={initialValues || {}}
+				mode={mode}
+				onSubmit={submitHandler}
+				onValuesChange={valuesChangeHandler}
+			>
+				<QueuedFormRenderer
+					children={children}
+					renderComponent={this.renderComponentWithQueue.bind(this)}
+					queueManager={this.queueManager!}
+				/>
+			</Form>
+		);
+	}
+
 	// 静态方法，用于快速渲染
 	static render(
 		schema: FormSchema,
 		customHandlers?: Record<string, SubmitHandler | ValuesChangeHandler>,
-		jsxParser?: JSXParser
+		jsxParser?: JSXParser,
+		queueConfig?: {
+			maxConcurrent?: number;
+			batchSize?: number;
+			delay?: number;
+			priorityLevels?: number;
+		}
 	): React.ReactNode {
-		const engine = new SchemaEngine(customHandlers, jsxParser);
+		const engine = new SchemaEngine(customHandlers, jsxParser, queueConfig);
 		return engine.renderForm(schema);
 	}
+
+	// 获取队列状态
+	public getQueueStatus() {
+		return this.queueManager?.getStatus();
+	}
+
+	// 清空队列
+	public clearQueue() {
+		this.queueManager?.clearQueue();
+	}
+
+	// 更新队列配置
+	public updateQueueConfig(config: {
+		maxConcurrent?: number;
+		batchSize?: number;
+		delay?: number;
+		priorityLevels?: number;
+	}) {
+		this.queueManager?.updateConfig(config);
+	}
 }
+
+// 队列渲染器组件
+interface QueuedFormRendererProps {
+	children: ComponentSchema[];
+	renderComponent: (
+		schema: ComponentSchema,
+		key?: string,
+		priority?: number
+	) => Promise<React.ReactNode>;
+	queueManager: ComponentQueueManager;
+}
+
+const QueuedFormRenderer: React.FC<QueuedFormRendererProps> = ({
+	children,
+	renderComponent,
+	queueManager,
+}) => {
+	const [renderedComponents, setRenderedComponents] = React.useState<
+		React.ReactNode[]
+	>([]);
+	const [isLoading, setIsLoading] = React.useState(true);
+
+	React.useEffect(() => {
+		let isMounted = true;
+
+		const renderComponents = async () => {
+			const components: React.ReactNode[] = [];
+
+			// 先渲染所有组件为加载状态
+			const loadingComponents = children.map((_, index) => (
+				<div
+					key={`loading-${index}`}
+					style={{
+						padding: '8px 12px',
+						border: '1px dashed #d9d9d9',
+						borderRadius: '6px',
+						backgroundColor: '#fafafa',
+						color: '#999',
+						fontSize: '12px',
+						textAlign: 'center',
+						minHeight: '32px',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+					}}
+				>
+					解析中...
+				</div>
+			));
+
+			setRenderedComponents(loadingComponents);
+
+			// 逐个渲染组件
+			for (let i = 0; i < children.length; i++) {
+				if (!isMounted) break;
+
+				try {
+					const component = await renderComponent(
+						children[i],
+						`form-child-${i}`,
+						i
+					);
+
+					if (isMounted) {
+						setRenderedComponents((prev) => {
+							const newComponents = [...prev];
+							newComponents[i] = component;
+							return newComponents;
+						});
+					}
+				} catch (error) {
+					console.warn(`组件 ${i} 渲染失败:`, error);
+					if (isMounted) {
+						setRenderedComponents((prev) => {
+							const newComponents = [...prev];
+							newComponents[i] = (
+								<div key={`error-${i}`} style={{ color: 'red' }}>
+									渲染失败
+								</div>
+							);
+							return newComponents;
+						});
+					}
+				}
+			}
+
+			if (isMounted) {
+				setIsLoading(false);
+			}
+		};
+
+		renderComponents();
+
+		return () => {
+			isMounted = false;
+		};
+	}, [children, renderComponent]);
+
+	return <>{renderedComponents}</>;
+};
 
 export default SchemaEngine;
