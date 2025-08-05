@@ -53,8 +53,10 @@ export class FormStoreImpl implements FormStore {
 
 	constructor(
 		initialValues: Record<string, FieldValue> = {},
-		maxConcurrentRequests: number = 5
+		maxConcurrentRequests: number = 5,
+		mode: FormMode = FormMode.CREATE
 	) {
+		this.formMode = mode;
 		this.validator = new FormValidator();
 		this.requestScheduler.setMaxConcurrent(maxConcurrentRequests);
 

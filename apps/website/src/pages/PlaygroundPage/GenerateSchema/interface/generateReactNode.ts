@@ -4,4 +4,5 @@ export type GenerateReactNodeType = {
 	desc: string;
 	type: 'reactNode';
 	content: string; // 原始定义，如：`ReactNode | (() => ReactNode)`
+	optional?: boolean; // 是否可选
 };

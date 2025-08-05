@@ -4,7 +4,7 @@ import { FormSchema, ComponentSchema } from '../Schema';
 
 // 组件映射表
 const COMPONENT_MAP: Record<string, React.ComponentType<any>> = {
-	EmptyNode: () => <div>暂无内容</div>,
+	EmptyNode: () => <div style={{ color: 'white' }}>暂无内容</div>,
 	// 可以在这里扩展更多组件
 };
 
