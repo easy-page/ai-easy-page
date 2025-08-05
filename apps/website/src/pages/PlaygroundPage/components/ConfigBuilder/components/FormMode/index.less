@@ -3,12 +3,13 @@
 	background: transparent;
 	position: relative;
 	overflow: hidden;
+	padding-top: 10px;
 
 	.form-mode-content {
 		position: relative;
 		z-index: 1;
 		padding: 0;
-		height: 100%;
+		height: calc(100% - 80px); // 减去ConfigHeader高度
 	}
 
 	// 节点树卡片 - 简化背景，调整间距

@@ -26,7 +26,13 @@ const ConfigHeader: FC<ConfigHeaderProps> = ({
 			{(showBack || showImport) && (
 				<div className="header-actions">
 					{showBack && (
-						<Button type="text" icon={<ArrowLeftOutlined />} onClick={onBack}>
+						<Button
+							type="default"
+							size="small"
+							style={{ marginRight: '8px' }}
+							icon={<ArrowLeftOutlined />}
+							onClick={onBack}
+						>
 							返回
 						</Button>
 					)}

@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 import { Button, message, Card } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { FormSchema } from '../../../../Schema';
+import ConfigHeader from '../ConfigHeader';
 import NodeTree from './NodeTree';
 import './index.less';
 
@@ -32,6 +33,13 @@ const FormMode: FC<FormModeProps> = ({
 
 	return (
 		<div className="form-mode">
+			<ConfigHeader
+				title="表单配置"
+				showBack
+				showImport
+				onBack={onBack}
+				onImport={onImport}
+			/>
 			<div className="form-mode-content">
 				<Card
 					title="节点树"

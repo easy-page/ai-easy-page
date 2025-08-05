@@ -1,3 +1,13 @@
+// 全局样式重置 - 确保卡片样式不被覆盖
+.playground-page {
+	// 重置所有卡片的默认样式
+	.ant-card {
+		.ant-card-body {
+			box-sizing: border-box;
+		}
+	}
+}
+
 .playground-page {
 	padding: 0 24px; // 添加左右padding
 	height: calc(100vh - 64px); // 减去顶栏高度
@@ -399,9 +409,51 @@
 	background: transparent;
 	color: #fff;
 
+	// 确保所有卡片都有正确的padding
+	.ant-card {
+		.ant-card-body {
+			padding: 20px !important;
+			box-sizing: border-box;
+		}
+	}
+
 	.config-header {
 		margin-bottom: 24px;
 		text-align: center;
+
+		.header-actions {
+			display: flex;
+			justify-content: flex-start;
+			margin-bottom: 16px !important;
+			gap: 8px;
+
+			.ant-btn {
+				color: rgba(0, 255, 255, 0.8) !important;
+				background: transparent !important;
+				border: 1px solid rgba(0, 255, 255, 0.3) !important;
+				border-radius: 6px;
+				padding: 4px 12px;
+				height: 32px;
+				font-size: 13px;
+
+				&:hover {
+					color: #fff !important;
+					background: rgba(0, 255, 255, 0.1) !important;
+					border-color: rgba(0, 255, 255, 0.6) !important;
+				}
+
+				&.ant-btn-primary {
+					background: rgba(0, 255, 255, 0.2) !important;
+					border-color: rgba(0, 255, 255, 0.5) !important;
+					color: #fff !important;
+
+					&:hover {
+						background: rgba(0, 255, 255, 0.3) !important;
+						border-color: rgba(0, 255, 255, 0.7) !important;
+					}
+				}
+			}
+		}
 
 		.ant-typography {
 			color: #fff !important;
@@ -422,12 +474,18 @@
 	.config-options {
 		margin-bottom: 24px;
 
+		.ant-space {
+			width: 100%;
+			padding: 0 8px; // 添加左右padding
+		}
+
 		.option-card {
 			background: rgba(15, 15, 15, 0.6);
 			border: 1px solid rgba(0, 255, 255, 0.2);
 			border-radius: 12px;
 			backdrop-filter: blur(10px);
 			transition: all 0.3s ease;
+			margin-bottom: 8px; // 添加底部间距
 
 			&:hover {
 				border-color: rgba(0, 255, 255, 0.4);
@@ -437,14 +495,16 @@
 			}
 
 			.ant-card-body {
-				padding: 20px;
+				padding: 20px !important; // 强制设置padding
 				background: transparent;
+				box-sizing: border-box;
 			}
 
 			.option-content {
 				display: flex;
 				align-items: center;
 				gap: 16px;
+				padding: 0; // 确保没有额外的padding
 
 				.option-icon {
 					font-size: 24px;
@@ -453,10 +513,12 @@
 					padding: 12px;
 					border-radius: 8px;
 					border: 1px solid rgba(0, 255, 255, 0.2);
+					flex-shrink: 0; // 防止图标被压缩
 				}
 
 				.option-text {
 					flex: 1;
+					min-width: 0; // 防止文本溢出
 
 					.ant-typography {
 						color: #fff !important;
@@ -465,12 +527,14 @@
 						&.ant-typography-h5 {
 							font-weight: 600;
 							font-size: 16px;
+							margin: 0; // 重置margin
 						}
 					}
 
 					.ant-typography-text {
 						color: rgba(255, 255, 255, 0.7) !important;
 						font-size: 13px;
+						margin: 0; // 重置margin
 					}
 				}
 			}
@@ -484,6 +548,8 @@
 
 	// ConfigTips 样式
 	.config-tips {
+		padding: 0 8px; // 添加左右padding
+
 		.ant-typography {
 			color: #fff !important;
 			margin-bottom: 16px;
