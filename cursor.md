@@ -715,3 +715,22 @@ export const FullFormDemo: React.FC = () => {
 - 其中涉及到的函数，如：handleValuesChange、handleSubmit 等都可以根据 Schema 配置的字符串函数来解析成函数
 
 暂时只定义这个表单组件的 Schema，引擎只解析这个表单组件，把上述流程渲染出来
+
+## 配置页面：
+
+沿用当前项目风格，优化当前 FormMode 里的东西，帮我实现配置表单功能，具体描述如下：
+
+- 因为选择了创建表单后，进来就是：FormMode 组件，默认有个 Form 节点。
+
+因此，左侧是基于 FormSchema 的一个节点组件树。
+
+左侧选择节点后，右侧表单预览左侧会出现对应节点的配置项，比如：
+
+- 选择了 form 节点，就会出现 form 的配置项：properties
+- 其中如果是：FunctionProperty 和 ReactNodeProperty 的配置项，是一个 monacoreditor，可以编辑函数，有个 AI 编辑按钮，按需实现逻辑。
+- 如果是其他普通属性，则是通过正常的表单元素来配置。
+- 这个节点树上，节点旁边可以点击添加按钮，进行添加节点到当前组件下，也可以添加并列同级的节点，也可以删除当前节点。
+
+你先结合现在最新的：apps/website/src/pages/PlaygroundPage/Schema/form.ts FormSchema 定义，实现基本交互和配置，具体的添加逻辑先空着。
+
+注意结合当前项目风格，可以不一定使用 antd 的表单组件

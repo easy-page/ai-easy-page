@@ -1,71 +1,61 @@
-import { FC } from 'react';
-import { Button, Space, Typography, message } from 'antd';
+import { FC, useState } from 'react';
+import { Button, message, Card } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { FormSchema } from '../../../../Schema';
-import ConfigHeader from '../ConfigHeader';
-import ConfigTips from '../ConfigTips';
-
-const { Text } = Typography;
+import NodeTree from './NodeTree';
+import './index.less';
 
 interface FormModeProps {
 	schema: FormSchema | null;
 	onBack: () => void;
 	onImport: () => void;
+	selectedNode?: string | null;
+	onNodeSelect?: (nodeId: string) => void;
 }
 
-const FormMode: FC<FormModeProps> = ({ schema, onBack, onImport }) => {
+const FormMode: FC<FormModeProps> = ({
+	schema,
+	onBack,
+	onImport,
+	selectedNode,
+	onNodeSelect,
+}) => {
+	const [schemaData, setSchemaData] = useState<FormSchema | null>(schema);
+
+	const handleAddNode = (parentId: string, nodeType: string) => {
+		message.info('添加节点功能暂未实现');
+	};
+
+	const handleDeleteNode = (nodeId: string) => {
+		message.info('删除节点功能暂未实现');
+	};
+
 	return (
-		<div className="config-builder">
-			<ConfigHeader
-				title="表单配置"
-				showBack
-				showImport
-				onBack={onBack}
-				onImport={onImport}
-			/>
-
-			<div className="config-editor">
-				<div className="schema-display">
-					<Text strong>当前 Schema:</Text>
-					<pre
-						style={{
-							background: 'rgba(0, 0, 0, 0.1)',
-							padding: '12px',
-							borderRadius: '6px',
-							fontSize: '12px',
-							overflow: 'auto',
-							maxHeight: '200px',
-						}}
-					>
-						{JSON.stringify(schema, null, 2)}
-					</pre>
-				</div>
+		<div className="form-mode">
+			<div className="form-mode-content">
+				<Card
+					title="节点树"
+					className="node-tree-card"
+					extra={
+						<Button
+							type="text"
+							size="small"
+							icon={<PlusOutlined />}
+							onClick={() => handleAddNode('form', 'component')}
+						>
+							添加
+						</Button>
+					}
+				>
+					<NodeTree
+						schema={schemaData}
+						selectedNode={selectedNode}
+						onNodeSelect={onNodeSelect}
+						onAddNode={handleAddNode}
+						onDeleteNode={handleDeleteNode}
+					/>
+				</Card>
 			</div>
-
-			<div className="config-actions">
-				<Space>
-					<Button
-						type="primary"
-						icon={<PlusOutlined />}
-						onClick={() => message.info('添加字段功能暂未实现')}
-					>
-						添加字段
-					</Button>
-					<Button onClick={() => message.info('导出配置功能暂未实现')}>
-						导出配置
-					</Button>
-				</Space>
-			</div>
-
-			<ConfigTips
-				title="表单配置说明"
-				tips={[
-					'当前已创建基础表单结构',
-					'表单包含默认的提交和值变化处理',
-					'可在右侧预览区域查看渲染效果',
-					'后续可扩展更多字段和组件',
-				]}
-			/>
 		</div>
 	);
 };

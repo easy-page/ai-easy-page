@@ -1,15 +1,21 @@
 import { FC, useState } from 'react';
 import { message } from 'antd';
 import { SCHEMA_TEMPLATES, FormSchema } from '../../Schema';
-import SelectMode from './components/SelectMode';
 import FormMode from './components/FormMode';
 import PageMode from './components/PageMode';
+import SelectMode from './components/SelectMode';
 
 interface ConfigBuilderProps {
 	onSchemaChange?: (schema: FormSchema) => void;
+	selectedNode?: string | null;
+	onNodeSelect?: (nodeId: string) => void;
 }
 
-const ConfigBuilder: FC<ConfigBuilderProps> = ({ onSchemaChange }) => {
+const ConfigBuilder: FC<ConfigBuilderProps> = ({
+	onSchemaChange,
+	selectedNode,
+	onNodeSelect,
+}) => {
 	const [currentSchema, setCurrentSchema] = useState<FormSchema | null>(null);
 	const [buildMode, setBuildMode] = useState<'select' | 'form' | 'page'>(
 		'select'
@@ -47,6 +53,8 @@ const ConfigBuilder: FC<ConfigBuilderProps> = ({ onSchemaChange }) => {
 					schema={currentSchema}
 					onBack={handleBackToSelect}
 					onImport={handleImportConfig}
+					selectedNode={selectedNode}
+					onNodeSelect={onNodeSelect}
 				/>
 			);
 		case 'page':
