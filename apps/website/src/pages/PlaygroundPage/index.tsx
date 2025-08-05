@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import ConfigBuilder from './components/ConfigBuilder';
 import AIBuilder from './components/AIBuilder';
 import PreviewPanel from './components/PreviewPanel';
+import { FormSchema } from './Schema';
 import './index.less';
 
 const { Sider, Content } = Layout;
@@ -14,7 +15,9 @@ const PlaygroundPage: FC = () => {
 	const [previewMode, setPreviewMode] = useState<'create' | 'edit' | 'view'>(
 		'create'
 	);
-	const [formConfig, setFormConfig] = useState('');
+	const [currentSchema, setCurrentSchema] = useState<FormSchema | undefined>(
+		undefined
+	);
 
 	const handleTabChange = (key: string) => {
 		setActiveTab(key);
@@ -24,9 +27,9 @@ const PlaygroundPage: FC = () => {
 		setPreviewMode(mode);
 	};
 
-	const handleConfigChange = (value: string) => {
-		setFormConfig(value);
-		console.log('配置已更新:', value);
+	const handleSchemaChange = (schema: FormSchema) => {
+		setCurrentSchema(schema);
+		console.log('Schema 已更新:', schema);
 	};
 
 	return (
@@ -52,7 +55,9 @@ const PlaygroundPage: FC = () => {
 											配置搭建
 										</span>
 									),
-									children: <ConfigBuilder />,
+									children: (
+										<ConfigBuilder onSchemaChange={handleSchemaChange} />
+									),
 								},
 								{
 									key: 'ai',
@@ -74,6 +79,7 @@ const PlaygroundPage: FC = () => {
 						<PreviewPanel
 							previewMode={previewMode}
 							onPreviewModeChange={handlePreviewModeChange}
+							schema={currentSchema}
 						/>
 					</Card>
 				</Content>

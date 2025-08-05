@@ -646,6 +646,206 @@
 			}
 		}
 	}
+
+	// ConfigBuilder 样式
+	.config-builder {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+
+		.config-header {
+			margin-bottom: 20px;
+
+			.header-actions {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 12px;
+
+				.ant-btn {
+					border: 1px solid rgba(0, 255, 255, 0.3);
+					background: rgba(0, 255, 255, 0.1);
+					color: #00ffff;
+
+					&:hover {
+						background: rgba(0, 255, 255, 0.2);
+						border-color: rgba(0, 255, 255, 0.5);
+					}
+				}
+			}
+
+			h4 {
+				color: #00ffff;
+				margin: 0;
+			}
+
+			.ant-typography {
+				color: rgba(255, 255, 255, 0.6);
+			}
+		}
+
+		.config-options {
+			margin-bottom: 20px;
+
+			.option-card {
+				background: rgba(0, 255, 255, 0.05);
+				border: 1px solid rgba(0, 255, 255, 0.2);
+				border-radius: 12px;
+				transition: all 0.3s ease;
+
+				&:hover {
+					background: rgba(0, 255, 255, 0.1);
+					border-color: rgba(0, 255, 255, 0.4);
+					transform: translateY(-2px);
+					box-shadow: 0 4px 16px rgba(0, 255, 255, 0.2);
+				}
+
+				.ant-card-body {
+					padding: 16px;
+				}
+
+				.option-content {
+					display: flex;
+					align-items: center;
+					gap: 16px;
+
+					.option-icon {
+						font-size: 24px;
+						color: #00ffff;
+					}
+
+					.option-text {
+						flex: 1;
+
+						h5 {
+							color: #ffffff;
+							margin: 0 0 4px 0;
+						}
+
+						.ant-typography {
+							color: rgba(255, 255, 255, 0.6);
+							margin: 0;
+						}
+					}
+				}
+			}
+		}
+
+		.config-editor {
+			flex: 1;
+			margin-bottom: 20px;
+
+			.schema-display {
+				.ant-typography {
+					color: #00ffff;
+					margin-bottom: 8px;
+				}
+
+				pre {
+					background: rgba(0, 0, 0, 0.3) !important;
+					border: 1px solid rgba(0, 255, 255, 0.2);
+					color: rgba(255, 255, 255, 0.8);
+				}
+			}
+		}
+
+		.config-tips {
+			h5 {
+				color: #00ffff;
+				margin-bottom: 12px;
+			}
+
+			ul {
+				color: rgba(255, 255, 255, 0.7);
+				padding-left: 20px;
+
+				li {
+					margin-bottom: 8px;
+					line-height: 1.5;
+				}
+			}
+		}
+
+		.config-placeholder {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 200px;
+			border: 2px dashed rgba(0, 255, 255, 0.3);
+			border-radius: 12px;
+			background: rgba(0, 255, 255, 0.02);
+
+			.ant-typography {
+				color: rgba(255, 255, 255, 0.5);
+				font-size: 16px;
+			}
+		}
+	}
+
+	// PreviewPanel 样式增强
+	.preview-container {
+		.preview-form {
+			padding: 20px;
+			background: rgba(0, 255, 255, 0.02);
+			border: 1px solid rgba(0, 255, 255, 0.1);
+			border-radius: 12px;
+			min-height: 300px;
+
+			// Easy-page Form 样式覆盖
+			.ant-form {
+				.ant-form-item {
+					.ant-form-item-label {
+						label {
+							color: rgba(255, 255, 255, 0.8);
+						}
+					}
+
+					.ant-input,
+					.ant-select-selector,
+					.ant-picker {
+						background: rgba(0, 0, 0, 0.3);
+						border-color: rgba(0, 255, 255, 0.3);
+						color: #ffffff;
+
+						&:hover {
+							border-color: rgba(0, 255, 255, 0.5);
+						}
+
+						&:focus {
+							border-color: #00ffff;
+							box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2);
+						}
+					}
+				}
+			}
+		}
+
+		.preview-error {
+			padding: 20px;
+			background: rgba(255, 77, 79, 0.1);
+			border: 1px solid rgba(255, 77, 79, 0.3);
+			border-radius: 12px;
+
+			h4 {
+				color: #ff4d4f;
+				margin-bottom: 12px;
+			}
+
+			p {
+				color: rgba(255, 255, 255, 0.7);
+				margin-bottom: 12px;
+			}
+
+			pre {
+				background: rgba(0, 0, 0, 0.3);
+				border: 1px solid rgba(255, 77, 79, 0.2);
+				padding: 12px;
+				border-radius: 6px;
+				max-height: 200px;
+				overflow: auto;
+			}
+		}
+	}
 }
 
 // 响应式设计

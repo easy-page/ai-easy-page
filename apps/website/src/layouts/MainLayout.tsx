@@ -43,7 +43,7 @@ const menuConfig = {
 			key: 'playground',
 			path: '/playground',
 			label: 'Playground',
-			icon: <ApiOutlined />,
+			icon: <RocketOutlined />,
 		},
 	],
 

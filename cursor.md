@@ -677,7 +677,8 @@ export const store: ParamDescContext = {
 
 - 首先维护一个空的 Schema: {}, 表示啥都没有。
 - 默认进入的时候，这里有两个选项：创建页面、创建表单，创建页面点击后先空着。
-- 点击创建表单，则在 Schema 中描述一个表单组件，然后写一个简单的 SchemaEngine 基于这个描述解析成：
+- 点击创建表单，则在 Schema 中描述一个表单组件，然后写一个简单的 SchemaEngine 基于这个描述解析成如下功能：
+  注意，这里只是功能的具体示意，表示通过 Schema 解析后要达到的效果和使用的组件，具体还是写法跟解析引擎和 Schema 有关。
 
 ```tsx
 import React from 'react';
@@ -711,5 +712,6 @@ export const FullFormDemo: React.FC = () => {
 
 - apps/website/src/pages/PlaygroundPage/Engine 目录下
   如何描述这个空表单的 Schema 定义放到：apps/website/src/pages/PlaygroundPage/Schema 目录下
+- 其中涉及到的函数，如：handleValuesChange、handleSubmit 等都可以根据 Schema 配置的字符串函数来解析成函数
 
 暂时只定义这个表单组件的 Schema，引擎只解析这个表单组件，把上述流程渲染出来
