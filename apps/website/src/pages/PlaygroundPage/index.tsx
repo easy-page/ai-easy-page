@@ -102,32 +102,24 @@ const PlaygroundPage: FC = () => {
 				</Sider>
 
 				<Content className="playground-content">
-					<Row gutter={[0, 16]} style={{ height: '100%' }}>
-						{' '}
-						{/* 减少垂直间距 */}
-						{/* 上方预览区域 */}
-						<Col span={24} style={{ height: '70%' }}>
-							<Card className="preview-card">
-								<PreviewPanel
-									previewMode={previewMode}
-									onPreviewModeChange={handlePreviewModeChange}
-									schema={currentSchema}
-								/>
-							</Card>
-						</Col>
-						{/* 下方节点配置区域 */}
-						<Col span={24} style={{ height: '30%' }}>
-							<Card className="node-config-card">
-								<NodeConfigPanel
-									schema={currentSchema}
-									selectedNode={selectedNode}
-									onPropertyChange={handlePropertyChange}
-								/>
-							</Card>
-						</Col>
-					</Row>
+					<Card className="preview-card">
+						<PreviewPanel
+							previewMode={previewMode}
+							onPreviewModeChange={handlePreviewModeChange}
+							schema={currentSchema}
+						/>
+					</Card>
 				</Content>
 			</Layout>
+
+			{/* 底部弹出的节点配置面板 */}
+			<Card className={`node-config-card ${selectedNode ? 'show' : ''}`}>
+				<NodeConfigPanel
+					schema={currentSchema}
+					selectedNode={selectedNode}
+					onPropertyChange={handlePropertyChange}
+				/>
+			</Card>
 		</motion.div>
 	);
 };

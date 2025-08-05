@@ -1,6 +1,6 @@
 .playground-page {
-	padding: 0;
-	height: 100vh;
+	padding: 0 24px; // 添加左右padding
+	height: calc(100vh - 64px); // 减去顶栏高度
 	background: #0a0a0a;
 	position: relative;
 	overflow: hidden;
@@ -25,17 +25,17 @@
 
 	.playground-layout {
 		background: transparent;
-		min-height: 100vh;
+		height: calc(100vh - 64px); // 减去顶栏高度
 		position: relative;
 		z-index: 1;
 
 		.playground-sider {
 			background: transparent;
 			margin-right: 16px; // 减少右边距
-			padding: 16px 0; // 减少上下内边距
+			padding: 8px 0; // 进一步减少上下内边距
 
 			.sider-card {
-				height: calc(100vh - 32px); // 调整高度
+				height: calc(100vh - 80px); // 减去顶栏高度和padding
 				border-radius: 0;
 				background: transparent;
 				border: none;
@@ -91,10 +91,11 @@
 
 		.playground-content {
 			background: transparent;
-			padding: 16px 0; // 减少上下内边距
+			padding: 8px 0; // 进一步减少上下内边距
+			height: calc(100vh - 64px); // 减去顶栏高度
 
 			.preview-card {
-				height: 100%;
+				height: calc(100vh - 80px); // 减去顶栏高度和padding
 				border-radius: 16px;
 				background: rgba(15, 15, 15, 0.8);
 				backdrop-filter: blur(20px);
@@ -125,7 +126,7 @@
 					background: transparent;
 					border-bottom: 1px solid rgba(0, 255, 255, 0.2);
 					color: #fff;
-					padding: 16px 20px;
+					padding: 12px 20px; // 减少padding
 
 					.ant-card-head-title {
 						color: #fff;
@@ -140,24 +141,32 @@
 				.ant-card-body {
 					background: transparent;
 					color: #fff;
-					height: calc(100% - 57px);
+					height: 100%; // 调整高度，减少head高度
 					overflow: auto;
-					padding: 20px;
+					padding: 16px; // 减少padding
 				}
 			}
 		}
 	}
 
-	// 节点配置卡片样式 - 简化背景
+	// 节点配置卡片样式 - 改为底部弹出式
 	.node-config-card {
-		border-radius: 16px;
-		background: rgba(15, 15, 15, 0.8);
+		position: fixed;
+		bottom: 0;
+		left: 24px; // 对应页面padding
+		right: 24px; // 对应页面padding
+		height: 0; // 初始高度为0
+		border-radius: 16px 16px 0 0;
+		background: rgba(15, 15, 15, 0.95);
 		backdrop-filter: blur(20px);
 		border: 1px solid rgba(0, 255, 255, 0.2);
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+		border-bottom: none;
+		box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4),
 			inset 0 1px 0 rgba(255, 255, 255, 0.1);
 		position: relative;
 		overflow: hidden;
+		transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		z-index: 1000;
 
 		// 内部光效
 		&::before {
@@ -174,6 +183,11 @@
 				transparent
 			);
 			z-index: 1;
+		}
+
+		// 当有选中节点时显示
+		&.show {
+			height: 300px; // 显示时的高度
 		}
 
 		.ant-card-head {
@@ -433,6 +447,75 @@
 					}
 				}
 			}
+		}
+	}
+
+	// 修复按钮主题问题 - 确保所有按钮都是黑色主题
+	.ant-btn {
+		background: rgba(15, 15, 15, 0.8) !important;
+		border: 1px solid rgba(0, 255, 255, 0.3) !important;
+		color: rgba(0, 255, 255, 0.8) !important;
+
+		&:hover {
+			background: rgba(0, 255, 255, 0.1) !important;
+			border-color: rgba(0, 255, 255, 0.6) !important;
+			color: #fff !important;
+		}
+
+		&:focus {
+			background: rgba(0, 255, 255, 0.15) !important;
+			border-color: rgba(0, 255, 255, 0.8) !important;
+			color: #fff !important;
+			box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2) !important;
+		}
+
+		&.ant-btn-primary {
+			background: rgba(0, 255, 255, 0.2) !important;
+			border-color: rgba(0, 255, 255, 0.5) !important;
+			color: #fff !important;
+
+			&:hover {
+				background: rgba(0, 255, 255, 0.3) !important;
+				border-color: rgba(0, 255, 255, 0.7) !important;
+			}
+		}
+
+		&.ant-btn-text {
+			background: transparent !important;
+			border-color: transparent !important;
+			color: rgba(0, 255, 255, 0.8) !important;
+
+			&:hover {
+				background: rgba(0, 255, 255, 0.1) !important;
+				color: #fff !important;
+			}
+		}
+	}
+
+	// 修复预览区域样式
+	.preview-panel {
+		height: 100%;
+		background: transparent;
+		color: #fff;
+
+		.preview-header {
+			margin-bottom: 16px;
+
+			.ant-typography {
+				color: #fff !important;
+			}
+		}
+
+		.preview-content {
+			height: calc(100% - 60px);
+			background: rgba(255, 255, 255, 0.02);
+			border: 1px dashed rgba(0, 255, 255, 0.3);
+			border-radius: 8px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: rgba(255, 255, 255, 0.6);
+			font-size: 14px;
 		}
 	}
 }

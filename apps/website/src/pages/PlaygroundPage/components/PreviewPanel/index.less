@@ -1,0 +1,230 @@
+.preview-container {
+	height: 100%;
+	background: transparent;
+	color: #fff;
+	display: flex;
+	flex-direction: column;
+
+	.preview-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 16px;
+		padding: 0 0 16px 0;
+		border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+
+		.preview-title {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+
+			h3 {
+				color: #fff !important;
+				margin: 0;
+				font-weight: 600;
+				font-size: 16px;
+			}
+
+			.preview-mode-label {
+				color: rgba(0, 255, 255, 0.8);
+				font-size: 12px;
+				padding: 4px 8px;
+				background: rgba(0, 255, 255, 0.1);
+				border: 1px solid rgba(0, 255, 255, 0.3);
+				border-radius: 4px;
+			}
+		}
+
+		.preview-toolbar {
+			.ant-select {
+				.ant-select-selector {
+					background: rgba(15, 15, 15, 0.8) !important;
+					border: 1px solid rgba(0, 255, 255, 0.3) !important;
+					color: #fff !important;
+					border-radius: 6px;
+
+					&:hover,
+					&:focus {
+						border-color: rgba(0, 255, 255, 0.6) !important;
+						box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.1) !important;
+					}
+				}
+
+				.ant-select-selection-item {
+					color: #fff !important;
+				}
+
+				.ant-select-arrow {
+					color: rgba(0, 255, 255, 0.8) !important;
+				}
+			}
+
+			.ant-btn {
+				background: rgba(15, 15, 15, 0.8) !important;
+				border: 1px solid rgba(0, 255, 255, 0.3) !important;
+				color: rgba(0, 255, 255, 0.8) !important;
+
+				&:hover {
+					background: rgba(0, 255, 255, 0.1) !important;
+					border-color: rgba(0, 255, 255, 0.6) !important;
+					color: #fff !important;
+				}
+
+				&:focus {
+					background: rgba(0, 255, 255, 0.15) !important;
+					border-color: rgba(0, 255, 255, 0.8) !important;
+					color: #fff !important;
+					box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2) !important;
+				}
+
+				&.ant-btn-text {
+					background: transparent !important;
+					border-color: transparent !important;
+					color: rgba(0, 255, 255, 0.8) !important;
+
+					&:hover {
+						background: rgba(0, 255, 255, 0.1) !important;
+						color: #fff !important;
+					}
+				}
+			}
+		}
+	}
+
+	.preview-content {
+		flex: 1;
+		background: rgba(255, 255, 255, 0.02);
+		border: 1px dashed rgba(0, 255, 255, 0.3);
+		border-radius: 8px;
+		overflow: auto;
+		position: relative;
+
+		.preview-placeholder {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			color: rgba(255, 255, 255, 0.6);
+			text-align: center;
+			padding: 40px;
+
+			.placeholder-icon {
+				font-size: 48px;
+				color: rgba(0, 255, 255, 0.4);
+				margin-bottom: 16px;
+			}
+
+			h4 {
+				color: rgba(255, 255, 255, 0.8) !important;
+				margin: 0 0 8px 0;
+				font-weight: 600;
+				font-size: 18px;
+			}
+
+			p {
+				color: rgba(255, 255, 255, 0.6) !important;
+				margin: 4px 0;
+				font-size: 14px;
+				line-height: 1.5;
+			}
+		}
+
+		.preview-error {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			color: #ff4d4f;
+			text-align: center;
+			padding: 40px;
+
+			h4 {
+				color: #ff4d4f !important;
+				margin: 0 0 16px 0;
+				font-weight: 600;
+				font-size: 18px;
+			}
+
+			p {
+				color: rgba(255, 255, 255, 0.8) !important;
+				margin: 0 0 16px 0;
+				font-size: 14px;
+			}
+
+			pre {
+				background: rgba(255, 77, 79, 0.1);
+				border: 1px solid rgba(255, 77, 79, 0.3);
+				border-radius: 4px;
+				padding: 12px;
+				max-width: 100%;
+				overflow: auto;
+				font-size: 12px;
+				line-height: 1.4;
+			}
+		}
+
+		.preview-form {
+			padding: 20px;
+			min-height: 100%;
+			background: transparent;
+
+			// 确保表单内容在黑色主题下可见
+			* {
+				color: #fff !important;
+			}
+
+			// 表单组件样式
+			.ant-form {
+				.ant-form-item {
+					.ant-form-item-label {
+						label {
+							color: rgba(255, 255, 255, 0.9) !important;
+						}
+					}
+				}
+
+				.ant-input,
+				.ant-input-number,
+				.ant-select-selector,
+				.ant-textarea {
+					background: rgba(255, 255, 255, 0.08) !important;
+					border: 1px solid rgba(0, 255, 255, 0.3) !important;
+					color: #fff !important;
+
+					&:hover,
+					&:focus {
+						border-color: rgba(0, 255, 255, 0.6) !important;
+						box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.1) !important;
+					}
+
+					&::placeholder {
+						color: rgba(255, 255, 255, 0.4) !important;
+					}
+				}
+
+				.ant-select {
+					.ant-select-selection-item {
+						color: #fff !important;
+					}
+
+					.ant-select-arrow {
+						color: rgba(0, 255, 255, 0.8) !important;
+					}
+				}
+
+				.ant-btn {
+					background: rgba(0, 255, 255, 0.2) !important;
+					border: 1px solid rgba(0, 255, 255, 0.5) !important;
+					color: #fff !important;
+
+					&:hover {
+						background: rgba(0, 255, 255, 0.3) !important;
+						border-color: rgba(0, 255, 255, 0.7) !important;
+					}
+				}
+			}
+		}
+	}
+}

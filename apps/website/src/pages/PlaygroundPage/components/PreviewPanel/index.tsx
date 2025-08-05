@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import { FormSchema } from '../../Schema';
 import SchemaEngine from '../../Engine';
+import './index.less';
 
 const { Option } = Select;
 
