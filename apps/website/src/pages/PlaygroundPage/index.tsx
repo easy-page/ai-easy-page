@@ -35,6 +35,7 @@ const PlaygroundPage: FC = () => {
 	};
 
 	const handleNodeSelect = (nodeId: string) => {
+		console.log('PlaygroundPage handleNodeSelect:', nodeId);
 		setSelectedNode(nodeId);
 	};
 
@@ -115,11 +116,31 @@ const PlaygroundPage: FC = () => {
 			{/* 底部弹出的节点配置面板 */}
 			<Card className={`node-config-card ${selectedNode ? 'show' : ''}`}>
 				<NodeConfigPanel
-					schema={currentSchema}
+					schema={currentSchema || null}
 					selectedNode={selectedNode}
 					onPropertyChange={handlePropertyChange}
 				/>
 			</Card>
+
+			{/* 调试信息 */}
+			{process.env.NODE_ENV === 'development' && (
+				<div
+					style={{
+						position: 'fixed',
+						top: '10px',
+						right: '10px',
+						background: 'rgba(0,0,0,0.8)',
+						color: '#fff',
+						padding: '10px',
+						borderRadius: '4px',
+						fontSize: '12px',
+						zIndex: 9999,
+					}}
+				>
+					<div>selectedNode: {selectedNode || 'null'}</div>
+					<div>hasSchema: {currentSchema ? 'true' : 'false'}</div>
+				</div>
+			)}
 		</motion.div>
 	);
 };

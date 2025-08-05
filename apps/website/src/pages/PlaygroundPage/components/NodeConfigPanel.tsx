@@ -33,10 +33,24 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 	selectedNode,
 	onPropertyChange,
 }) => {
-	if (!schema || !selectedNode) {
+	console.log('NodeConfigPanel render:', { schema, selectedNode });
+
+	if (!selectedNode) {
 		return (
 			<div className="node-config-empty">
 				<Text type="secondary">请选择一个节点进行配置</Text>
+			</div>
+		);
+	}
+
+	// 如果没有schema但有选中的节点，显示基本配置
+	if (!schema) {
+		return (
+			<div className="node-config-panel">
+				<div className="form-properties">
+					<Title level={5}>节点配置</Title>
+					<Text type="secondary">请先创建表单结构以进行详细配置</Text>
+				</div>
 			</div>
 		);
 	}

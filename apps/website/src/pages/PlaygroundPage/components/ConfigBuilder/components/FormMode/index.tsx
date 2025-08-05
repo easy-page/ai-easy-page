@@ -49,8 +49,8 @@ const FormMode: FC<FormModeProps> = ({
 				>
 					<NodeTree
 						schema={schemaData}
-						selectedNode={selectedNode}
-						onNodeSelect={onNodeSelect}
+						selectedNode={selectedNode || null}
+						onNodeSelect={onNodeSelect || (() => {})}
 						onAddNode={handleAddNode}
 						onDeleteNode={handleDeleteNode}
 					/>

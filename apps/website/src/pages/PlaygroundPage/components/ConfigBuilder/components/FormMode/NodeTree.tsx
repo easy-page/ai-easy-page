@@ -32,8 +32,7 @@ const NodeTree: FC<NodeTreeProps> = ({
 	onDeleteNode,
 }) => {
 	const buildTreeData = (): TreeNode[] => {
-		if (!schema) return [];
-
+		// 即使没有schema也显示基本的Form节点
 		const formNode: TreeNode = {
 			key: 'form',
 			title: (
@@ -54,8 +53,8 @@ const NodeTree: FC<NodeTreeProps> = ({
 			children: [],
 		};
 
-		// 添加子节点
-		if (schema.properties?.children) {
+		// 如果有schema，添加子节点
+		if (schema?.properties?.children) {
 			formNode.children = schema.properties.children.map(
 				(child: ComponentSchema, index: number) => {
 					const childNode: TreeNode = {
@@ -139,12 +138,19 @@ const NodeTree: FC<NodeTreeProps> = ({
 				treeData={treeData}
 				selectedKeys={selectedNode ? [selectedNode] : []}
 				onSelect={(selectedKeys) => {
+					console.log('NodeTree onSelect:', selectedKeys);
 					if (selectedKeys.length > 0) {
-						onNodeSelect(selectedKeys[0] as string);
+						const nodeId = selectedKeys[0] as string;
+						console.log('Selecting node:', nodeId);
+						onNodeSelect(nodeId);
+					} else {
+						// 如果没有选中任何节点，清空选择
+						onNodeSelect('');
 					}
 				}}
 				showLine
 				showIcon={false}
+				className="node-tree-component"
 			/>
 		</div>
 	);
