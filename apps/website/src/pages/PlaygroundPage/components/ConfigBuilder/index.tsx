@@ -56,6 +56,7 @@ const ConfigBuilder: FC<ConfigBuilderProps> = ({
 					onImport={handleImportConfig}
 					selectedNode={selectedNode}
 					onNodeSelect={onNodeSelect}
+					onSchemaChange={onSchemaChange}
 				/>
 			);
 		case 'page':

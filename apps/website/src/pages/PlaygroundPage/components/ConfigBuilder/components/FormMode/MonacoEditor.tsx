@@ -1,39 +1,40 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 import { Input } from 'antd';
 
 const { TextArea } = Input;
 
 interface MonacoEditorProps {
 	value: string;
-	language: string;
-	placeholder?: string;
 	onChange: (value: string) => void;
-	height?: number;
+	language?: string;
+	height?: string;
+	readOnly?: boolean;
 }
 
 const MonacoEditor: FC<MonacoEditorProps> = ({
 	value,
-	language,
-	placeholder,
 	onChange,
-	height = 200,
+	language = 'javascript',
+	height = '200px',
+	readOnly = false,
 }) => {
 	return (
 		<TextArea
 			value={value}
-			placeholder={placeholder}
 			onChange={(e) => onChange(e.target.value)}
+			readOnly={readOnly}
 			style={{
-				height: `${height}px`,
+				height,
 				fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
 				fontSize: '12px',
 				lineHeight: '1.5',
-				background: 'rgba(255, 255, 255, 0.05)',
-				border: '1px solid rgba(0, 255, 255, 0.3)',
+				background: '#1e1e1e',
+				border: '1px solid #d9d9d9',
 				color: '#fff',
 				borderRadius: '6px',
 				resize: 'none',
 			}}
+			placeholder={`// 在这里编写${language}代码`}
 		/>
 	);
 };

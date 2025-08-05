@@ -4,6 +4,12 @@ import { PlusOutlined } from '@ant-design/icons';
 import { FormSchema } from '../../../../Schema';
 import ConfigHeader from '../ConfigHeader';
 import NodeTree from './NodeTree';
+import AddComponentModal from './AddComponentModal';
+import {
+	ComponentType,
+	ComponentDisplayNames,
+	getDefaultComponentProps,
+} from './ComponentTypes';
 import './index.less';
 
 interface FormModeProps {
@@ -12,6 +18,7 @@ interface FormModeProps {
 	onImport: () => void;
 	selectedNode?: string | null;
 	onNodeSelect?: (nodeId: string) => void;
+	onSchemaChange?: (schema: FormSchema) => void;
 }
 
 const FormMode: FC<FormModeProps> = ({
@@ -20,11 +27,52 @@ const FormMode: FC<FormModeProps> = ({
 	onImport,
 	selectedNode,
 	onNodeSelect,
+	onSchemaChange,
 }) => {
 	const [schemaData, setSchemaData] = useState<FormSchema | null>(schema);
+	const [showAddModal, setShowAddModal] = useState(false);
+	const [currentParentId, setCurrentParentId] = useState<string>('');
 
 	const handleAddNode = (parentId: string, nodeType: string) => {
-		message.info('添加节点功能暂未实现');
+		setCurrentParentId(parentId);
+		setShowAddModal(true);
+	};
+
+	const handleAddComponent = (
+		componentType: ComponentType,
+		isFormComponent: boolean
+	) => {
+		const newComponent = {
+			type: componentType,
+			props: getDefaultComponentProps(componentType),
+			isFormComponent,
+			formItemProps: isFormComponent
+				? {
+						label: ComponentDisplayNames[componentType],
+						required: false,
+						labelLayout: 'vertical',
+				  }
+				: {},
+		};
+
+		// 更新schema
+		if (schemaData) {
+			const updatedSchema: FormSchema = {
+				...schemaData,
+				properties: {
+					...schemaData.properties,
+					children: [...(schemaData.properties.children || []), newComponent],
+				},
+			};
+
+			setSchemaData(updatedSchema);
+			onSchemaChange?.(updatedSchema);
+
+			message.success(`已添加${ComponentDisplayNames[componentType]}组件`);
+			console.log('添加组件:', newComponent);
+		} else {
+			message.error('请先创建表单结构');
+		}
 	};
 
 	const handleDeleteNode = (nodeId: string) => {
@@ -64,6 +112,13 @@ const FormMode: FC<FormModeProps> = ({
 					/>
 				</Card>
 			</div>
+
+			<AddComponentModal
+				visible={showAddModal}
+				onCancel={() => setShowAddModal(false)}
+				onConfirm={handleAddComponent}
+				defaultIsFormComponent={true}
+			/>
 		</div>
 	);
 };
