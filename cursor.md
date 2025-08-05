@@ -734,3 +734,16 @@ export const FullFormDemo: React.FC = () => {
 你先结合现在最新的：apps/website/src/pages/PlaygroundPage/Schema/form.ts FormSchema 定义，实现基本交互和配置，具体的添加逻辑先空着。
 
 注意结合当前项目风格，可以不一定使用 antd 的表单组件
+
+## 创建字段
+
+创建表单时候，点击添加按钮出现一个弹窗：
+
+- 包含一个下拉框：可以选择新增组件
+- 一个多选框：是否为表单组件，表单模式下，默认为 true，创建页面模式下默认为：false
+
+其中可选组件为：packages/easy-page-pc/src/components 下的组件，这些是固定选项，帮我整理到选项里，用枚举定义好，再增加一个自定义组件的选项
+
+- 针对固定组件，他的属性配置表单就是各个属性下的 Props，参考 Form 组件的给我定义一下。
+- 如果选择了是表单组件，则除了组件本身外，还会被包裹 FormItem 组件，所以配置面板里需要是一个 Tab，一个是组件属性，一个是 FormItem 属性。
+- 自定义组件的配置只有一个：组件内容，是一个 monacoreditor，可以编辑函数，有个 AI 编辑按钮，按需实现逻辑。
