@@ -68,7 +68,7 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 				<Title level={5}>表单属性</Title>
 
 				<Row gutter={16}>
-					<Col span={8}>
+					<Col span={24}>
 						<Form.Item label="初始值">
 							<TextArea
 								rows={3}
@@ -86,7 +86,7 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 						</Form.Item>
 					</Col>
 
-					<Col span={8}>
+					<Col span={24}>
 						<Form.Item label="表单模式">
 							<Select
 								value={properties.mode || 'default'}
@@ -99,7 +99,7 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 						</Form.Item>
 					</Col>
 
-					<Col span={8}>
+					<Col span={24}>
 						<Form.Item label="加载组件">
 							<Space direction="vertical" style={{ width: '100%' }}>
 								<MonacoEditor
@@ -137,7 +137,7 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 				<Title level={5}>事件处理</Title>
 
 				<Row gutter={16}>
-					<Col span={12}>
+					<Col span={24}>
 						<Form.Item label="提交处理">
 							<Space direction="vertical" style={{ width: '100%' }}>
 								<MonacoEditor
@@ -168,7 +168,7 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 						</Form.Item>
 					</Col>
 
-					<Col span={12}>
+					<Col span={24}>
 						<Form.Item label="值变化处理">
 							<Space direction="vertical" style={{ width: '100%' }}>
 								<MonacoEditor
@@ -222,7 +222,7 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 				<Title level={5}>组件属性</Title>
 
 				<Row gutter={16}>
-					<Col span={8}>
+					<Col span={24}>
 						<Form.Item label="组件类型">
 							<Input
 								value={component.type || ''}
@@ -238,7 +238,7 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 						</Form.Item>
 					</Col>
 
-					<Col span={16}>
+					<Col span={24}>
 						<Form.Item label="组件属性">
 							<TextArea
 								rows={3}

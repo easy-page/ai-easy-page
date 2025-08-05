@@ -226,5 +226,73 @@ body {
 	}
 }
 
+// 下拉框全局样式 - 确保下拉菜单在暗色主题下正确显示
+.ant-select-dropdown {
+	background: rgba(15, 15, 15, 0.95) !important;
+	border: 1px solid rgba(0, 255, 255, 0.3) !important;
+	border-radius: 8px !important;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+	backdrop-filter: blur(20px) !important;
+
+	.ant-select-item {
+		color: #fff !important;
+		background: transparent !important;
+		border-radius: 4px !important;
+		margin: 2px 4px !important;
+
+		&:hover {
+			background: rgba(0, 255, 255, 0.1) !important;
+		}
+
+		&.ant-select-item-option-selected {
+			background: rgba(0, 255, 255, 0.2) !important;
+			color: #fff !important;
+		}
+
+		&.ant-select-item-option-active {
+			background: rgba(0, 255, 255, 0.15) !important;
+		}
+
+		.ant-select-item-option-content {
+			color: inherit !important;
+		}
+	}
+
+	.ant-select-item-empty {
+		color: rgba(255, 255, 255, 0.6) !important;
+	}
+}
+
+// 下拉框选择器样式 - 修复白色边框问题
+.ant-select {
+	.ant-select-selector {
+		background: rgba(15, 15, 15, 0.8) !important;
+		border: 1px solid rgba(0, 255, 255, 0.3) !important;
+		color: #fff !important;
+		border-radius: 6px !important;
+
+		&:hover,
+		&:focus {
+			border-color: rgba(0, 255, 255, 0.6) !important;
+			box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.1) !important;
+		}
+	}
+
+	.ant-select-selection-item {
+		color: #fff !important;
+	}
+
+	.ant-select-arrow {
+		color: rgba(0, 255, 255, 0.8) !important;
+	}
+
+	&.ant-select-focused {
+		.ant-select-selector {
+			border-color: rgba(0, 255, 255, 0.8) !important;
+			box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2) !important;
+		}
+	}
+}
+
 // 引入 Markdown 样式
 @import './markdown.less';
