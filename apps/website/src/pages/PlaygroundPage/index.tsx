@@ -69,6 +69,7 @@ const PlaygroundPage: FC = () => {
 			transition={{ duration: 0.5 }}
 		>
 			<Layout className="playground-layout">
+				{/* 左侧：组件树 */}
 				<Sider width={320} className="playground-sider">
 					<Card className="sider-card">
 						<Tabs
@@ -107,11 +108,8 @@ const PlaygroundPage: FC = () => {
 					</Card>
 				</Sider>
 
-				<Content
-					className={`playground-content ${
-						selectedNode ? 'with-config-panel' : ''
-					}`}
-				>
+				{/* 中间：预览区域 */}
+				<Content className="playground-content">
 					<Card className="preview-card">
 						<PreviewPanel
 							previewMode={previewMode}
@@ -120,24 +118,21 @@ const PlaygroundPage: FC = () => {
 						/>
 					</Card>
 				</Content>
-			</Layout>
 
-			{/* 右侧滑出的配置面板 */}
-			{selectedNode && (
-				<div className="config-panel-overlay" onClick={handleCloseConfigPanel}>
-					<div
-						className="config-panel-container"
-						onClick={(e) => e.stopPropagation()}
-					>
-						<NodeConfigPanel
-							schema={currentSchema || null}
-							selectedNode={selectedNode}
-							onPropertyChange={handlePropertyChange}
-							onClose={handleCloseConfigPanel}
-						/>
-					</div>
-				</div>
-			)}
+				{/* 右侧：节点配置面板 */}
+				{selectedNode && (
+					<Sider width={320} className="playground-config-sider">
+						<Card className="config-sider-card">
+							<NodeConfigPanel
+								schema={currentSchema || null}
+								selectedNode={selectedNode}
+								onPropertyChange={handlePropertyChange}
+								onClose={handleCloseConfigPanel}
+							/>
+						</Card>
+					</Sider>
+				)}
+			</Layout>
 		</motion.div>
 	);
 };

@@ -1,3 +1,5 @@
+@import './styles/global.less';
+
 // 全局样式重置 - 确保卡片样式不被覆盖
 .playground-page {
 	// 重置所有卡片的默认样式
@@ -101,13 +103,9 @@
 
 		.playground-content {
 			background: transparent;
-			padding: 8px 0; // 进一步减少上下内边距
+			padding: 8px 16px; // 添加左右padding
 			height: calc(100vh - 64px); // 减去顶栏高度
 			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-			&.with-config-panel {
-				margin-right: 320px; // 为配置面板留出空间
-			}
 
 			.preview-card {
 				height: calc(100vh - 80px); // 减去顶栏高度和padding
@@ -162,220 +160,56 @@
 				}
 			}
 		}
-	}
-}
 
-// 配置面板遮罩层
-.config-panel-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(0, 0, 0, 0.3);
-	backdrop-filter: blur(4px);
-	z-index: 9999; // 提高z-index
-	animation: fadeIn 0.3s ease-out;
+		// 右侧配置侧边栏
+		.playground-config-sider {
+			background: transparent;
+			padding: 8px 0; // 进一步减少上下内边距
+			animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-	@keyframes fadeIn {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-}
-
-// 配置面板容器
-.config-panel-container {
-	position: fixed;
-	top: 0;
-	right: 0;
-	width: 320px;
-	height: 100vh;
-	background: rgba(15, 15, 15, 0.95);
-	backdrop-filter: blur(20px);
-	border-left: 1px solid rgba(0, 255, 255, 0.2);
-	box-shadow: -8px 0 32px rgba(0, 0, 0, 0.4),
-		inset 1px 0 0 rgba(255, 255, 255, 0.1);
-	transform: translateX(100%);
-	animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-	z-index: 10000; // 确保在最顶层
-
-	@keyframes slideInRight {
-		from {
-			transform: translateX(100%);
-		}
-		to {
-			transform: translateX(0);
-		}
-	}
-
-	// 内部光效
-	&::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 1px;
-		background: linear-gradient(
-			90deg,
-			transparent,
-			rgba(0, 255, 255, 0.5),
-			transparent
-		);
-		z-index: 1;
-	}
-}
-
-// 节点配置面板
-.node-config-panel {
-	height: 100vh;
-	overflow-y: auto;
-	overflow-x: hidden; // 禁止水平滚动
-	animation: fadeInUp 0.3s ease-out;
-	position: relative;
-	padding: 20px;
-
-	// 关闭按钮
-	.config-panel-close-btn {
-		position: absolute;
-		top: 16px;
-		right: 16px;
-		z-index: 10;
-		color: rgba(255, 255, 255, 0.6);
-		background: rgba(255, 255, 255, 0.1);
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		border-radius: 4px;
-		width: 32px;
-		height: 32px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-
-		&:hover {
-			color: #fff;
-			background: rgba(255, 255, 255, 0.2);
-			border-color: rgba(255, 255, 255, 0.4);
-		}
-	}
-
-	.node-config-empty {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		min-height: 200px;
-		color: rgba(255, 255, 255, 0.6);
-		font-size: 14px;
-	}
-
-	@keyframes fadeInUp {
-		from {
-			opacity: 0;
-			transform: translateY(20px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	.form-properties,
-	.component-properties {
-		width: 100%;
-		overflow-x: hidden; // 禁止水平滚动
-
-		.ant-typography {
-			color: #fff !important;
-			margin-bottom: 16px !important;
-		}
-
-		.ant-form-item {
-			margin-bottom: 16px;
-			width: 100%;
-
-			.ant-form-item-label {
-				label {
-					color: rgba(255, 255, 255, 0.9) !important;
-					font-weight: 500;
-					font-size: 13px;
+			@keyframes slideInRight {
+				from {
+					transform: translateX(100%);
+					opacity: 0;
+				}
+				to {
+					transform: translateX(0);
+					opacity: 1;
 				}
 			}
 
-			.ant-input,
-			.ant-input-number,
-			.ant-select-selector,
-			.ant-textarea {
-				background: rgba(255, 255, 255, 0.08);
-				border: 1px solid rgba(0, 255, 255, 0.3);
-				color: #fff !important;
-				border-radius: 6px;
-				padding: 8px 12px;
-				font-size: 13px;
-				width: 100%;
-				box-sizing: border-box;
+			.config-sider-card {
+				height: calc(100vh - 80px); // 减去顶栏高度和padding，与预览卡片保持一致
+				border-radius: 16px;
+				background: rgba(15, 15, 15, 0.8);
+				backdrop-filter: blur(20px);
+				border: 1px solid rgba(0, 255, 255, 0.2);
+				box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+					inset 0 1px 0 rgba(255, 255, 255, 0.1);
+				position: relative;
+				overflow: hidden;
 
-				&:hover,
-				&:focus {
-					border-color: rgba(0, 255, 255, 0.6);
-					box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.1);
+				// 内部光效
+				&::before {
+					content: '';
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					height: 1px;
+					background: linear-gradient(
+						90deg,
+						transparent,
+						rgba(0, 255, 255, 0.5),
+						transparent
+					);
+					z-index: 1;
 				}
 
-				&::placeholder {
-					color: rgba(255, 255, 255, 0.4) !important;
-				}
-			}
-
-			.ant-select {
-				width: 100%;
-
-				.ant-select-selection-item {
-					color: #fff !important;
-				}
-
-				.ant-select-arrow {
-					color: rgba(255, 255, 255, 0.6);
-				}
-			}
-		}
-
-		.ant-row {
-			margin: 0 !important;
-			width: 100%;
-		}
-
-		.ant-col {
-			padding: 0 8px !important;
-		}
-
-		.ant-space {
-			width: 100%;
-
-			.ant-space-item {
-				width: 100%;
-			}
-		}
-
-		.ant-divider {
-			border-color: rgba(0, 255, 255, 0.2);
-			margin: 16px 0 12px;
-		}
-
-		.ant-btn {
-			&.ant-btn-text {
-				color: rgba(0, 255, 255, 0.8);
-				border: 1px solid rgba(0, 255, 255, 0.3);
-				border-radius: 4px;
-				padding: 4px 10px;
-				height: 28px;
-				font-size: 12px;
-
-				&:hover {
-					color: #fff;
-					border-color: rgba(0, 255, 255, 0.6);
-					background: rgba(0, 255, 255, 0.1);
+				.ant-card-body {
+					padding: 0;
+					height: 100%;
+					background: transparent;
 				}
 			}
 		}
@@ -399,289 +233,5 @@
 
 	&:hover {
 		background: rgba(0, 255, 255, 0.5);
-	}
-}
-
-// SelectMode 样式 - 解决黑色字体和多层背景问题
-.config-builder {
-	height: 100%;
-	padding: 20px;
-	background: transparent;
-	color: #fff;
-
-	// 确保所有卡片都有正确的padding
-	.ant-card {
-		.ant-card-body {
-			padding: 20px !important;
-			box-sizing: border-box;
-		}
-	}
-
-	.config-header {
-		margin-bottom: 24px;
-		text-align: center;
-
-		.header-actions {
-			display: flex;
-			justify-content: flex-start;
-			margin-bottom: 16px !important;
-			gap: 8px;
-
-			.ant-btn {
-				color: rgba(0, 255, 255, 0.8) !important;
-				background: transparent !important;
-				border: 1px solid rgba(0, 255, 255, 0.3) !important;
-				border-radius: 6px;
-				padding: 4px 12px;
-				height: 32px;
-				font-size: 13px;
-
-				&:hover {
-					color: #fff !important;
-					background: rgba(0, 255, 255, 0.1) !important;
-					border-color: rgba(0, 255, 255, 0.6) !important;
-				}
-
-				&.ant-btn-primary {
-					background: rgba(0, 255, 255, 0.2) !important;
-					border-color: rgba(0, 255, 255, 0.5) !important;
-					color: #fff !important;
-
-					&:hover {
-						background: rgba(0, 255, 255, 0.3) !important;
-						border-color: rgba(0, 255, 255, 0.7) !important;
-					}
-				}
-			}
-		}
-
-		.ant-typography {
-			color: #fff !important;
-			margin-bottom: 8px;
-
-			&.ant-typography-h4 {
-				font-weight: 600;
-				font-size: 18px;
-			}
-		}
-
-		.ant-typography-text {
-			color: rgba(255, 255, 255, 0.7) !important;
-			font-size: 14px;
-		}
-	}
-
-	.config-options {
-		margin-bottom: 24px;
-
-		.ant-space {
-			width: 100%;
-			padding: 0 8px; // 添加左右padding
-		}
-
-		.option-card {
-			background: rgba(15, 15, 15, 0.6);
-			border: 1px solid rgba(0, 255, 255, 0.2);
-			border-radius: 12px;
-			backdrop-filter: blur(10px);
-			transition: all 0.3s ease;
-			margin-bottom: 8px; // 添加底部间距
-
-			&:hover {
-				border-color: rgba(0, 255, 255, 0.4);
-				background: rgba(15, 15, 15, 0.8);
-				transform: translateY(-2px);
-				box-shadow: 0 8px 24px rgba(0, 255, 255, 0.1);
-			}
-
-			.ant-card-body {
-				padding: 20px !important; // 强制设置padding
-				background: transparent;
-				box-sizing: border-box;
-			}
-
-			.option-content {
-				display: flex;
-				align-items: center;
-				gap: 16px;
-				padding: 0; // 确保没有额外的padding
-
-				.option-icon {
-					font-size: 24px;
-					color: rgba(0, 255, 255, 0.8);
-					background: rgba(0, 255, 255, 0.1);
-					padding: 12px;
-					border-radius: 8px;
-					border: 1px solid rgba(0, 255, 255, 0.2);
-					flex-shrink: 0; // 防止图标被压缩
-				}
-
-				.option-text {
-					flex: 1;
-					min-width: 0; // 防止文本溢出
-
-					.ant-typography {
-						color: #fff !important;
-						margin-bottom: 4px;
-
-						&.ant-typography-h5 {
-							font-weight: 600;
-							font-size: 16px;
-							margin: 0; // 重置margin
-						}
-					}
-
-					.ant-typography-text {
-						color: rgba(255, 255, 255, 0.7) !important;
-						font-size: 13px;
-						margin: 0; // 重置margin
-					}
-				}
-			}
-		}
-	}
-
-	.ant-divider {
-		border-color: rgba(0, 255, 255, 0.2);
-		margin: 24px 0;
-	}
-
-	// ConfigTips 样式
-	.config-tips {
-		padding: 0 8px; // 添加左右padding
-
-		.ant-typography {
-			color: #fff !important;
-			margin-bottom: 16px;
-			font-weight: 600;
-			font-size: 14px;
-		}
-
-		ul {
-			list-style: none;
-			padding: 0;
-			margin: 0;
-
-			li {
-				color: rgba(255, 255, 255, 0.8);
-				font-size: 13px;
-				line-height: 1.6;
-				margin-bottom: 8px;
-				padding-left: 16px;
-				position: relative;
-
-				&::before {
-					content: '•';
-					color: rgba(0, 255, 255, 0.8);
-					position: absolute;
-					left: 0;
-					font-weight: bold;
-				}
-
-				&:last-child {
-					margin-bottom: 0;
-				}
-			}
-		}
-	}
-}
-
-// 修复按钮主题问题 - 确保所有按钮都是黑色主题
-.ant-btn {
-	background: rgba(15, 15, 15, 0.8) !important;
-	border: 1px solid rgba(0, 255, 255, 0.3) !important;
-	color: rgba(0, 255, 255, 0.8) !important;
-
-	&:hover {
-		background: rgba(0, 255, 255, 0.1) !important;
-		border-color: rgba(0, 255, 255, 0.6) !important;
-		color: #fff !important;
-	}
-
-	&:focus {
-		background: rgba(0, 255, 255, 0.15) !important;
-		border-color: rgba(0, 255, 255, 0.8) !important;
-		color: #fff !important;
-		box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2) !important;
-	}
-
-	&.ant-btn-primary {
-		background: rgba(0, 255, 255, 0.2) !important;
-		border-color: rgba(0, 255, 255, 0.5) !important;
-		color: #fff !important;
-
-		&:hover {
-			background: rgba(0, 255, 255, 0.3) !important;
-			border-color: rgba(0, 255, 255, 0.7) !important;
-		}
-	}
-
-	&.ant-btn-text {
-		background: transparent !important;
-		border-color: transparent !important;
-		color: rgba(0, 255, 255, 0.8) !important;
-
-		&:hover {
-			background: rgba(0, 255, 255, 0.1) !important;
-			color: #fff !important;
-		}
-	}
-}
-
-// 修复预览区域样式
-.preview-panel {
-	height: 100%;
-	background: transparent;
-	color: #fff;
-
-	.preview-header {
-		margin-bottom: 16px;
-
-		.ant-typography {
-			color: #fff !important;
-		}
-	}
-
-	.preview-content {
-		height: calc(100% - 60px);
-		background: rgba(255, 255, 255, 0.02);
-		border: 1px dashed rgba(0, 255, 255, 0.3);
-		border-radius: 8px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: rgba(255, 255, 255, 0.6);
-		font-size: 14px;
-	}
-}
-
-// 节点树样式
-.node-tree-component {
-	background: transparent;
-	color: #fff;
-
-	.ant-tree-node-content-wrapper {
-		color: #fff !important;
-		background: transparent !important;
-
-		&:hover {
-			background: rgba(0, 255, 255, 0.1) !important;
-		}
-
-		&.ant-tree-node-selected {
-			background: rgba(0, 255, 255, 0.2) !important;
-		}
-	}
-
-	.ant-tree-title {
-		color: #fff !important;
-	}
-
-	.ant-tree-switcher {
-		color: rgba(255, 255, 255, 0.6) !important;
-	}
-
-	.ant-tree-line .ant-tree-switcher-line-icon {
-		background-color: rgba(0, 255, 255, 0.3) !important;
 	}
 }

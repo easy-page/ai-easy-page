@@ -4,6 +4,7 @@ import { SCHEMA_TEMPLATES, FormSchema } from '../../Schema';
 import FormMode from './components/FormMode';
 import PageMode from './components/PageMode';
 import SelectMode from './components/SelectMode';
+import './index.less';
 
 interface ConfigBuilderProps {
 	onSchemaChange?: (schema: FormSchema) => void;

@@ -1,0 +1,171 @@
+// 节点配置面板
+.node-config-panel {
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: hidden; // 禁止水平滚动
+	animation: fadeInUp 0.3s ease-out;
+	position: relative;
+	padding: 12px;
+
+	// 关闭按钮
+	.config-panel-close-btn {
+		position: absolute;
+		top: 8px;
+		right: 8px;
+		z-index: 10;
+		color: rgba(255, 255, 255, 0.6);
+		background: rgba(255, 255, 255, 0.1);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		border-radius: 4px;
+		width: 28px;
+		height: 28px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		&:hover {
+			color: #fff;
+			background: rgba(255, 255, 255, 0.2);
+			border-color: rgba(255, 255, 255, 0.4);
+		}
+	}
+
+	.node-config-empty {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 200px;
+		color: rgba(255, 255, 255, 0.6);
+		font-size: 14px;
+	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.form-properties,
+	.component-properties {
+		width: 100%;
+		overflow-x: hidden; // 禁止水平滚动
+
+		.ant-typography {
+			color: #fff !important;
+			margin-bottom: 12px !important;
+		}
+
+		.ant-form-item {
+			margin-bottom: 12px;
+			width: 100%;
+
+			.ant-form-item-label {
+				label {
+					color: rgba(255, 255, 255, 0.9) !important;
+					font-weight: 500;
+					font-size: 13px;
+				}
+			}
+
+			.ant-input,
+			.ant-input-number,
+			.ant-select-selector,
+			.ant-textarea {
+				background: rgba(255, 255, 255, 0.08);
+				border: 1px solid rgba(0, 255, 255, 0.3);
+				color: #fff !important;
+				border-radius: 6px;
+				padding: 8px 12px;
+				font-size: 13px;
+				width: 100%;
+				box-sizing: border-box;
+
+				&:hover,
+				&:focus {
+					border-color: rgba(0, 255, 255, 0.6);
+					box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.1);
+				}
+
+				&::placeholder {
+					color: rgba(255, 255, 255, 0.4) !important;
+				}
+			}
+
+			.ant-select {
+				width: 100%;
+
+				.ant-select-selection-item {
+					color: #fff !important;
+				}
+
+				.ant-select-arrow {
+					color: rgba(255, 255, 255, 0.6);
+				}
+			}
+		}
+
+		.ant-row {
+			margin: 0 !important;
+			width: 100%;
+		}
+
+		.ant-col {
+			padding: 0 8px !important;
+		}
+
+		.ant-space {
+			width: 100%;
+
+			.ant-space-item {
+				width: 100%;
+			}
+		}
+
+		.ant-divider {
+			border-color: rgba(0, 255, 255, 0.2);
+			margin: 12px 0 8px;
+		}
+
+		.ant-btn {
+			&.ant-btn-text {
+				color: rgba(0, 255, 255, 0.8);
+				border: 1px solid rgba(0, 255, 255, 0.3);
+				border-radius: 4px;
+				padding: 4px 10px;
+				height: 28px;
+				font-size: 12px;
+
+				&:hover {
+					color: #fff;
+					border-color: rgba(0, 255, 255, 0.6);
+					background: rgba(0, 255, 255, 0.1);
+				}
+			}
+		}
+	}
+}
+
+// 滚动条样式
+::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.05);
+	border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: rgba(0, 255, 255, 0.3);
+	border-radius: 3px;
+
+	&:hover {
+		background: rgba(0, 255, 255, 0.5);
+	}
+}
