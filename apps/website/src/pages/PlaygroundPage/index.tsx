@@ -30,15 +30,17 @@ const PlaygroundPage: FC = () => {
 	};
 
 	const handleSchemaChange = (schema: FormSchema) => {
+		console.log('handleSchemaChange called:', schema);
 		setCurrentSchema(schema);
-		console.log('Schema 已更新:', schema);
 	};
 
 	const handleNodeSelect = (nodeId: string) => {
+		console.log('handleNodeSelect called:', nodeId);
 		setSelectedNode(nodeId);
 	};
 
 	const handleCloseConfigPanel = () => {
+		console.log('handleCloseConfigPanel called');
 		setSelectedNode(null);
 	};
 
@@ -105,7 +107,11 @@ const PlaygroundPage: FC = () => {
 					</Card>
 				</Sider>
 
-				<Content className={`playground-content ${selectedNode ? 'with-config-panel' : ''}`}>
+				<Content
+					className={`playground-content ${
+						selectedNode ? 'with-config-panel' : ''
+					}`}
+				>
 					<Card className="preview-card">
 						<PreviewPanel
 							previewMode={previewMode}
@@ -118,11 +124,8 @@ const PlaygroundPage: FC = () => {
 
 			{/* 右侧滑出的配置面板 */}
 			{selectedNode && (
-				<div 
-					className="config-panel-overlay"
-					onClick={handleCloseConfigPanel}
-				>
-					<div 
+				<div className="config-panel-overlay" onClick={handleCloseConfigPanel}>
+					<div
 						className="config-panel-container"
 						onClick={(e) => e.stopPropagation()}
 					>
