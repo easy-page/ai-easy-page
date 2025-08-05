@@ -1,11 +1,48 @@
 import React from 'react';
-import { Form, FormStore, FieldValue } from '@easy-page/core';
+import { Form, FormStore, FieldValue, FormItem, When } from '@easy-page/core';
+import {
+	Input,
+	Select,
+	Checkbox,
+	CheckboxGroup,
+	Radio,
+	RadioGroup,
+	TextArea,
+	DatePicker,
+	DateRangePicker,
+	TimePicker,
+	Container,
+	DynamicForm,
+} from '@easy-page/pc';
 import { FormSchema, ComponentSchema } from '../Schema';
+import {
+	FunctionProperty,
+	ReactNodeProperty,
+} from '../Schema/specialProperties';
+import { JSXParser, ComponentMapper } from '../JSXParser';
 
 // 组件映射表
 const COMPONENT_MAP: Record<string, React.ComponentType<any>> = {
+	// Core components
+	When,
+	FormItem,
+	DynamicForm,
+
+	// PC components
+	Input,
+	Select,
+	Checkbox,
+	CheckboxGroup,
+	Radio,
+	RadioGroup,
+	TextArea,
+	DatePicker,
+	DateRangePicker,
+	TimePicker,
+	Container,
+
+	// Placeholder
 	EmptyNode: () => <div style={{ color: 'white' }}>暂无内容</div>,
-	// 可以在这里扩展更多组件
 };
 
 // 事件处理函数类型
@@ -34,13 +71,127 @@ const DEFAULT_HANDLERS: Record<string, SubmitHandler | ValuesChangeHandler> = {
 	},
 };
 
+// 处理函数属性，将FunctionProperty转换为实际函数
+const processFunctionProperty = (
+	funcProp: FunctionProperty | undefined
+): any => {
+	if (!funcProp || funcProp.type !== 'function') {
+		return undefined;
+	}
+
+	try {
+		// 创建函数，这里可以根据需要扩展
+		return new Function('store', 'values', 'rowInfo', funcProp.content);
+	} catch (error) {
+		console.warn('函数属性解析失败:', error);
+		return undefined;
+	}
+};
+
+// 处理ReactNode属性，将ReactNodeProperty转换为React节点
+const processReactNodeProperty = (
+	nodeProp: ReactNodeProperty | undefined,
+	jsxParser: JSXParser
+): React.ReactNode => {
+	if (!nodeProp || nodeProp.type !== 'reactNode') {
+		return undefined;
+	}
+
+	try {
+		// 使用JSX解析器解析包含JSX的字符串
+		const result = jsxParser.parse(nodeProp.content);
+		return result.success ? result.result : nodeProp.content;
+	} catch (error) {
+		console.warn('ReactNode属性解析失败:', error);
+		return nodeProp.content; // 解析失败时返回原始内容
+	}
+};
+
+// 处理组件属性，将配置转换为组件props
+const processComponentProps = (
+	props: Record<string, any> = {},
+	jsxParser: JSXParser
+): Record<string, any> => {
+	const processedProps: Record<string, any> = {};
+
+	Object.entries(props).forEach(([key, value]) => {
+		if (value && typeof value === 'object') {
+			if (value.type === 'function') {
+				// 处理函数属性
+				const func = processFunctionProperty(value as FunctionProperty);
+				if (func) {
+					processedProps[key] = func;
+				}
+			} else if (value.type === 'reactNode') {
+				// 处理ReactNode属性
+				const node = processReactNodeProperty(
+					value as ReactNodeProperty,
+					jsxParser
+				);
+				if (node !== undefined) {
+					processedProps[key] = node;
+				}
+			} else {
+				// 其他对象属性直接传递
+				processedProps[key] = value;
+			}
+		} else {
+			// 基本类型直接传递
+			processedProps[key] = value;
+		}
+	});
+
+	return processedProps;
+};
+
+// 处理FormItem属性
+const processFormItemProps = (
+	formItemSchema: any,
+	jsxParser: JSXParser
+): Record<string, any> => {
+	if (!formItemSchema || !formItemSchema.properties) {
+		return {};
+	}
+
+	const { properties } = formItemSchema;
+	const processedProps: Record<string, any> = {};
+
+	// 处理基本属性
+	Object.entries(properties).forEach(([key, value]) => {
+		if (key === 'onChange' || key === 'onBlur' || key === 'onFocus') {
+			// 处理事件函数
+			const func = processFunctionProperty(value as FunctionProperty);
+			if (func) {
+				processedProps[key] = func;
+			}
+		} else if (key === 'extra' || key === 'tips') {
+			// 处理ReactNode属性
+			const node = processReactNodeProperty(
+				value as ReactNodeProperty,
+				jsxParser
+			);
+			if (node !== undefined) {
+				processedProps[key] = node;
+			}
+		} else {
+			// 其他属性直接传递
+			processedProps[key] = value;
+		}
+	});
+
+	return processedProps;
+};
+
 export class SchemaEngine {
 	private handlers: Record<string, SubmitHandler | ValuesChangeHandler>;
+	private jsxParser: JSXParser;
 
 	constructor(
-		customHandlers?: Record<string, SubmitHandler | ValuesChangeHandler>
+		customHandlers?: Record<string, SubmitHandler | ValuesChangeHandler>,
+		jsxParser?: JSXParser
 	) {
 		this.handlers = { ...DEFAULT_HANDLERS, ...customHandlers };
+		this.jsxParser = jsxParser || new JSXParser();
 	}
 
 	// 渲染单个组件
@@ -55,12 +206,30 @@ export class SchemaEngine {
 			return <div key={key}>Unknown component: {schema.type}</div>;
 		}
 
-		const props = schema.props || {};
+		// 处理组件属性
+		const componentProps = processComponentProps(schema.props, this.jsxParser);
+
+		// 处理子组件
 		const children = schema.children?.map((child, index) =>
 			this.renderComponent(child, `${key || 'root'}-${index}`)
 		);
 
-		return React.createElement(Component, { key, ...props }, children);
+		// 如果有formItem配置，用FormItem包裹
+		if (schema.formItem) {
+			const formItemProps = processFormItemProps(
+				schema.formItem,
+				this.jsxParser
+			);
+
+			return (
+				<FormItem key={key} {...formItemProps}>
+					{React.createElement(Component, { ...componentProps }, children)}
+				</FormItem>
+			);
+		}
+
+		// 直接渲染组件
+		return React.createElement(Component, { key, ...componentProps }, children);
 	}
 
 	// 渲染表单
@@ -70,11 +239,33 @@ export class SchemaEngine {
 			properties;
 
 		// 获取事件处理函数
-		const submitHandler = onSubmit
-			? (this.handlers[onSubmit] as SubmitHandler)
+		const submitHandler = onSubmit?.content
+			? (values: Record<string, FieldValue>, store: FormStore) => {
+					try {
+						const func = new Function('values', 'store', onSubmit.content);
+						return func(values, store);
+					} catch (error) {
+						console.warn('提交函数执行失败:', error);
+					}
+			  }
 			: undefined;
-		const valuesChangeHandler = onValuesChange
-			? (this.handlers[onValuesChange] as ValuesChangeHandler)
+
+		const valuesChangeHandler = onValuesChange?.content
+			? (
+					changedValues: Record<string, FieldValue>,
+					allValues: Record<string, FieldValue>
+			  ) => {
+					try {
+						const func = new Function(
+							'changedValues',
+							'allValues',
+							onValuesChange.content
+						);
+						return func(changedValues, allValues);
+					} catch (error) {
+						console.warn('值变化函数执行失败:', error);
+					}
+			  }
 			: undefined;
 
 		return (
@@ -94,9 +285,10 @@ export class SchemaEngine {
 	// 静态方法，用于快速渲染
 	static render(
 		schema: FormSchema,
-		customHandlers?: Record<string, SubmitHandler | ValuesChangeHandler>
+		customHandlers?: Record<string, SubmitHandler | ValuesChangeHandler>,
+		jsxParser?: JSXParser
 	): React.ReactNode {
-		const engine = new SchemaEngine(customHandlers);
+		const engine = new SchemaEngine(customHandlers, jsxParser);
 		return engine.renderForm(schema);
 	}
 }

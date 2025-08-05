@@ -4,6 +4,7 @@ export * from './types';
 // 导出核心类
 export { FormStoreImpl } from './store/store';
 export { FormValidator } from './validator';
+export type { FormStore } from './types';
 
 // 导出组件
 export { Form } from './components/Form';
