@@ -48,7 +48,6 @@ const ConfigHeader: FC<ConfigHeaderProps> = ({
 					)}
 				</div>
 			)}
-			<Title level={4}>{title}</Title>
 			{children}
 		</div>
 	);

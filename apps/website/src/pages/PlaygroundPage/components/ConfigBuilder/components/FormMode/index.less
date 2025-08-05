@@ -5,6 +5,61 @@
 	overflow: hidden;
 	padding-top: 10px;
 
+	// ConfigHeader 样式
+	.config-header {
+		margin-bottom: 24px;
+		text-align: center;
+
+		.header-actions {
+			display: flex;
+			justify-content: flex-start;
+			margin-bottom: 16px !important;
+			gap: 8px;
+
+			.ant-btn {
+				color: rgba(0, 255, 255, 0.8) !important;
+				background: transparent !important;
+				border: 1px solid rgba(0, 255, 255, 0.3) !important;
+				border-radius: 6px;
+				padding: 4px 12px;
+				height: 32px;
+				font-size: 13px;
+
+				&:hover {
+					color: #fff !important;
+					background: rgba(0, 255, 255, 0.1) !important;
+					border-color: rgba(0, 255, 255, 0.6) !important;
+				}
+
+				&.ant-btn-primary {
+					background: rgba(0, 255, 255, 0.2) !important;
+					border-color: rgba(0, 255, 255, 0.5) !important;
+					color: #fff !important;
+
+					&:hover {
+						background: rgba(0, 255, 255, 0.3) !important;
+						border-color: rgba(0, 255, 255, 0.7) !important;
+					}
+				}
+			}
+		}
+
+		.ant-typography {
+			color: #fff !important;
+			margin-bottom: 8px;
+
+			&.ant-typography-h4 {
+				font-weight: 600;
+				font-size: 18px;
+			}
+		}
+
+		.ant-typography-text {
+			color: rgba(255, 255, 255, 0.7) !important;
+			font-size: 14px;
+		}
+	}
+
 	.form-mode-content {
 		position: relative;
 		z-index: 1;
