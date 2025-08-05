@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Form, Input, Select, Button, Space } from 'antd';
+import { Form, Input, Select, Button, Space, Switch } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { RadioGroupPropsSchema } from '../../../Schema/componentProps';
 
@@ -60,6 +60,10 @@ const RadioGroupConfigPanel: FC<RadioGroupConfigPanelProps> = ({
 		>
 			<Form.Item label="占位符" name="placeholder">
 				<Input placeholder="请输入占位符文本" />
+			</Form.Item>
+
+			<Form.Item label="禁用" name="disabled" valuePropName="checked">
+				<Switch />
 			</Form.Item>
 
 			<Form.Item label="选项类型" name="optionType">

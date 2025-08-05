@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Form, Input } from 'antd';
+import { Form, Input, Switch } from 'antd';
 import { RadioPropsSchema } from '../../../Schema/componentProps';
 
 interface RadioConfigPanelProps {
@@ -23,6 +23,10 @@ const RadioConfigPanel: FC<RadioConfigPanelProps> = ({ props, onChange }) => {
 		>
 			<Form.Item label="占位符" name="placeholder">
 				<Input placeholder="请输入占位符文本" />
+			</Form.Item>
+
+			<Form.Item label="禁用" name="disabled" valuePropName="checked">
+				<Switch />
 			</Form.Item>
 
 			<Form.Item label="CSS类名" name="className">

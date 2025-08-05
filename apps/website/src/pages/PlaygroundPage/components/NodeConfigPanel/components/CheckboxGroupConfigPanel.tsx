@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Form, Input, Button, Space } from 'antd';
+import { Form, Input, Button, Space, Switch } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { CheckboxGroupPropsSchema } from '../../../Schema/componentProps';
 
@@ -58,6 +58,10 @@ const CheckboxGroupConfigPanel: FC<CheckboxGroupConfigPanelProps> = ({
 		>
 			<Form.Item label="占位符" name="placeholder">
 				<Input placeholder="请输入占位符文本" />
+			</Form.Item>
+
+			<Form.Item label="禁用" name="disabled" valuePropName="checked">
+				<Switch />
 			</Form.Item>
 
 			<Form.Item label="选项列表">

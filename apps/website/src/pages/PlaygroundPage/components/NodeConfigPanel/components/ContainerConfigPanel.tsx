@@ -44,6 +44,10 @@ const ContainerConfigPanel: FC<ContainerConfigPanelProps> = ({
 				<Input placeholder="请输入占位符文本" />
 			</Form.Item>
 
+			<Form.Item label="禁用" name="disabled" valuePropName="checked">
+				<Switch />
+			</Form.Item>
+
 			<Form.Item label="CSS类名" name="className">
 				<Input placeholder="请输入CSS类名" />
 			</Form.Item>

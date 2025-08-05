@@ -1,3 +1,5 @@
+import { FunctionProperty } from './specialProperties';
+
 // 验证规则 Schema
 export interface ValidationRuleSchema {
 	required?: boolean;
@@ -6,8 +8,8 @@ export interface ValidationRuleSchema {
 	min?: number;
 	max?: number;
 	len?: number;
-	validator?: string; // 函数名称
-	transform?: string; // 函数名称
+	validator?: FunctionProperty; // 函数名称
+	transform?: FunctionProperty; // 函数名称
 	dependentFields?: string[];
 	affectFields?: string[];
 }

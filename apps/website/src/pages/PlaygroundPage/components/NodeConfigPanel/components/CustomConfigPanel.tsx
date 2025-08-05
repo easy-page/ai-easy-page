@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Form, Button, Space, message, Input } from 'antd';
+import { Form, Button, Space, message, Input, Switch } from 'antd';
 import { RobotOutlined } from '@ant-design/icons';
 import { CustomPropsSchema } from '../../../Schema/componentProps';
 import MonacoEditor from '../../ConfigBuilder/components/FormMode/MonacoEditor';
@@ -74,6 +74,21 @@ const CustomConfigPanel: FC<CustomConfigPanelProps> = ({ props, onChange }) => {
 						AI 编辑
 					</Button>
 				</Space>
+			</Form.Item>
+
+			<Form.Item label="禁用" name="disabled" valuePropName="checked">
+				<Switch
+					checked={props.disabled}
+					onChange={(checked) => onChange({ ...props, disabled: checked })}
+				/>
+			</Form.Item>
+
+			<Form.Item label="CSS类名">
+				<Input
+					value={props.className || ''}
+					onChange={(e) => onChange({ ...props, className: e.target.value })}
+					placeholder="请输入CSS类名"
+				/>
 			</Form.Item>
 		</Form>
 	);

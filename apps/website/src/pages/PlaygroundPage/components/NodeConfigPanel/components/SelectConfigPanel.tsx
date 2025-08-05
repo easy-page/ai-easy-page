@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
 import { Form, Input, Switch, Select, Button, Space } from 'antd';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, RobotOutlined } from '@ant-design/icons';
 import { SelectPropsSchema } from '../../../Schema/componentProps';
+import MonacoEditor from '../../ConfigBuilder/components/FormMode/MonacoEditor';
 
 const { Option } = Select;
 
@@ -77,6 +78,32 @@ const SelectConfigPanel: FC<SelectConfigPanelProps> = ({ props, onChange }) => {
 
 			<Form.Item label="远程搜索" name="remoteSearch" valuePropName="checked">
 				<Switch />
+			</Form.Item>
+
+			<Form.Item label="搜索处理函数">
+				<Space direction="vertical" style={{ width: '100%' }}>
+					<MonacoEditor
+						value={props.onSearch?.content || ''}
+						language="javascript"
+						height="80px"
+						onChange={(value: string) => {
+							onChange({
+								...props,
+								onSearch: { type: 'function', content: value },
+							});
+						}}
+					/>
+					<Button
+						type="text"
+						size="small"
+						icon={<RobotOutlined />}
+						onClick={() => {
+							// AI编辑功能暂未实现
+						}}
+					>
+						AI 编辑
+					</Button>
+				</Space>
 			</Form.Item>
 
 			<Form.Item label="选项列表">

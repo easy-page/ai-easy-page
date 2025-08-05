@@ -100,8 +100,30 @@ const FormItemConfigPanel: FC<FormItemConfigPanelProps> = ({
 
 				<Row gutter={16}>
 					<Col span={24}>
-						<Form.Item label="提示信息" name="tips">
-							<TextArea rows={2} placeholder="请输入提示信息" />
+						<Form.Item label="提示信息">
+							<Space direction="vertical" style={{ width: '100%' }}>
+								<MonacoEditor
+									value={props.tips?.content || ''}
+									language="javascript"
+									height="80px"
+									onChange={(value: string) => {
+										onChange({
+											...props,
+											tips: { type: 'reactNode', content: value },
+										});
+									}}
+								/>
+								<Button
+									type="text"
+									size="small"
+									icon={<RobotOutlined />}
+									onClick={() => {
+										// AI编辑功能暂未实现
+									}}
+								>
+									AI 编辑
+								</Button>
+							</Space>
 						</Form.Item>
 					</Col>
 
@@ -112,8 +134,30 @@ const FormItemConfigPanel: FC<FormItemConfigPanelProps> = ({
 					</Col>
 
 					<Col span={24}>
-						<Form.Item label="额外信息" name="extra">
-							<TextArea rows={2} placeholder="请输入额外信息" />
+						<Form.Item label="额外信息">
+							<Space direction="vertical" style={{ width: '100%' }}>
+								<MonacoEditor
+									value={props.extra?.content || ''}
+									language="javascript"
+									height="80px"
+									onChange={(value: string) => {
+										onChange({
+											...props,
+											extra: { type: 'reactNode', content: value },
+										});
+									}}
+								/>
+								<Button
+									type="text"
+									size="small"
+									icon={<RobotOutlined />}
+									onClick={() => {
+										// AI编辑功能暂未实现
+									}}
+								>
+									AI 编辑
+								</Button>
+							</Space>
 						</Form.Item>
 					</Col>
 				</Row>
