@@ -10,7 +10,7 @@ import {
 	Row,
 	Col,
 } from 'antd';
-import { RobotOutlined } from '@ant-design/icons';
+import { RobotOutlined, CloseOutlined } from '@ant-design/icons';
 import { FormSchema } from '../Schema';
 import {
 	FunctionProperty,
@@ -26,12 +26,14 @@ interface NodeConfigPanelProps {
 	schema: FormSchema | null;
 	selectedNode: string | null;
 	onPropertyChange: (propertyPath: string, value: any) => void;
+	onClose?: () => void;
 }
 
 const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 	schema,
 	selectedNode,
 	onPropertyChange,
+	onClose,
 }) => {
 	if (!selectedNode) {
 		return (
@@ -267,6 +269,15 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 
 	return (
 		<div className="node-config-panel">
+			{/* 关闭按钮 */}
+			{onClose && (
+				<Button
+					type="text"
+					icon={<CloseOutlined />}
+					onClick={onClose}
+					className="config-panel-close-btn"
+				/>
+			)}
 			{formProps}
 			{componentProps}
 		</div>

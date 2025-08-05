@@ -38,6 +38,10 @@ const PlaygroundPage: FC = () => {
 		setSelectedNode(nodeId);
 	};
 
+	const handleCloseConfigPanel = () => {
+		setSelectedNode(null);
+	};
+
 	const handlePropertyChange = (propertyPath: string, value: any) => {
 		if (!currentSchema) return;
 
@@ -101,7 +105,7 @@ const PlaygroundPage: FC = () => {
 					</Card>
 				</Sider>
 
-				<Content className="playground-content">
+				<Content className={`playground-content ${selectedNode ? 'with-config-panel' : ''}`}>
 					<Card className="preview-card">
 						<PreviewPanel
 							previewMode={previewMode}
@@ -112,14 +116,25 @@ const PlaygroundPage: FC = () => {
 				</Content>
 			</Layout>
 
-			{/* 底部弹出的节点配置面板 */}
-			<Card className={`node-config-card ${selectedNode ? 'show' : ''}`}>
-				<NodeConfigPanel
-					schema={currentSchema || null}
-					selectedNode={selectedNode}
-					onPropertyChange={handlePropertyChange}
-				/>
-			</Card>
+			{/* 右侧滑出的配置面板 */}
+			{selectedNode && (
+				<div 
+					className="config-panel-overlay"
+					onClick={handleCloseConfigPanel}
+				>
+					<div 
+						className="config-panel-container"
+						onClick={(e) => e.stopPropagation()}
+					>
+						<NodeConfigPanel
+							schema={currentSchema || null}
+							selectedNode={selectedNode}
+							onPropertyChange={handlePropertyChange}
+							onClose={handleCloseConfigPanel}
+						/>
+					</div>
+				</div>
+			)}
 		</motion.div>
 	);
 };

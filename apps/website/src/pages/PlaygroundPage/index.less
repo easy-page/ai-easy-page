@@ -93,6 +93,11 @@
 			background: transparent;
 			padding: 8px 0; // 进一步减少上下内边距
 			height: calc(100vh - 64px); // 减去顶栏高度
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+			&.with-config-panel {
+				margin-right: 320px; // 为配置面板留出空间
+			}
 
 			.preview-card {
 				height: calc(100vh - 80px); // 减去顶栏高度和padding
@@ -149,26 +154,51 @@
 		}
 	}
 
-	// 节点配置卡片样式 - 改为底部弹出式
-	.node-config-card {
+	// 配置面板遮罩层
+	.config-panel-overlay {
 		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
 		bottom: 0;
-		left: 360px; // 对应左侧边栏宽度 + padding
-		right: 24px; // 对应页面padding
-		min-height: 0; // 初始最小高度为0
-		border-radius: 16px 16px 0 0;
+		background: rgba(0, 0, 0, 0.3);
+		backdrop-filter: blur(4px);
+		z-index: 1000;
+		animation: fadeIn 0.3s ease-out;
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+			}
+			to {
+				opacity: 1;
+			}
+		}
+	}
+
+	// 配置面板容器
+	.config-panel-container {
+		position: fixed;
+		top: 0;
+		right: 0;
+		width: 320px;
+		height: 100vh;
 		background: rgba(15, 15, 15, 0.95);
 		backdrop-filter: blur(20px);
-		border: 1px solid rgba(0, 255, 255, 0.2);
-		border-bottom: none;
-		box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4),
-			inset 0 1px 0 rgba(255, 255, 255, 0.1);
-		overflow: hidden;
-		transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-		z-index: 1000;
-		transform: translateY(100%);
-		opacity: 0;
-		pointer-events: none;
+		border-left: 1px solid rgba(0, 255, 255, 0.2);
+		box-shadow: -8px 0 32px rgba(0, 0, 0, 0.4),
+			inset 1px 0 0 rgba(255, 255, 255, 0.1);
+		transform: translateX(100%);
+		animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+		@keyframes slideInRight {
+			from {
+				transform: translateX(100%);
+			}
+			to {
+				transform: translateX(0);
+			}
+		}
 
 		// 内部光效
 		&::before {
@@ -186,15 +216,7 @@
 			);
 			z-index: 1;
 		}
-
-		// 当有选中节点时显示
-		&.show {
-			min-height: 300px; // 最小高度
-			max-height: 400px; // 最大高度限制
-			transform: translateY(0);
-			opacity: 1;
-			pointer-events: auto;
-		}
+	}
 
 		.ant-card-head {
 			background: transparent;
@@ -247,10 +269,35 @@
 	}
 
 	.node-config-panel {
-		min-height: 100%;
+		height: 100vh;
 		overflow-y: auto;
 		overflow-x: hidden; // 禁止水平滚动
 		animation: fadeInUp 0.3s ease-out;
+		position: relative;
+		padding: 20px;
+
+		// 关闭按钮
+		.config-panel-close-btn {
+			position: absolute;
+			top: 16px;
+			right: 16px;
+			z-index: 10;
+			color: rgba(255, 255, 255, 0.6);
+			background: rgba(255, 255, 255, 0.1);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			border-radius: 4px;
+			width: 32px;
+			height: 32px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			&:hover {
+				color: #fff;
+				background: rgba(255, 255, 255, 0.2);
+				border-color: rgba(255, 255, 255, 0.4);
+			}
+		}
 
 		.node-config-empty {
 			display: flex;
