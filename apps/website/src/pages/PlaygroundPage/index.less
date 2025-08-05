@@ -153,9 +153,9 @@
 	.node-config-card {
 		position: fixed;
 		bottom: 0;
-		left: 24px; // 对应页面padding
+		left: 360px; // 对应左侧边栏宽度 + padding
 		right: 24px; // 对应页面padding
-		height: 0; // 初始高度为0
+		min-height: 0; // 初始最小高度为0
 		border-radius: 16px 16px 0 0;
 		background: rgba(15, 15, 15, 0.95);
 		backdrop-filter: blur(20px);
@@ -163,7 +163,6 @@
 		border-bottom: none;
 		box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4),
 			inset 0 1px 0 rgba(255, 255, 255, 0.1);
-		position: relative;
 		overflow: hidden;
 		transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 		z-index: 1000;
@@ -190,7 +189,8 @@
 
 		// 当有选中节点时显示
 		&.show {
-			height: 300px; // 显示时的高度
+			min-height: 300px; // 最小高度
+			max-height: 400px; // 最大高度限制
 			transform: translateY(0);
 			opacity: 1;
 			pointer-events: auto;
@@ -216,22 +216,47 @@
 		.ant-card-body {
 			background: transparent;
 			color: #fff;
-			height: calc(100% - 49px);
-			overflow: auto;
-			padding: 16px;
+			min-height: 300px; // 最小高度
+			max-height: 350px; // 最大高度
+			overflow-y: auto; // 只允许垂直滚动
+			overflow-x: hidden; // 禁止水平滚动
+			padding: 20px;
+			// 确保内容可见
+			position: relative;
+			z-index: 2;
+
+			// 优化滚动条样式
+			&::-webkit-scrollbar {
+				width: 8px;
+			}
+
+			&::-webkit-scrollbar-track {
+				background: rgba(255, 255, 255, 0.05);
+				border-radius: 4px;
+			}
+
+			&::-webkit-scrollbar-thumb {
+				background: rgba(0, 255, 255, 0.3);
+				border-radius: 4px;
+
+				&:hover {
+					background: rgba(0, 255, 255, 0.5);
+				}
+			}
 		}
 	}
 
 	.node-config-panel {
-		height: 100%;
+		min-height: 100%;
 		overflow-y: auto;
+		overflow-x: hidden; // 禁止水平滚动
 		animation: fadeInUp 0.3s ease-out;
 
 		.node-config-empty {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			height: 100%;
+			min-height: 200px;
 			color: rgba(255, 255, 255, 0.6);
 			font-size: 14px;
 		}
@@ -249,18 +274,23 @@
 
 		.form-properties,
 		.component-properties {
+			width: 100%;
+			overflow-x: hidden; // 禁止水平滚动
+
 			.ant-typography {
 				color: #fff !important;
+				margin-bottom: 16px !important;
 			}
 
 			.ant-form-item {
 				margin-bottom: 16px;
+				width: 100%;
 
 				.ant-form-item-label {
 					label {
 						color: rgba(255, 255, 255, 0.9) !important;
 						font-weight: 500;
-						font-size: 12px;
+						font-size: 13px;
 					}
 				}
 
@@ -272,8 +302,10 @@
 					border: 1px solid rgba(0, 255, 255, 0.3);
 					color: #fff !important;
 					border-radius: 6px;
-					padding: 6px 10px;
-					font-size: 12px;
+					padding: 8px 12px;
+					font-size: 13px;
+					width: 100%;
+					box-sizing: border-box;
 
 					&:hover,
 					&:focus {
@@ -287,6 +319,8 @@
 				}
 
 				.ant-select {
+					width: 100%;
+
 					.ant-select-selection-item {
 						color: #fff !important;
 					}
@@ -294,6 +328,23 @@
 					.ant-select-arrow {
 						color: rgba(255, 255, 255, 0.6);
 					}
+				}
+			}
+
+			.ant-row {
+				margin: 0 !important;
+				width: 100%;
+			}
+
+			.ant-col {
+				padding: 0 8px !important;
+			}
+
+			.ant-space {
+				width: 100%;
+
+				.ant-space-item {
+					width: 100%;
 				}
 			}
 
@@ -307,9 +358,9 @@
 					color: rgba(0, 255, 255, 0.8);
 					border: 1px solid rgba(0, 255, 255, 0.3);
 					border-radius: 4px;
-					padding: 2px 8px;
-					height: 24px;
-					font-size: 11px;
+					padding: 4px 10px;
+					height: 28px;
+					font-size: 12px;
 
 					&:hover {
 						color: #fff;

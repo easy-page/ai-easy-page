@@ -138,10 +138,8 @@ const NodeTree: FC<NodeTreeProps> = ({
 				treeData={treeData}
 				selectedKeys={selectedNode ? [selectedNode] : []}
 				onSelect={(selectedKeys) => {
-					console.log('NodeTree onSelect:', selectedKeys);
 					if (selectedKeys.length > 0) {
 						const nodeId = selectedKeys[0] as string;
-						console.log('Selecting node:', nodeId);
 						onNodeSelect(nodeId);
 					} else {
 						// 如果没有选中任何节点，清空选择

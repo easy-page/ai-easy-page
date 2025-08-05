@@ -33,8 +33,6 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 	selectedNode,
 	onPropertyChange,
 }) => {
-	console.log('NodeConfigPanel render:', { schema, selectedNode });
-
 	if (!selectedNode) {
 		return (
 			<div className="node-config-empty">
@@ -56,7 +54,9 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 	}
 
 	const renderFormProperties = () => {
-		if (selectedNode !== 'form') return null;
+		if (selectedNode !== 'form') {
+			return null;
+		}
 
 		const properties = schema.properties || {};
 
@@ -262,10 +262,13 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 		);
 	};
 
+	const formProps = renderFormProperties();
+	const componentProps = renderComponentProperties();
+
 	return (
 		<div className="node-config-panel">
-			{renderFormProperties()}
-			{renderComponentProperties()}
+			{formProps}
+			{componentProps}
 		</div>
 	);
 };
