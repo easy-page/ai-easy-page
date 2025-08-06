@@ -791,3 +791,7 @@ export const FullFormDemo: React.FC = () => {
 ## TODO:
 
 1. 没有 children 属性的组件，不应该有添加按钮
+
+# 优化配置面板
+
+-

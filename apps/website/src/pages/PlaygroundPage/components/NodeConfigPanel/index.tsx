@@ -549,9 +549,9 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 				);
 			}
 
-			// 如果是 ComponentSchema 类型
-			if (reactNodeProp.type && reactNodeProp.type !== 'reactNode') {
-				const componentSchema = reactNodeProp as ComponentSchema;
+			// 如果 useSchema 为 true 且有 schema
+			if (reactNodeProp.useSchema && reactNodeProp.schema) {
+				const componentSchema = reactNodeProp.schema;
 				return (
 					<div className="property-config">
 						<Title level={5} style={{ color: '#fff' }}>
@@ -647,12 +647,12 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 					);
 				}
 
-				// ComponentSchema类型
-				if (reactNodeValue.type && reactNodeValue.type !== 'reactNode') {
+				// 如果 useSchema 为 true 且有 schema
+				if (reactNodeValue.useSchema && reactNodeValue.schema) {
 					return (
 						<div className="reactnode-config">
 							<Title level={5} style={{ color: '#fff' }}>
-								嵌套组件配置
+								组件配置
 							</Title>
 							<Card
 								size="small"
@@ -664,13 +664,13 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 							>
 								<Space direction="vertical" style={{ width: '100%' }}>
 									<Text strong style={{ color: '#fff' }}>
-										组件类型: {reactNodeValue.type}
+										组件类型: {reactNodeValue.schema.type}
 									</Text>
 									<Text
 										type="secondary"
 										style={{ color: 'rgba(255, 255, 255, 0.6)' }}
 									>
-										子组件数量: {reactNodeValue.children?.length || 0}
+										子组件数量: {reactNodeValue.schema.children?.length || 0}
 									</Text>
 								</Space>
 							</Card>
@@ -679,7 +679,7 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 								type="secondary"
 								style={{ color: 'rgba(255, 255, 255, 0.6)' }}
 							>
-								嵌套组件配置功能正在开发中...
+								组件配置功能正在开发中...
 							</Text>
 						</div>
 					);

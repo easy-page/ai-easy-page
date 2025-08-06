@@ -98,14 +98,6 @@ const processReactNodeProperty = (
 		return undefined;
 	}
 
-	// 如果是 ComponentSchema 类型，直接渲染组件
-	if (nodeProp.type && nodeProp.type !== 'reactNode') {
-		if (renderComponent) {
-			return renderComponent(nodeProp as ComponentSchema);
-		}
-		return undefined;
-	}
-
 	// 处理字符串类型的 ReactNodeProperty
 	if (nodeProp.type === 'reactNode' && 'content' in nodeProp) {
 		try {
@@ -126,6 +118,11 @@ const processReactNodeProperty = (
 			// 解析失败时返回一个简单的div包装
 			return <div>{nodeProp.content}</div>;
 		}
+	}
+
+	// 如果 useSchema 为 true 且有 schema，使用 schema 渲染
+	if (nodeProp.useSchema && nodeProp.schema && renderComponent) {
+		return renderComponent(nodeProp.schema);
 	}
 
 	return undefined;

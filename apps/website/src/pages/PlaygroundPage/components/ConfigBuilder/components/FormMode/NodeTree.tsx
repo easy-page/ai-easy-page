@@ -74,11 +74,6 @@ const isReactNodeProperty = (value: any): value is ReactNodeProperty => {
 		return true;
 	}
 
-	// 如果是 ComponentSchema 类型（有 type 属性但不是 'reactNode'）
-	if (value.type && value.type !== 'reactNode') {
-		return true;
-	}
-
 	return false;
 };
 
@@ -114,63 +109,6 @@ const NodeTree: FC<NodeTreeProps> = ({
 	): TreeNode => {
 		const nodeKey = `${parentKey}-reactnode-${index}`;
 
-		// 如果是 ComponentSchema 类型
-		if (nodeProp.type && nodeProp.type !== 'reactNode') {
-			const componentSchema = nodeProp as ComponentSchema;
-			const canHaveChildren = supportsChildren(componentSchema.type);
-
-			return {
-				key: nodeKey,
-				title: (
-					<Space>
-						<FileOutlined style={{ color: '#1890ff' }} />
-						<Text style={{ color: '#fff' }}>
-							{componentSchema.type || 'Component'}
-						</Text>
-						{canHaveChildren && (
-							<Badge
-								count={componentSchema.children?.length || 0}
-								size="small"
-							/>
-						)}
-						{canHaveChildren && (
-							<Button
-								type="text"
-								size="small"
-								icon={<PlusOutlined />}
-								onClick={(e) => {
-									e.stopPropagation();
-									onAddNode(nodeKey, 'component');
-								}}
-							/>
-						)}
-						<Button
-							type="text"
-							size="small"
-							icon={<DeleteOutlined />}
-							onClick={(e) => {
-								e.stopPropagation();
-								onDeleteNode(nodeKey);
-							}}
-						/>
-					</Space>
-				),
-				isProperty: true,
-				propertyPath,
-				nodeType: 'component',
-				children: canHaveChildren
-					? componentSchema.children?.map((child, childIndex) =>
-							buildReactNodeTree(
-								child,
-								nodeKey,
-								childIndex,
-								`${propertyPath}.children.${childIndex}`
-							)
-					  )
-					: undefined,
-			};
-		}
-
 		// 如果是字符串类型的 ReactNodeProperty
 		if (nodeProp.type === 'reactNode' && 'content' in nodeProp) {
 			return {
@@ -179,8 +117,15 @@ const NodeTree: FC<NodeTreeProps> = ({
 					<Space>
 						<CodeOutlined style={{ color: '#52c41a' }} />
 						<Text style={{ color: '#fff' }}>
-							JSX: {nodeProp.content.substring(0, 20)}...
+							JSX: {nodeProp.content?.substring(0, 20) || ''}...
 						</Text>
+						{nodeProp.useSchema && nodeProp.schema && (
+							<Badge
+								count="Schema"
+								size="small"
+								style={{ backgroundColor: '#722ed1' }}
+							/>
+						)}
 						<Button
 							type="text"
 							size="small"
@@ -411,6 +356,83 @@ const NodeTree: FC<NodeTreeProps> = ({
 						buildReactNodeTree(value, propKey, 0, currentPropertyPath)
 					);
 				}
+				// 如果是 ComponentSchema 类型
+				else if (
+					value &&
+					typeof value === 'object' &&
+					'type' in value &&
+					value.type !== 'reactNode'
+				) {
+					const componentSchema = value as ComponentSchema;
+					const canHaveChildren = supportsChildren(componentSchema.type);
+
+					properties.push({
+						key: propKey,
+						title: (
+							<Space>
+								<FileOutlined style={{ color: '#1890ff' }} />
+								<Text style={{ color: '#fff' }}>
+									{componentSchema.type || 'Component'}
+								</Text>
+								{canHaveChildren && (
+									<Badge
+										count={componentSchema.children?.length || 0}
+										size="small"
+									/>
+								)}
+								{canHaveChildren && (
+									<Button
+										type="text"
+										size="small"
+										icon={<PlusOutlined />}
+										onClick={(e) => {
+											e.stopPropagation();
+											onAddNode(propKey, 'component');
+										}}
+									/>
+								)}
+								<Button
+									type="text"
+									size="small"
+									icon={<DeleteOutlined />}
+									onClick={(e) => {
+										e.stopPropagation();
+										onDeleteNode(propKey);
+									}}
+								/>
+							</Space>
+						),
+						isProperty: true,
+						propertyPath: currentPropertyPath,
+						nodeType: 'component',
+						children: canHaveChildren
+							? componentSchema.children?.map((child, childIndex) => {
+									if (isReactNodeProperty(child)) {
+										return buildReactNodeTree(
+											child,
+											propKey,
+											childIndex,
+											`${currentPropertyPath}.children.${childIndex}`
+										);
+									}
+									return {
+										key: `${propKey}-child-${childIndex}`,
+										title: (
+											<Space>
+												<FileOutlined style={{ color: '#1890ff' }} />
+												<Text style={{ color: '#fff' }}>
+													{child.type || 'Component'}
+												</Text>
+											</Space>
+										),
+										isProperty: true,
+										propertyPath: `${currentPropertyPath}.children.${childIndex}`,
+										nodeType: 'component',
+									};
+							  })
+							: undefined,
+					});
+				}
 				// 普通属性
 				else {
 					properties.push({
@@ -576,6 +598,7 @@ const NodeTree: FC<NodeTreeProps> = ({
 						buildReactNodeTree(value, propKey, 0, currentPropertyPath)
 					);
 				}
+				// 如果是 ComponentSchema 类型 - 过滤模式下不显示
 				// 普通属性 - 过滤模式下不显示
 			}
 		});

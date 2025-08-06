@@ -34,11 +34,11 @@ const ReactNodeConfigPanel: FC<ReactNodeConfigPanelProps> = ({
 	label = 'React节点',
 	placeholder = '请输入JSX内容或选择组件',
 }) => {
-	const [configType, setConfigType] = useState<'jsx' | 'component'>(
-		value && 'type' in value && value.type !== 'reactNode' ? 'component' : 'jsx'
+	const [configType, setConfigType] = useState<'jsx' | 'schema'>(
+		value && value.useSchema ? 'schema' : 'jsx'
 	);
 
-	const handleTypeChange = (type: 'jsx' | 'component') => {
+	const handleTypeChange = (type: 'jsx' | 'schema') => {
 		setConfigType(type);
 		if (type === 'jsx') {
 			onChange?.({
@@ -47,9 +47,13 @@ const ReactNodeConfigPanel: FC<ReactNodeConfigPanelProps> = ({
 			});
 		} else {
 			onChange?.({
-				type: 'Input',
-				props: {},
-			} as ComponentSchema);
+				type: 'reactNode',
+				useSchema: true,
+				schema: {
+					type: 'Input',
+					props: {},
+				} as ComponentSchema,
+			});
 		}
 	};
 
@@ -60,30 +64,27 @@ const ReactNodeConfigPanel: FC<ReactNodeConfigPanelProps> = ({
 		});
 	};
 
-	const handleComponentChange = (componentSchema: ComponentSchema) => {
-		onChange?.(componentSchema);
+	const handleSchemaChange = (componentSchema: ComponentSchema) => {
+		onChange?.({
+			type: 'reactNode',
+			useSchema: true,
+			schema: componentSchema,
+		});
 	};
 
 	const renderJSXConfig = () => (
 		<MonacoEditor
-			value={value && 'content' in value ? value.content : ''}
+			value={value && 'content' in value ? value.content || '' : ''}
 			onChange={handleJSXChange}
 			language="jsx"
 			height="120px"
 		/>
 	);
 
-	const renderComponentConfig = () => {
-		// 检查 value 是否为 ComponentSchema 类型
-		const isComponentSchema =
-			value &&
-			typeof value === 'object' &&
-			'type' in value &&
-			value.type !== 'reactNode';
-
-		const componentSchema = isComponentSchema
-			? (value as ComponentSchema)
-			: ({ type: 'Input', props: {} } as ComponentSchema);
+	const renderSchemaConfig = () => {
+		// 获取 schema 值
+		const componentSchema =
+			value?.schema || ({ type: 'Input', props: {} } as ComponentSchema);
 
 		return (
 			<div>
@@ -91,7 +92,7 @@ const ReactNodeConfigPanel: FC<ReactNodeConfigPanelProps> = ({
 					<Select
 						value={componentSchema.type}
 						onChange={(type) => {
-							handleComponentChange({
+							handleSchemaChange({
 								...componentSchema,
 								type,
 							});
@@ -111,7 +112,7 @@ const ReactNodeConfigPanel: FC<ReactNodeConfigPanelProps> = ({
 						onChange={(content) => {
 							try {
 								const props = JSON.parse(content);
-								handleComponentChange({
+								handleSchemaChange({
 									...componentSchema,
 									props,
 								});
@@ -147,9 +148,9 @@ const ReactNodeConfigPanel: FC<ReactNodeConfigPanelProps> = ({
 						children: renderJSXConfig(),
 					},
 					{
-						key: 'component',
+						key: 'schema',
 						label: '组件配置',
-						children: renderComponentConfig(),
+						children: renderSchemaConfig(),
 					},
 				]}
 			/>
