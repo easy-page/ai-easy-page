@@ -329,9 +329,16 @@ export const ComponentTypeOptionsWithCategory: ComponentTypeOption[] = [
 export const getComponentOptionsByCategory = (
 	category: ComponentCategory
 ): ComponentTypeOption[] => {
-	return ComponentTypeOptionsWithCategory.filter(
+	console.log('getComponentOptionsByCategory called with category:', category);
+	console.log(
+		'ComponentTypeOptionsWithCategory length:',
+		ComponentTypeOptionsWithCategory.length
+	);
+	const result = ComponentTypeOptionsWithCategory.filter(
 		(option) => option.category === category
 	);
+	console.log('Filtered result:', result);
+	return result;
 };
 
 // 获取所有分类

@@ -1,3 +1,5 @@
+import { ComponentCategory } from '../types/componentCategories';
+
 // Tab 相关常量
 export const TAB_KEYS = {
 	CATEGORIES: 'categories',

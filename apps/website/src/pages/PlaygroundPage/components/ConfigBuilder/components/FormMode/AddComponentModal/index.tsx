@@ -51,10 +51,18 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 	defaultIsFormComponent = DEFAULTS.DEFAULT_IS_FORM_COMPONENT,
 }) => {
 	const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.CATEGORIES);
+	const [activeCategory, setActiveCategory] = useState<ComponentCategory>(
+		ComponentCategory.FORM_INPUT
+	);
 
 	// 处理Tab切换，确保类型安全
 	const handleTabChange = (activeKey: string) => {
 		setActiveTab(activeKey as TabKey);
+	};
+
+	// 处理分类Tab切换
+	const handleCategoryChange = (activeKey: string) => {
+		setActiveCategory(activeKey as ComponentCategory);
 	};
 	const [searchKeyword, setSearchKeyword] = useState('');
 	const [selectedComponent, setSelectedComponent] =
@@ -129,6 +137,7 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 		setSearchKeyword('');
 		setIsFormComponent(defaultIsFormComponent);
 		setActiveTab(TAB_KEYS.CATEGORIES);
+		setActiveCategory(ComponentCategory.FORM_INPUT);
 		onCancel();
 	};
 
@@ -139,29 +148,6 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 				? prev.filter((type) => type !== componentType)
 				: [...prev, componentType]
 		);
-	};
-
-	// 渲染分类标签页
-	const renderCategoryTabs = () => {
-		return COMPONENT_CATEGORIES.map((category) => (
-			<TabPane
-				tab={
-					<span>
-						<span style={{ marginRight: 4 }}>{category.icon}</span>
-						{category.name}
-					</span>
-				}
-				key={category.id}
-			>
-				<CategoryPanel
-					category={category.id}
-					onComponentSelect={handleComponentSelect}
-					selectedComponent={selectedComponent}
-					favorites={favorites}
-					onToggleFavorite={toggleFavorite}
-				/>
-			</TabPane>
-		));
 	};
 
 	return (
@@ -211,7 +197,31 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 					className="component-tabs"
 				>
 					<TabPane tab="分类浏览" key={TAB_KEYS.CATEGORIES}>
-						{renderCategoryTabs()}
+						<Tabs
+							activeKey={activeCategory}
+							onChange={handleCategoryChange}
+							className="category-tabs"
+						>
+							{COMPONENT_CATEGORIES.map((category) => (
+								<TabPane
+									tab={
+										<span>
+											<span style={{ marginRight: 4 }}>{category.icon}</span>
+											{category.name}
+										</span>
+									}
+									key={category.id}
+								>
+									<CategoryPanel
+										category={category.id}
+										onComponentSelect={handleComponentSelect}
+										selectedComponent={selectedComponent}
+										favorites={favorites}
+										onToggleFavorite={toggleFavorite}
+									/>
+								</TabPane>
+							))}
+						</Tabs>
 					</TabPane>
 					<TabPane tab="搜索" key={TAB_KEYS.SEARCH}>
 						<SearchPanel

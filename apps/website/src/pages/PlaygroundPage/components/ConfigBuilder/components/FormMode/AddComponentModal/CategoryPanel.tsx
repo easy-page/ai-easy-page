@@ -26,8 +26,12 @@ const CategoryPanel: FC<CategoryPanelProps> = ({
 	onToggleFavorite,
 }) => {
 	const components = useMemo(() => {
-		return getComponentOptionsByCategory(category);
+		const result = getComponentOptionsByCategory(category);
+		console.log('CategoryPanel components for category', category, result);
+		return result;
 	}, [category]);
+
+	console.log('components12323', components, category);
 
 	const categoryConfig = useMemo(() => {
 		return COMPONENT_CATEGORIES.find((cat) => cat.id === category);
