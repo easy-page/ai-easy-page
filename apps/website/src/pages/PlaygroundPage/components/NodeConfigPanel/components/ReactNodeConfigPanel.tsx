@@ -195,49 +195,46 @@ const ReactNodeConfigPanel: FC<ReactNodeConfigPanelProps> = ({
 				<div
 					style={{
 						display: 'flex',
-						justifyContent: 'flex-end',
 						alignItems: 'center',
-						marginBottom: 16,
+						justifyContent: 'space-between',
 						gap: '12px',
+						marginBottom: '12px',
 					}}
 				>
-					<Space size="small">
-						<Switch
-							checked={isSchemaMode}
-							onChange={handleModeSwitch}
-							checkedChildren="节点"
-							unCheckedChildren="字符串"
-							size="default"
+					<Switch
+						checked={isSchemaMode}
+						onChange={handleModeSwitch}
+						checkedChildren="节点"
+						unCheckedChildren="字符串"
+						size="default"
+						style={{
+							backgroundColor: isSchemaMode
+								? 'rgba(0, 255, 255, 0.3)'
+								: 'rgba(255, 255, 255, 0.2)',
+							height: '24px',
+							minWidth: '44px',
+						}}
+					/>
+					{!isSchemaMode && (
+						<Button
+							type="primary"
+							icon={<RobotOutlined />}
+							size="small"
+							onClick={handleAIAssist}
 							style={{
-								backgroundColor: isSchemaMode
-									? 'rgba(0, 255, 255, 0.3)'
-									: 'rgba(255, 255, 255, 0.2)',
-								height: '24px',
-								minWidth: '44px',
+								background: 'linear-gradient(135deg, #00d4aa 0%, #00b4d8 100%)',
+								border: 'none',
+								borderRadius: '6px',
+								height: '32px',
+								padding: '0 12px',
+								fontSize: '12px',
+								fontWeight: 500,
+								boxShadow: '0 2px 4px rgba(0, 212, 170, 0.3)',
 							}}
-						/>
-						{!isSchemaMode && (
-							<Button
-								type="primary"
-								icon={<RobotOutlined />}
-								size="small"
-								onClick={handleAIAssist}
-								style={{
-									background:
-										'linear-gradient(135deg, #00d4aa 0%, #00b4d8 100%)',
-									border: 'none',
-									borderRadius: '6px',
-									height: '32px',
-									padding: '0 12px',
-									fontSize: '12px',
-									fontWeight: 500,
-									boxShadow: '0 2px 4px rgba(0, 212, 170, 0.3)',
-								}}
-							>
-								AI编辑
-							</Button>
-						)}
-					</Space>
+						>
+							AI编辑
+						</Button>
+					)}
 				</div>
 
 				{!isSchemaMode ? (

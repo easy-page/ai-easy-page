@@ -19,7 +19,7 @@
 }
 
 .form-mode {
-	height: calc(100vh - 80px); // 减去顶栏高度和padding
+	height: calc(100vh - 80px);
 	background: transparent;
 	position: relative;
 	overflow: hidden;
@@ -36,30 +36,6 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-
-			.ant-btn {
-				color: rgba(0, 255, 255, 0.8);
-				background: transparent;
-				border: 1px solid rgba(0, 255, 255, 0.3);
-				border-radius: 6px;
-
-				&:hover {
-					color: #fff;
-					background: rgba(0, 255, 255, 0.1);
-					border-color: rgba(0, 255, 255, 0.6);
-				}
-
-				&.ant-btn-primary {
-					background: rgba(0, 255, 255, 0.2);
-					border-color: rgba(0, 255, 255, 0.5);
-					color: #fff;
-
-					&:hover {
-						background: rgba(0, 255, 255, 0.3);
-						border-color: rgba(0, 255, 255, 0.7);
-					}
-				}
-			}
 		}
 	}
 
@@ -187,7 +163,6 @@
 
 	.config-header {
 		padding: 8px;
-
 		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 		display: flex;
 		justify-content: space-between;
@@ -197,24 +172,26 @@
 
 		.ant-typography {
 			margin: 0;
-			color: #fff;
 		}
 
+		// 配置面板头部按钮样式覆盖
 		.ant-btn {
-			color: rgba(255, 255, 255, 0.65);
-			border: none;
-			background: transparent;
+			color: rgba(255, 255, 255, 0.65) !important;
+			border: none !important;
+			background: transparent !important;
+			padding: 2px 4px;
+			height: 20px;
+			width: 20px;
 
 			&:hover {
-				color: #fff;
-				background: rgba(255, 255, 255, 0.1);
+				color: #fff !important;
+				background: rgba(255, 255, 255, 0.1) !important;
 			}
 		}
 	}
 
 	.config-content {
 		padding: 8px;
-
 		flex: 1;
 		overflow-y: auto;
 		background: transparent;
@@ -223,10 +200,6 @@
 		.property-config,
 		.array-item-config,
 		.reactnode-config {
-			.ant-typography {
-				color: #fff;
-			}
-
 			.ant-form-item {
 				margin-bottom: 16px;
 
