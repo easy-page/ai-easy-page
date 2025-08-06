@@ -26,12 +26,12 @@ import {
 	searchComponentOptions,
 } from '../data/componentOptions';
 import { getComponentConfig } from '../ComponentConfig';
-import ComponentCard from './ComponentCard';
 import CategoryPanel from './CategoryPanel';
 import SearchPanel from './SearchPanel';
 import FavoritePanel from './FavoritePanel';
 import RecentPanel from './RecentPanel';
 import ComponentConfigPanel from './ComponentConfigPanel';
+import ComponentPreview from './ComponentPreview';
 import { TAB_KEYS, STORAGE_KEYS, DEFAULTS, TabKey } from './constants';
 import './index.less';
 
@@ -174,7 +174,7 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 			okText="确定"
 			cancelText="取消"
 			okButtonProps={{ disabled: !selectedComponent }}
-			width={800}
+			width={1200}
 			className="add-component-modal"
 		>
 			<div className="modal-content">
@@ -190,77 +190,91 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 					/>
 				</div>
 
-				{/* 标签页 */}
-				<Tabs
-					activeKey={activeTab}
-					onChange={handleTabChange}
-					className="component-tabs"
-				>
-					<TabPane tab="分类浏览" key={TAB_KEYS.CATEGORIES}>
+				{/* 左右布局 */}
+				<div className="modal-layout">
+					{/* 左侧：组件选择 */}
+					<div className="left-panel">
+						{/* 标签页 */}
 						<Tabs
-							activeKey={activeCategory}
-							onChange={handleCategoryChange}
-							className="category-tabs"
+							activeKey={activeTab}
+							onChange={handleTabChange}
+							className="component-tabs"
 						>
-							{COMPONENT_CATEGORIES.map((category) => (
-								<TabPane
-									tab={
-										<span>
-											<span style={{ marginRight: 4 }}>{category.icon}</span>
-											{category.name}
-										</span>
-									}
-									key={category.id}
+							<TabPane tab="分类浏览" key={TAB_KEYS.CATEGORIES}>
+								<Tabs
+									activeKey={activeCategory}
+									onChange={handleCategoryChange}
+									className="category-tabs"
 								>
-									<CategoryPanel
-										category={category.id}
-										onComponentSelect={handleComponentSelect}
-										selectedComponent={selectedComponent}
-										favorites={favorites}
-										onToggleFavorite={toggleFavorite}
-									/>
-								</TabPane>
-							))}
+									{COMPONENT_CATEGORIES.map((category) => (
+										<TabPane
+											tab={
+												<span>
+													<span style={{ marginRight: 4 }}>
+														{category.icon}
+													</span>
+													{category.name}
+												</span>
+											}
+											key={category.id}
+										>
+											<CategoryPanel
+												category={category.id}
+												onComponentSelect={handleComponentSelect}
+												selectedComponent={selectedComponent}
+												favorites={favorites}
+												onToggleFavorite={toggleFavorite}
+											/>
+										</TabPane>
+									))}
+								</Tabs>
+							</TabPane>
+							<TabPane tab="搜索" key={TAB_KEYS.SEARCH}>
+								<SearchPanel
+									keyword={searchKeyword}
+									onComponentSelect={handleComponentSelect}
+									selectedComponent={selectedComponent}
+									favorites={favorites}
+									onToggleFavorite={toggleFavorite}
+								/>
+							</TabPane>
+							<TabPane tab="收藏" key={TAB_KEYS.FAVORITES}>
+								<FavoritePanel
+									favorites={favorites}
+									onComponentSelect={handleComponentSelect}
+									selectedComponent={selectedComponent}
+									onToggleFavorite={toggleFavorite}
+								/>
+							</TabPane>
+							<TabPane tab="最近使用" key={TAB_KEYS.RECENT}>
+								<RecentPanel
+									recentUsed={recentUsed}
+									onComponentSelect={handleComponentSelect}
+									selectedComponent={selectedComponent}
+									favorites={favorites}
+									onToggleFavorite={toggleFavorite}
+								/>
+							</TabPane>
 						</Tabs>
-					</TabPane>
-					<TabPane tab="搜索" key={TAB_KEYS.SEARCH}>
-						<SearchPanel
-							keyword={searchKeyword}
-							onComponentSelect={handleComponentSelect}
-							selectedComponent={selectedComponent}
-							favorites={favorites}
-							onToggleFavorite={toggleFavorite}
-						/>
-					</TabPane>
-					<TabPane tab="收藏" key={TAB_KEYS.FAVORITES}>
-						<FavoritePanel
-							favorites={favorites}
-							onComponentSelect={handleComponentSelect}
-							selectedComponent={selectedComponent}
-							onToggleFavorite={toggleFavorite}
-						/>
-					</TabPane>
-					<TabPane tab="最近使用" key={TAB_KEYS.RECENT}>
-						<RecentPanel
-							recentUsed={recentUsed}
-							onComponentSelect={handleComponentSelect}
-							selectedComponent={selectedComponent}
-							favorites={favorites}
-							onToggleFavorite={toggleFavorite}
-						/>
-					</TabPane>
-				</Tabs>
-
-				{/* 组件配置 */}
-				{selectedComponent && (
-					<div className="component-config">
-						<ComponentConfigPanel
-							component={selectedComponent}
-							isFormComponent={isFormComponent}
-							onFormComponentChange={setIsFormComponent}
-						/>
 					</div>
-				)}
+
+					{/* 右侧：预览和配置 */}
+					<div className="right-panel">
+						{/* 组件预览 */}
+						<ComponentPreview selectedComponent={selectedComponent} />
+
+						{/* 组件配置 */}
+						{selectedComponent && (
+							<div className="component-config">
+								<ComponentConfigPanel
+									component={selectedComponent}
+									isFormComponent={isFormComponent}
+									onFormComponentChange={setIsFormComponent}
+								/>
+							</div>
+						)}
+					</div>
+				</div>
 			</div>
 		</Modal>
 	);

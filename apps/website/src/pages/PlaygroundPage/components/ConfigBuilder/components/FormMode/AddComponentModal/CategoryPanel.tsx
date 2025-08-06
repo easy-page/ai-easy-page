@@ -8,7 +8,7 @@ import {
 	getComponentOptionsByCategory,
 } from '../data/componentOptions';
 import { ComponentType } from '../types/componentTypes';
-import ComponentCard from './ComponentCard';
+import ComponentList from './ComponentList';
 
 interface CategoryPanelProps {
 	category: ComponentCategory;
@@ -49,18 +49,13 @@ const CategoryPanel: FC<CategoryPanelProps> = ({
 				</div>
 			</div>
 
-			<div className="component-grid">
-				{components.map((component) => (
-					<ComponentCard
-						key={component.value}
-						component={component}
-						isSelected={selectedComponent?.value === component.value}
-						isFavorite={favorites.includes(component.value)}
-						onSelect={onComponentSelect}
-						onToggleFavorite={onToggleFavorite}
-					/>
-				))}
-			</div>
+			<ComponentList
+				components={components}
+				selectedComponent={selectedComponent}
+				favorites={favorites}
+				onComponentSelect={onComponentSelect}
+				onToggleFavorite={onToggleFavorite}
+			/>
 		</div>
 	);
 };

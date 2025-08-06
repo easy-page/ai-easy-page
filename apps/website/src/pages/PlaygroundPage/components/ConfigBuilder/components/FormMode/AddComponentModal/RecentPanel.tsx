@@ -6,7 +6,7 @@ import {
 	ComponentTypeOptionsWithCategory,
 } from '../data/componentOptions';
 import { ComponentType } from '../types/componentTypes';
-import ComponentCard from './ComponentCard';
+import ComponentList from './ComponentList';
 
 interface RecentPanelProps {
 	recentUsed: ComponentType[];
@@ -45,18 +45,13 @@ const RecentPanel: FC<RecentPanelProps> = ({
 			</div>
 
 			{recentComponents.length > 0 ? (
-				<div className="component-grid">
-					{recentComponents.map((component) => (
-						<ComponentCard
-							key={component.value}
-							component={component}
-							isSelected={selectedComponent?.value === component.value}
-							isFavorite={favorites.includes(component.value)}
-							onSelect={onComponentSelect}
-							onToggleFavorite={onToggleFavorite}
-						/>
-					))}
-				</div>
+				<ComponentList
+					components={recentComponents}
+					selectedComponent={selectedComponent}
+					favorites={favorites}
+					onComponentSelect={onComponentSelect}
+					onToggleFavorite={onToggleFavorite}
+				/>
 			) : (
 				<div className="empty-state">
 					<Empty

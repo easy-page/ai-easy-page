@@ -6,7 +6,7 @@ import {
 	searchComponentOptions,
 } from '../data/componentOptions';
 import { ComponentType } from '../types/componentTypes';
-import ComponentCard from './ComponentCard';
+import ComponentList from './ComponentList';
 
 interface SearchPanelProps {
 	keyword: string;
@@ -35,18 +35,13 @@ const SearchPanel: FC<SearchPanelProps> = ({
 			<div className="search-results">
 				{keyword.trim() ? (
 					searchResults.length > 0 ? (
-						<div className="component-grid">
-							{searchResults.map((component) => (
-								<ComponentCard
-									key={component.value}
-									component={component}
-									isSelected={selectedComponent?.value === component.value}
-									isFavorite={favorites.includes(component.value)}
-									onSelect={onComponentSelect}
-									onToggleFavorite={onToggleFavorite}
-								/>
-							))}
-						</div>
+						<ComponentList
+							components={searchResults}
+							selectedComponent={selectedComponent}
+							favorites={favorites}
+							onComponentSelect={onComponentSelect}
+							onToggleFavorite={onToggleFavorite}
+						/>
 					) : (
 						<div className="no-results">
 							<Empty

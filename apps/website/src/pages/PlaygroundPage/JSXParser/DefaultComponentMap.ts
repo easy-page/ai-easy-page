@@ -117,7 +117,7 @@ import {
 	FileSearchOutlined,
 	FileSyncOutlined,
 } from '@ant-design/icons';
-import { EASY_PAGE_COMPONENT_MAP } from './EasyPageComponentMap';
+import { EASY_PAGE_EXTENDED_COMPONENT_MAP } from '../utils/componentMaps';
 import type { ComponentMap } from './types';
 
 const { Title, Paragraph, Text } = Typography;
@@ -125,7 +125,6 @@ const { Option } = Select;
 const { TabPane } = Tabs;
 const { Step } = Steps;
 const { Item } = Menu;
-const { BreadcrumbItem } = Breadcrumb;
 
 // 默认组件映射表
 export const DEFAULT_COMPONENT_MAP: ComponentMap = {
@@ -171,7 +170,7 @@ export const DEFAULT_COMPONENT_MAP: ComponentMap = {
 	InputNumber,
 
 	// Easy-Page 组件
-	...EASY_PAGE_COMPONENT_MAP,
+	...EASY_PAGE_EXTENDED_COMPONENT_MAP,
 
 	// Typography 子组件
 	Title,
@@ -191,7 +190,7 @@ export const DEFAULT_COMPONENT_MAP: ComponentMap = {
 	Item,
 
 	// Breadcrumb 子组件
-	BreadcrumbItem,
+	BreadcrumbItem: Breadcrumb.Item,
 
 	// Icons
 	PlusOutlined,

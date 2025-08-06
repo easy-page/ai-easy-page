@@ -1,67 +1,13 @@
 import * as React from 'react';
-import { DynamicForm, Form, FormItem, When } from '@easy-page/core';
-import {
-	Input,
-	Select,
-	Checkbox,
-	CheckboxGroup,
-	Radio,
-	RadioGroup,
-	TextArea,
-	DatePicker,
-	DateRangePicker,
-	TimePicker,
-	Container,
-	Tab,
-	Steps,
-	Drawer,
-	Switch,
-	InputNumber,
-	Slider,
-	Rate,
-	AutoComplete,
-	Cascader,
-	Transfer,
-	TreeSelect,
-} from '@easy-page/pc';
+import { EASY_PAGE_EXTENDED_COMPONENT_MAP } from '../utils/componentMaps';
 
 // Easy-Page 组件映射表
 export const EASY_PAGE_COMPONENT_MAP: Record<
 	string,
 	React.ComponentType<any>
-> = {
-	// Core 组件
-	DynamicForm,
-	Form,
-	FormItem,
-	When,
+> = EASY_PAGE_EXTENDED_COMPONENT_MAP;
 
-	// PC 组件
-	Input,
-	Select,
-	Checkbox,
-	CheckboxGroup,
-	Radio,
-	RadioGroup,
-	TextArea,
-	DatePicker,
-	DateRangePicker,
-	TimePicker,
-	Container,
-	Tab,
-	Steps,
-	Drawer,
-	Switch,
-	InputNumber,
-	Slider,
-	Rate,
-	AutoComplete,
-	Cascader,
-	Transfer,
-	TreeSelect,
-};
-
-// 获取所有组件名称
+// 重新导出工具函数
 export const getEasyPageComponentNames = (): string[] => {
 	return Object.keys(EASY_PAGE_COMPONENT_MAP);
 };

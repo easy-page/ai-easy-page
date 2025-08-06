@@ -1,19 +1,6 @@
 import React from 'react';
 import { Form, FormStore, FieldValue, FormItem, When } from '@easy-page/core';
-import {
-	Input,
-	Select,
-	Checkbox,
-	CheckboxGroup,
-	Radio,
-	RadioGroup,
-	TextArea,
-	DatePicker,
-	DateRangePicker,
-	TimePicker,
-	Container,
-	DynamicForm,
-} from '@easy-page/pc';
+import { EASY_PAGE_EXTENDED_COMPONENT_MAP } from '../utils/componentMaps';
 import { FormSchema, ComponentSchema } from '../Schema';
 import {
 	FunctionProperty,
@@ -27,29 +14,8 @@ import {
 } from './ComponentQueueManager';
 import { createFunctionFromString } from './functionParser';
 
-// 组件映射表
-const COMPONENT_MAP: Record<string, React.ComponentType<any>> = {
-	// Core components
-	When,
-	FormItem,
-	DynamicForm,
-
-	// PC components
-	Input,
-	Select,
-	Checkbox,
-	CheckboxGroup,
-	Radio,
-	RadioGroup,
-	TextArea,
-	DatePicker,
-	DateRangePicker,
-	TimePicker,
-	Container,
-
-	// Placeholder
-	EmptyNode: () => <div style={{ color: 'white' }}>暂无内容</div>,
-};
+// 使用统一的组件映射表
+const COMPONENT_MAP = EASY_PAGE_EXTENDED_COMPONENT_MAP;
 
 // 事件处理函数类型
 type SubmitHandler = (
