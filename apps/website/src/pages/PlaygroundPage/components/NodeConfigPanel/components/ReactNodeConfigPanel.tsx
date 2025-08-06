@@ -77,10 +77,16 @@ const ReactNodeConfigPanel: FC<ReactNodeConfigPanelProps> = ({
 	);
 
 	const renderComponentConfig = () => {
-		const componentSchema =
-			value && 'type' in value && value.type !== 'reactNode'
-				? (value as ComponentSchema)
-				: ({ type: 'Input', props: {} } as ComponentSchema);
+		// 检查 value 是否为 ComponentSchema 类型
+		const isComponentSchema =
+			value &&
+			typeof value === 'object' &&
+			'type' in value &&
+			value.type !== 'reactNode';
+
+		const componentSchema = isComponentSchema
+			? (value as ComponentSchema)
+			: ({ type: 'Input', props: {} } as ComponentSchema);
 
 		return (
 			<div>

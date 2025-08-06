@@ -201,23 +201,25 @@ const processComponentProps = (
 					...row,
 					fields: Array.isArray(row.fields)
 						? row.fields.map((field: any) => {
-								if (
-									field &&
-									typeof field === 'object' &&
-									field.type === 'reactNode'
-								) {
-									const parsedField = processReactNodeProperty(
-										field as ReactNodeProperty,
-										jsxParser,
-										renderComponent
-									);
-									console.log(
-										'解析后的字段:',
-										parsedField,
-										'类型:',
-										typeof parsedField
-									);
-									return parsedField;
+								if (field && typeof field === 'object' && 'type' in field) {
+									// 处理 ReactNodeProperty 类型（包括 ComponentSchema）
+									if (
+										field.type === 'reactNode' ||
+										(field.type && field.type !== 'reactNode')
+									) {
+										const parsedField = processReactNodeProperty(
+											field as ReactNodeProperty,
+											jsxParser,
+											renderComponent
+										);
+										console.log(
+											'解析后的字段:',
+											parsedField,
+											'类型:',
+											typeof parsedField
+										);
+										return parsedField;
+									}
 								}
 								return field;
 						  })
@@ -239,7 +241,8 @@ const processComponentProps = (
 // 处理FormItem属性
 const processFormItemProps = (
 	formItemSchema: any,
-	jsxParser: JSXParser
+	jsxParser: JSXParser,
+	renderComponent?: (schema: ComponentSchema, key?: string) => React.ReactNode
 ): Record<string, any> => {
 	if (!formItemSchema || !formItemSchema.properties) {
 		return {};
@@ -260,7 +263,8 @@ const processFormItemProps = (
 			// 处理ReactNode属性
 			const node = processReactNodeProperty(
 				value as ReactNodeProperty,
-				jsxParser
+				jsxParser,
+				renderComponent
 			);
 			if (node !== undefined) {
 				processedProps[key] = node;
@@ -329,7 +333,8 @@ export class SchemaEngine {
 		if (schema.formItem) {
 			const formItemProps = processFormItemProps(
 				schema.formItem,
-				this.jsxParser
+				this.jsxParser,
+				this.renderComponent.bind(this)
 			);
 
 			return (
