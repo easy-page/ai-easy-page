@@ -10,6 +10,7 @@ import {
 	ComponentDisplayNames,
 	getDefaultComponentProps,
 } from './ComponentTypes';
+import { canUseFormItem } from './ComponentConfig';
 import './index.less';
 
 interface FormModeProps {
@@ -43,11 +44,15 @@ const FormMode: FC<FormModeProps> = ({
 		componentType: ComponentType,
 		isFormComponent: boolean
 	) => {
+		// 检查组件是否可以使用FormItem
+		const canUseFormItemForComponent = canUseFormItem(componentType);
+		const finalIsFormComponent = isFormComponent && canUseFormItemForComponent;
+
 		const newComponent = {
 			type: componentType,
 			props: getDefaultComponentProps(componentType),
-			isFormComponent,
-			formItem: isFormComponent
+			isFormComponent: finalIsFormComponent,
+			formItem: finalIsFormComponent
 				? {
 						type: 'formItem' as const,
 						properties: {
@@ -91,6 +96,13 @@ const FormMode: FC<FormModeProps> = ({
 
 			message.success(`已添加${ComponentDisplayNames[componentType]}组件`);
 			console.log('添加组件:', newComponent);
+
+			// 如果组件不能使用FormItem，显示特殊提示
+			if (!canUseFormItemForComponent) {
+				console.log(
+					`注意: ${ComponentDisplayNames[componentType]} 组件不能使用FormItem包裹`
+				);
+			}
 		} else {
 			message.error('请先创建表单结构');
 		}

@@ -264,30 +264,17 @@ export function getDefaultComponentProps(type: ComponentType): any {
 				containerType: 'tab',
 				rows: [
 					{
-						rowIndexs: [0],
+						rowIndexs: [1],
 						fields: [
-							// 默认添加一个输入框作为示例
 							{
-								type: 'Input',
-								props: {
-									id: 'field1',
-									placeholder: '请输入内容',
-									allowClear: true,
-								},
-								isFormComponent: true,
-								formItem: {
-									type: 'formItem',
-									properties: {
-										id: 'field1',
-										label: '字段1',
-										required: false,
-										labelLayout: 'vertical',
-									},
-								},
+								type: 'reactNode',
+								content: `<FormItem id="field1" label="字段1" required={false}><Input id="field1" placeholder="请输入内容" /></FormItem>`,
 							},
 						],
 					},
 				],
+				gridColumns: [12],
+				headers: [],
 			};
 		case ComponentType.CUSTOM:
 			return {

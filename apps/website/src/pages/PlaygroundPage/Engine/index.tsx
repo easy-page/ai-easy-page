@@ -97,12 +97,22 @@ const processReactNodeProperty = (
 	}
 
 	try {
+		console.log('开始解析JSX:', nodeProp.content);
 		// 使用JSX解析器解析包含JSX的字符串
 		const result = jsxParser.parse(nodeProp.content);
-		return result.success ? result.result : nodeProp.content;
+		console.log('JSX解析结果:', result);
+		if (result.success) {
+			console.log('解析成功，返回结果:', result.result);
+			return result.result;
+		} else {
+			console.warn('JSX解析失败，返回原始内容:', nodeProp.content);
+			// 如果解析失败，返回一个简单的div包装
+			return <div>{nodeProp.content}</div>;
+		}
 	} catch (error) {
 		console.warn('ReactNode属性解析失败:', error);
-		return nodeProp.content; // 解析失败时返回原始内容
+		// 解析失败时返回一个简单的div包装
+		return <div>{nodeProp.content}</div>;
 	}
 };
 
@@ -141,10 +151,17 @@ const processComponentProps = (
 									typeof field === 'object' &&
 									field.type === 'reactNode'
 								) {
-									return processReactNodeProperty(
+									const parsedField = processReactNodeProperty(
 										field as ReactNodeProperty,
 										jsxParser
 									);
+									console.log(
+										'解析后的字段:',
+										parsedField,
+										'类型:',
+										typeof parsedField
+									);
+									return parsedField;
 								}
 								return field;
 						  })
@@ -382,6 +399,7 @@ export class SchemaEngine {
 		}
 	): React.ReactNode {
 		const engine = new SchemaEngine(customHandlers, jsxParser, queueConfig);
+		console.log('sch123213123ema', schema);
 		return engine.renderForm(schema);
 	}
 

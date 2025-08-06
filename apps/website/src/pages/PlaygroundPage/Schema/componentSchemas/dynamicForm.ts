@@ -36,9 +36,7 @@ export const getDefaultDynamicFormProps = (): DynamicFormPropsSchema => ({
 				fields: [
 					{
 						type: 'reactNode',
-						content: `<FormItem id="field1" label="字段1" required={false}>
-							<Input id="field1" placeholder="请输入内容" />
-						</FormItem>`,
+						content: `<FormItem id="field1" label="字段1" required={false}><Input id="field1" placeholder="请输入内容" /></FormItem>`,
 					},
 				],
 			},

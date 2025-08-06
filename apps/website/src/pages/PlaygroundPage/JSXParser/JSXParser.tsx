@@ -76,7 +76,8 @@ export class JSXParser {
 				const Component = this.componentMapper.getComponent(tagName);
 				if (Component) {
 					const props = this.parseAttributes(attributes);
-					const children = content.trim();
+					// 递归解析子内容
+					const children = this.parseContent(content);
 					return React.createElement(Component, props, children);
 				}
 			}
@@ -116,11 +117,13 @@ export class JSXParser {
 
 	// 解析内容
 	private parseContent(content: string): React.ReactNode {
-		if (content.includes('<') && content.includes('>')) {
-			return this.parseJSX(content);
+		const trimmedContent = content.trim();
+
+		if (trimmedContent.includes('<') && trimmedContent.includes('>')) {
+			return this.parseJSX(trimmedContent);
 		}
 
-		return content.trim();
+		return trimmedContent;
 	}
 
 	// 调试日志
