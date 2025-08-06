@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { List, Button, Tooltip, Tag } from 'antd';
 import { StarOutlined, StarFilled } from '@ant-design/icons';
 import { ComponentTypeOption } from '../data/componentOptions';
-import { ComponentType } from '../types/componentTypes';
+import { ComponentType } from '@/pages/PlaygroundPage/constant/componentTypes';
 
 interface ComponentListProps {
 	components: ComponentTypeOption[];

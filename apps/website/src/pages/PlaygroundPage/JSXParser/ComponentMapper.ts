@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { DEFAULT_COMPONENT_MAP } from './DefaultComponentMap';
+
 import type { ComponentMap, ComponentRegistration } from './types';
+import { DEFAULT_COMPONENT_MAP } from '../constant/componentMap';
 
 // 组件映射器类
 export class ComponentMapper {

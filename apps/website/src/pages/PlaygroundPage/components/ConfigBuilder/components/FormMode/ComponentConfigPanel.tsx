@@ -11,9 +11,9 @@ import {
 	message,
 } from 'antd';
 import { RobotOutlined } from '@ant-design/icons';
-import { ComponentType } from './types/componentTypes';
 import MonacoEditor from './MonacoEditor';
 import { FormItemProps } from './types';
+import { ComponentType } from '@/pages/PlaygroundPage/constant/componentTypes';
 
 const { Option } = Select;
 const { TextArea } = Input;

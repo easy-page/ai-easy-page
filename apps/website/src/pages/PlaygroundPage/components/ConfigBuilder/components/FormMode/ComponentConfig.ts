@@ -1,4 +1,4 @@
-import { ComponentType } from './types/componentTypes';
+import { ComponentType } from '@/pages/PlaygroundPage/constant/componentTypes';
 
 // 组件配置接口
 export interface ComponentConfig {

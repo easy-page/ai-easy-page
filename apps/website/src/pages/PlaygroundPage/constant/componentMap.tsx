@@ -117,8 +117,8 @@ import {
 	FileSearchOutlined,
 	FileSyncOutlined,
 } from '@ant-design/icons';
-import { EASY_PAGE_EXTENDED_COMPONENT_MAP } from '../utils/componentMaps';
-import type { ComponentMap } from './types';
+import { ComponentMap } from './types';
+import { EASY_PAGE_EXTENDED_COMPONENT_MAP } from './easyPageCoreComponentMap';
 
 const { Title, Paragraph, Text } = Typography;
 const { Option } = Select;

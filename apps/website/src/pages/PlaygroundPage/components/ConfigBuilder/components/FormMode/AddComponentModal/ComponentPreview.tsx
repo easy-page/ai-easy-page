@@ -2,16 +2,12 @@ import React, { FC, useMemo } from 'react';
 import { Card, Empty } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
 import { ComponentTypeOption } from '../data/componentOptions';
-import { ComponentType } from '../types/componentTypes';
 import { Form, FormItem } from '@easy-page/core';
-import { EASY_PAGE_CORE_COMPONENT_MAP } from '../../../../../utils/componentMaps';
+import { DEFAULT_COMPONENT_MAP } from '@/pages/PlaygroundPage/constant/componentMap';
 
 interface ComponentPreviewProps {
 	selectedComponent: ComponentTypeOption | null;
 }
-
-// 使用统一的组件映射表
-const COMPONENT_MAP = EASY_PAGE_CORE_COMPONENT_MAP;
 
 const ComponentPreview: FC<ComponentPreviewProps> = ({ selectedComponent }) => {
 	const renderPreview = useMemo(() => {
@@ -26,7 +22,7 @@ const ComponentPreview: FC<ComponentPreviewProps> = ({ selectedComponent }) => {
 			);
 		}
 
-		const Component = COMPONENT_MAP[selectedComponent.value];
+		const Component = DEFAULT_COMPONENT_MAP[selectedComponent.value];
 		if (!Component) {
 			return (
 				<div className="preview-error">

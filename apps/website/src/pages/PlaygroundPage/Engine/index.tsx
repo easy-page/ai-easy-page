@@ -1,6 +1,5 @@
 import React from 'react';
 import { Form, FormStore, FieldValue, FormItem, When } from '@easy-page/core';
-import { EASY_PAGE_EXTENDED_COMPONENT_MAP } from '../utils/componentMaps';
 import { FormSchema, ComponentSchema } from '../Schema';
 import {
 	FunctionProperty,
@@ -13,9 +12,9 @@ import {
 	useComponentQueue,
 } from './ComponentQueueManager';
 import { createFunctionFromString } from './functionParser';
+import { DEFAULT_COMPONENT_MAP } from '../constant/componentMap';
 
 // 使用统一的组件映射表
-const COMPONENT_MAP = EASY_PAGE_EXTENDED_COMPONENT_MAP;
 
 // 事件处理函数类型
 type SubmitHandler = (
@@ -308,7 +307,7 @@ export class SchemaEngine {
 		schema: ComponentSchema,
 		key?: string
 	): React.ReactNode {
-		const Component = COMPONENT_MAP[schema.type];
+		const Component = DEFAULT_COMPONENT_MAP[schema.type];
 
 		if (!Component) {
 			console.warn(`Unknown component type: ${schema.type}`);

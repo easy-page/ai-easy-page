@@ -21,7 +21,8 @@ import './index.less';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import NodeConfigPanel from '../../../NodeConfigPanel';
 import { getDefaultComponentPropsSchema } from '@/pages/PlaygroundPage/Schema/componentSchemas';
-import { ComponentDisplayNames, ComponentType } from './types';
+import { ComponentDisplayNames } from './types';
+import { ComponentType } from '@/pages/PlaygroundPage/constant/componentTypes';
 
 interface FormModeProps {
 	schema: FormSchema | null;
