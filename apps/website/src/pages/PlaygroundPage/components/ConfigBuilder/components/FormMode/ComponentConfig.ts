@@ -1,4 +1,4 @@
-import { ComponentType } from './ComponentTypes';
+import { ComponentType } from './types/componentTypes';
 
 // 组件配置接口
 export interface ComponentConfig {

@@ -10,11 +10,12 @@ import { ReactNodeProperty } from '../../../Schema/specialProperties';
 import { ComponentSchema } from '../../../Schema/component';
 import MonacoEditor from '../../ConfigBuilder/components/FormMode/MonacoEditor';
 import AddComponentModal from '../../ConfigBuilder/components/FormMode/AddComponentModal';
-import {
-	ComponentType,
-	ComponentDisplayNames,
-} from '../../ConfigBuilder/components/FormMode/ComponentTypes';
+
 import { getDefaultComponentPropsSchema } from '../../../Schema/componentSchemas';
+import {
+	ComponentDisplayNames,
+	ComponentType,
+} from '../../ConfigBuilder/components/FormMode/types';
 
 const { Title, Text } = Typography;
 

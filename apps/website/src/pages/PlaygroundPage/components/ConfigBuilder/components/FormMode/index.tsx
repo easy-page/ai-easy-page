@@ -16,12 +16,12 @@ import { FormSchema } from '../../../../Schema';
 import ConfigHeader from '../ConfigHeader';
 import NodeTree from './NodeTree';
 import AddComponentModal from './AddComponentModal';
-import { ComponentType, ComponentDisplayNames } from './ComponentTypes';
 import { canUseFormItem } from './ComponentConfig';
 import './index.less';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import NodeConfigPanel from '../../../NodeConfigPanel';
 import { getDefaultComponentPropsSchema } from '@/pages/PlaygroundPage/Schema/componentSchemas';
+import { ComponentDisplayNames, ComponentType } from './types';
 
 interface FormModeProps {
 	schema: FormSchema | null;

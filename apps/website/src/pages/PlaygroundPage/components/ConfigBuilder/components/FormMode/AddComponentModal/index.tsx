@@ -32,6 +32,7 @@ import SearchPanel from './SearchPanel';
 import FavoritePanel from './FavoritePanel';
 import RecentPanel from './RecentPanel';
 import ComponentConfigPanel from './ComponentConfigPanel';
+import { TAB_KEYS, STORAGE_KEYS, DEFAULTS, TabKey } from './constants';
 import './index.less';
 
 const { TabPane } = Tabs;
@@ -47,9 +48,14 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 	visible,
 	onCancel,
 	onOk,
-	defaultIsFormComponent = true,
+	defaultIsFormComponent = DEFAULTS.DEFAULT_IS_FORM_COMPONENT,
 }) => {
-	const [activeTab, setActiveTab] = useState('categories');
+	const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.CATEGORIES);
+
+	// 处理Tab切换，确保类型安全
+	const handleTabChange = (activeKey: string) => {
+		setActiveTab(activeKey as TabKey);
+	};
 	const [searchKeyword, setSearchKeyword] = useState('');
 	const [selectedComponent, setSelectedComponent] =
 		useState<ComponentTypeOption | null>(null);
@@ -61,8 +67,10 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 
 	// 从localStorage加载收藏和最近使用
 	useEffect(() => {
-		const savedFavorites = localStorage.getItem('component-favorites');
-		const savedRecent = localStorage.getItem('component-recent');
+		const savedFavorites = localStorage.getItem(
+			STORAGE_KEYS.COMPONENT_FAVORITES
+		);
+		const savedRecent = localStorage.getItem(STORAGE_KEYS.COMPONENT_RECENT);
 
 		if (savedFavorites) {
 			setFavorites(JSON.parse(savedFavorites));
@@ -74,11 +82,17 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 
 	// 保存收藏和最近使用到localStorage
 	useEffect(() => {
-		localStorage.setItem('component-favorites', JSON.stringify(favorites));
+		localStorage.setItem(
+			STORAGE_KEYS.COMPONENT_FAVORITES,
+			JSON.stringify(favorites)
+		);
 	}, [favorites]);
 
 	useEffect(() => {
-		localStorage.setItem('component-recent', JSON.stringify(recentUsed));
+		localStorage.setItem(
+			STORAGE_KEYS.COMPONENT_RECENT,
+			JSON.stringify(recentUsed)
+		);
 	}, [recentUsed]);
 
 	// 处理组件选择
@@ -101,7 +115,7 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 			const newRecent = [
 				selectedComponent.value,
 				...recentUsed.filter((type) => type !== selectedComponent.value),
-			].slice(0, 10);
+			].slice(0, DEFAULTS.MAX_RECENT_COMPONENTS);
 			setRecentUsed(newRecent);
 
 			onOk(selectedComponent.value, isFormComponent);
@@ -114,7 +128,7 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 		setSelectedComponent(null);
 		setSearchKeyword('');
 		setIsFormComponent(defaultIsFormComponent);
-		setActiveTab('categories');
+		setActiveTab(TAB_KEYS.CATEGORIES);
 		onCancel();
 	};
 
@@ -185,7 +199,7 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 						prefix={<SearchOutlined />}
 						value={searchKeyword}
 						onChange={(e) => setSearchKeyword(e.target.value)}
-						onPressEnter={() => setActiveTab('search')}
+						onPressEnter={() => setActiveTab(TAB_KEYS.SEARCH)}
 						allowClear
 					/>
 				</div>
@@ -193,13 +207,13 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 				{/* 标签页 */}
 				<Tabs
 					activeKey={activeTab}
-					onChange={setActiveTab}
+					onChange={handleTabChange}
 					className="component-tabs"
 				>
-					<TabPane tab="分类浏览" key="categories">
+					<TabPane tab="分类浏览" key={TAB_KEYS.CATEGORIES}>
 						{renderCategoryTabs()}
 					</TabPane>
-					<TabPane tab="搜索" key="search">
+					<TabPane tab="搜索" key={TAB_KEYS.SEARCH}>
 						<SearchPanel
 							keyword={searchKeyword}
 							onComponentSelect={handleComponentSelect}
@@ -208,7 +222,7 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 							onToggleFavorite={toggleFavorite}
 						/>
 					</TabPane>
-					<TabPane tab="收藏" key="favorites">
+					<TabPane tab="收藏" key={TAB_KEYS.FAVORITES}>
 						<FavoritePanel
 							favorites={favorites}
 							onComponentSelect={handleComponentSelect}
@@ -216,7 +230,7 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 							onToggleFavorite={toggleFavorite}
 						/>
 					</TabPane>
-					<TabPane tab="最近使用" key="recent">
+					<TabPane tab="最近使用" key={TAB_KEYS.RECENT}>
 						<RecentPanel
 							recentUsed={recentUsed}
 							onComponentSelect={handleComponentSelect}

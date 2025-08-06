@@ -3,9 +3,9 @@ import { Modal, Tree, Button, Space, Typography, Form, Select } from 'antd';
 import { PlusOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { ComponentSchema } from '../../../Schema/component';
 import {
-	ComponentType,
 	ComponentDisplayNames,
-} from '../../ConfigBuilder/components/FormMode/ComponentTypes';
+	ComponentType,
+} from '../../ConfigBuilder/components/FormMode/types';
 
 const { Option } = Select;
 const { Text, Title } = Typography;
