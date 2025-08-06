@@ -33,7 +33,7 @@ const ContainerConfigPanel: FC<ContainerConfigPanelProps> = ({
 		const newProps = {
 			...props,
 			customContainer: {
-				type: 'function' as const,
+				type: 'functionReactNode' as const,
 				content,
 			},
 		};
@@ -104,7 +104,7 @@ const ContainerConfigPanel: FC<ContainerConfigPanelProps> = ({
 				<MonacoEditor
 					value={props.customContainer?.content || ''}
 					onChange={handleCustomContainerChange}
-					language="typescript"
+					language="jsx"
 					height="150px"
 				/>
 			</Form.Item>

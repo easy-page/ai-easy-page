@@ -1,4 +1,8 @@
-import { FunctionProperty, ReactNodeProperty } from '../specialProperties';
+import {
+	FunctionProperty,
+	ReactNodeProperty,
+	FunctionReactNodeProperty,
+} from '../specialProperties';
 
 // 通用组件属性
 export interface CommonComponentProps {

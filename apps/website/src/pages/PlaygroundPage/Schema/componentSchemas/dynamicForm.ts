@@ -1,4 +1,8 @@
-import { FunctionProperty, ReactNodeProperty } from '../specialProperties';
+import {
+	FunctionProperty,
+	ReactNodeProperty,
+	FunctionReactNodeProperty,
+} from '../specialProperties';
 import { CommonComponentProps, baseProps } from './types';
 
 // DynamicForm 组件属性 Schema
@@ -9,7 +13,7 @@ export interface DynamicFormPropsSchema {
 		maxRow?: number;
 		minRow?: number;
 		containerType?: 'tab' | 'table' | 'grid-table' | 'card';
-		customContainer?: FunctionProperty;
+		customContainer?: FunctionReactNodeProperty;
 		rows?: Array<{
 			rowIndexs: number[];
 			restAll?: boolean;

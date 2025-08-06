@@ -18,6 +18,7 @@ import { FormSchema, ComponentSchema } from '../Schema';
 import {
 	FunctionProperty,
 	ReactNodeProperty,
+	FunctionReactNodeProperty,
 } from '../Schema/specialProperties';
 import { JSXParser, ComponentMapper } from '../JSXParser';
 import {
@@ -116,6 +117,35 @@ const processReactNodeProperty = (
 	}
 };
 
+// 处理函数组件属性，将FunctionReactNodeProperty转换为React组件函数
+const processFunctionReactNodeProperty = (
+	funcProp: FunctionReactNodeProperty | undefined,
+	jsxParser: JSXParser
+): ((props: any) => React.ReactNode) | undefined => {
+	if (!funcProp || funcProp.type !== 'functionReactNode') {
+		return undefined;
+	}
+
+	try {
+		console.log('开始解析函数组件:', funcProp.content);
+		// 使用JSX解析器解析包含函数组件的字符串
+		const result = jsxParser.parse(funcProp.content);
+		console.log('函数组件解析结果:', result);
+		if (result.success && typeof result.result === 'function') {
+			console.log('解析成功，返回函数组件:', result.result);
+			return result.result as (props: any) => React.ReactNode;
+		} else {
+			console.warn('函数组件解析失败，返回默认函数:', funcProp.content);
+			// 如果解析失败，返回一个默认的函数组件
+			return (props: any) => <div>解析失败: {funcProp.content}</div>;
+		}
+	} catch (error) {
+		console.warn('函数组件属性解析失败:', error);
+		// 解析失败时返回一个默认的函数组件
+		return (props: any) => <div>解析失败: {funcProp.content}</div>;
+	}
+};
+
 // 处理组件属性，将配置转换为组件props
 const processComponentProps = (
 	props: Record<string, any> = {},
@@ -130,6 +160,15 @@ const processComponentProps = (
 				const func = processFunctionProperty(value as FunctionProperty);
 				if (func) {
 					processedProps[key] = func;
+				}
+			} else if (value.type === 'functionReactNode') {
+				// 处理函数组件属性
+				const funcComponent = processFunctionReactNodeProperty(
+					value as FunctionReactNodeProperty,
+					jsxParser
+				);
+				if (funcComponent) {
+					processedProps[key] = funcComponent;
 				}
 			} else if (value.type === 'reactNode') {
 				// 处理ReactNode属性

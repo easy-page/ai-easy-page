@@ -1,4 +1,8 @@
-import { FunctionProperty, ReactNodeProperty } from '../specialProperties';
+import {
+	FunctionProperty,
+	ReactNodeProperty,
+	FunctionReactNodeProperty,
+} from '../specialProperties';
 import { CommonComponentProps, baseProps } from './types';
 
 // Container 组件属性 Schema
@@ -9,7 +13,7 @@ export interface ContainerPropsSchema {
 		titleType?: 'h1' | 'h2' | 'h3' | 'h4';
 		layout?: 'horizontal' | 'vertical';
 		containerType?: 'Card' | 'Bordered';
-		customContainer?: FunctionProperty;
+		customContainer?: FunctionReactNodeProperty;
 		collapsible?: boolean;
 		defaultCollapsed?: boolean;
 	};

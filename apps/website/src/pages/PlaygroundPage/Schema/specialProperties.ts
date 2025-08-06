@@ -7,3 +7,11 @@ export type ReactNodeProperty = {
 	type: 'reactNode';
 	content: string; // 节点内容
 };
+
+/**
+ * - 函数组件，即返回的结果是一个组件的类型
+ */
+export type FunctionReactNodeProperty = {
+	type: 'functionReactNode';
+	content: string; // 节点内容
+};

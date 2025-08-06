@@ -31,7 +31,7 @@ const DynamicFormConfigPanel: FC<DynamicFormConfigPanelProps> = ({
 		const newProps = {
 			...props,
 			customContainer: {
-				type: 'function' as const,
+				type: 'functionReactNode' as const,
 				content,
 			},
 		};
@@ -346,7 +346,7 @@ const DynamicFormConfigPanel: FC<DynamicFormConfigPanelProps> = ({
 				<MonacoEditor
 					value={props.customContainer?.content || ''}
 					onChange={handleCustomContainerChange}
-					language="typescript"
+					language="jsx"
 					height="200px"
 				/>
 			</Form.Item>
