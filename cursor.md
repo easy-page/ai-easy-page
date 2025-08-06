@@ -813,3 +813,10 @@ export const FullFormDemo: React.FC = () => {
 
 我用容器组件，点击了标题属性，点击添加节点，选择输入框，然后报错了，
 这个 title.useSchema 打开的时候，要用 title.schema 去解析渲染，如果关闭采用 title.content, 帮忙看看是不是这里判断出错了，导致渲染错。
+
+# 丰富组件
+
+1. 在 packages/easy-page-pc/src/components 参考其他组件，再扩展一些 antd 的组件，比如：Tab、步骤条、抽屉等，丰富组件库，方便用户使用。
+2. 在 apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/ComponentTypes.ts 增加上面增加的表单组件选择项
+
+3. 有些组件不适合被表单元素包裹，因此不用扩展到：packages/easy-page-pc/src/components 里，比如：Button 等，但是可以添加到创建选项里，比如：Button、Icon、Divider 等，方便选择

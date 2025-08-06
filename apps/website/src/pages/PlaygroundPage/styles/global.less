@@ -56,7 +56,14 @@
 		border-radius: 50% !important;
 		width: 20px !important;
 		height: 20px !important;
-		top: 2px !important;
+		top: 50% !important;
+		transform: translateY(-50%) !important;
+	}
+
+	// 针对自定义高度的Switch组件，确保圆球始终垂直居中
+	&[style*='height'] .ant-switch-handle {
+		top: 50% !important;
+		transform: translateY(-50%) !important;
 	}
 
 	.ant-switch-inner {

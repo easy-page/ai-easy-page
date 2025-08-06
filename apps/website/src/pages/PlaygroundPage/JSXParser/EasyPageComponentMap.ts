@@ -12,6 +12,17 @@ import {
 	DateRangePicker,
 	TimePicker,
 	Container,
+	Tab,
+	Steps,
+	Drawer,
+	Switch,
+	InputNumber,
+	Slider,
+	Rate,
+	AutoComplete,
+	Cascader,
+	Transfer,
+	TreeSelect,
 } from '@easy-page/pc';
 
 // Easy-Page 组件映射表
@@ -37,6 +48,17 @@ export const EASY_PAGE_COMPONENT_MAP: Record<
 	DateRangePicker,
 	TimePicker,
 	Container,
+	Tab,
+	Steps,
+	Drawer,
+	Switch,
+	InputNumber,
+	Slider,
+	Rate,
+	AutoComplete,
+	Cascader,
+	Transfer,
+	TreeSelect,
 };
 
 // 获取所有组件名称
