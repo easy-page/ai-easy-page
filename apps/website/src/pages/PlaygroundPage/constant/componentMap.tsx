@@ -120,6 +120,14 @@ import {
 import { ComponentMap } from './types';
 import { EASY_PAGE_EXTENDED_COMPONENT_MAP } from './easyPageCoreComponentMap';
 
+// 导入组件示例
+import {
+	componentExamples,
+	formComponents,
+	nonFormComponents,
+	isFormComponent,
+} from '../PreviewExamples';
+
 const { Title, Paragraph, Text } = Typography;
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -268,4 +276,12 @@ export const DEFAULT_COMPONENT_MAP: ComponentMap = {
 	FileProtectOutlined,
 	FileSearchOutlined,
 	FileSyncOutlined,
+};
+
+// 导出组件示例相关的函数和映射
+export {
+	componentExamples,
+	formComponents,
+	nonFormComponents,
+	isFormComponent,
 };

@@ -4,6 +4,8 @@ import { ComponentType } from './types';
 export interface ComponentConfig {
 	// 是否可以使用FormItem包裹
 	canUseFormItem: boolean;
+	// 是否需要Form包裹
+	needForm?: boolean;
 	// 组件描述
 	description: string;
 	// 特殊说明
@@ -54,8 +56,9 @@ export const COMPONENT_CONFIG: Record<ComponentType, ComponentConfig> = {
 	},
 	[ComponentType.CONTAINER]: {
 		canUseFormItem: false,
-		description: '容器组件，用于组织其他组件，不能使用FormItem包裹',
-		note: '容器组件本身就是一个布局组件，不需要FormItem包裹',
+		needForm: true,
+		description: '容器组件，用于组织其他组件，需要Form包裹但不需要FormItem',
+		note: '容器组件需要Form包裹以支持表单功能，但不需要FormItem包裹',
 	},
 	[ComponentType.DYNAMIC_FORM]: {
 		canUseFormItem: false,
@@ -182,9 +185,21 @@ export const canUseFormItem = (componentType: ComponentType): boolean => {
 	return COMPONENT_CONFIG[componentType]?.canUseFormItem ?? true;
 };
 
+// 检查组件是否需要Form包裹
+export const needForm = (componentType: ComponentType): boolean => {
+	return COMPONENT_CONFIG[componentType]?.needForm ?? false;
+};
+
 // 获取所有不能使用FormItem的组件类型
 export const getNonFormItemComponents = (): ComponentType[] => {
 	return Object.entries(COMPONENT_CONFIG)
 		.filter(([_, config]) => !config.canUseFormItem)
+		.map(([type]) => type as ComponentType);
+};
+
+// 获取所有需要Form包裹的组件类型
+export const getNeedFormComponents = (): ComponentType[] => {
+	return Object.entries(COMPONENT_CONFIG)
+		.filter(([_, config]) => config.needForm)
 		.map(([type]) => type as ComponentType);
 };

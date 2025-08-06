@@ -246,7 +246,10 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 					{/* 右侧：预览和配置 */}
 					<div className="right-panel">
 						{/* 组件预览 */}
-						<ComponentPreview selectedComponent={selectedComponent} />
+						<ComponentPreview
+							selectedComponent={selectedComponent}
+							isFormComponent={isFormComponent}
+						/>
 
 						{/* 组件配置 */}
 						{selectedComponent && (

@@ -143,10 +143,31 @@
 	}
 }
 
+.form-item-label {
+	color: rgba(0, 255, 255, 0.9) !important;
+	font-weight: 500 !important;
+	font-size: 14px !important;
+}
 // Form 组件深色主题样式
 .ant-form-item-label > label {
-	color: rgba(255, 255, 255, 0.9) !important;
+	color: rgba(0, 255, 255, 0.9) !important;
 	font-weight: 500 !important;
+	font-size: 14px !important;
+}
+
+// FormItem 标签样式优化
+.ant-form-item-label > label.ant-form-item-required::before {
+	color: rgba(255, 77, 79, 0.8) !important;
+}
+
+// FormItem 整体样式
+.ant-form-item {
+	.ant-form-item-label {
+		label {
+			color: rgba(0, 255, 255, 0.9) !important;
+			font-weight: 500 !important;
+		}
+	}
 }
 
 // Card 组件深色主题样式
@@ -326,13 +347,27 @@
 	.config-content {
 		background: rgba(255, 255, 255, 0.02) !important;
 		border: 1px solid rgba(0, 255, 255, 0.2) !important;
+		border-radius: 6px !important;
+		padding: 16px !important;
 
 		.config-label {
-			color: #fff !important;
+			color: rgba(0, 255, 255, 0.9) !important;
+			font-weight: 500 !important;
+			font-size: 14px !important;
 		}
 
 		.config-note {
 			color: rgba(255, 77, 79, 0.8) !important;
+			font-size: 12px !important;
+			margin-top: 4px !important;
+		}
+
+		// 开关状态文字样式
+		.ant-space {
+			span {
+				color: rgba(0, 255, 255, 0.8) !important;
+				font-size: 14px !important;
+			}
 		}
 	}
 }
@@ -349,6 +384,31 @@
 	.preview-placeholder,
 	.preview-error {
 		color: rgba(255, 255, 255, 0.5) !important;
+	}
+
+	// 组件预览内容样式
+	.preview-form {
+		background: rgba(255, 255, 255, 0.02) !important;
+		border-radius: 6px !important;
+		padding: 16px !important;
+	}
+}
+
+// 组件预览卡片样式
+.component-preview {
+	.ant-card-head {
+		background: rgba(0, 255, 255, 0.05) !important;
+		border-bottom: 1px solid rgba(0, 255, 255, 0.2) !important;
+
+		.ant-card-head-title {
+			color: rgba(0, 255, 255, 0.9) !important;
+			font-weight: 500 !important;
+		}
+	}
+
+	.ant-card-body {
+		background: transparent !important;
+		padding: 16px !important;
 	}
 }
 
@@ -422,12 +482,12 @@
 // 表单组件说明样式
 .form-component-note {
 	font-size: 12px !important;
-	color: rgba(82, 196, 26, 0.8) !important;
+	color: rgba(0, 255, 255, 0.8) !important;
 	margin-top: 8px !important;
 	padding: 8px !important;
-	background-color: rgba(82, 196, 26, 0.1) !important;
+	background-color: rgba(0, 255, 255, 0.1) !important;
 	border-radius: 4px !important;
-	border: 1px solid rgba(82, 196, 26, 0.3) !important;
+	border: 1px solid rgba(0, 255, 255, 0.3) !important;
 }
 
 .non-form-component-note {
@@ -440,14 +500,25 @@
 	border: 1px solid rgba(0, 255, 255, 0.2) !important;
 }
 
-// 组件预览样式
-// .component-preview {
-// 	background: rgba(255, 255, 255, 0.02) !important;
-// 	border: 1px solid rgba(0, 255, 255, 0.2) !important;
-// 	border-radius: 8px !important;
-// 	padding: 16px !important;
-// 	min-height: 200px !important;
-// 	display: flex !important;
-// 	align-items: center !important;
-// 	justify-content: center !important;
-// }
+// 组件示例中的标题样式
+.preview-content {
+	h4 {
+		color: rgba(0, 255, 255, 0.9) !important;
+		font-weight: 500 !important;
+		font-size: 14px !important;
+		margin-bottom: 12px !important;
+	}
+
+	p {
+		color: rgba(255, 255, 255, 0.8) !important;
+		font-size: 14px !important;
+		line-height: 1.5 !important;
+	}
+
+	// 组件示例容器样式
+	> div {
+		background: rgba(255, 255, 255, 0.02) !important;
+		border-radius: 6px !important;
+		padding: 16px !important;
+	}
+}

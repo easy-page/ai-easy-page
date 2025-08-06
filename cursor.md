@@ -824,3 +824,18 @@ export const FullFormDemo: React.FC = () => {
 # 组件选择页面
 
 现在组件很多了，有什么更好的方式便于选择和创建么，帮我设计下？
+
+# preview examples
+
+应该为每一个组件都添加 examples 示例，放到：apps/website/src/pages/PlaygroundPage/PreviewExamples
+
+然后维护一个组件：apps/website/src/pages/PlaygroundPage/constant/componentMap.tsx 和 example 的映射关系
+
+- 比较复杂的组件如：dynamicForm 和 Container 等参考 pc-demos 目录下的使用方式
+- 如果：是否为表单组件的开关打开，则 example 里的组件应该要被 formItem 包裹（easy-page/core 的）
+
+这里面还有很多 Demo 没有实现， 继续实现：
+
+- 非表单模式下，不需要 Form 和 FormItem 包裹
+- 表单模式下，需要 Form 和 FormItem 包裹
+- 是否为表单组件这个配置要传给 example，表示是否是表单模式
