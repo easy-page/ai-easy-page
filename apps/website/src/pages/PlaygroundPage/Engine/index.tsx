@@ -24,6 +24,7 @@ import {
 	ComponentQueueManager,
 	useComponentQueue,
 } from './ComponentQueueManager';
+import { createFunctionFromString } from './functionParser';
 
 // 组件映射表
 const COMPONENT_MAP: Record<string, React.ComponentType<any>> = {
@@ -83,13 +84,7 @@ const processFunctionProperty = (
 		return undefined;
 	}
 
-	try {
-		// 创建函数，这里可以根据需要扩展
-		return new Function('store', 'values', 'rowInfo', funcProp.content);
-	} catch (error) {
-		console.warn('函数属性解析失败:', error);
-		return undefined;
-	}
+	return createFunctionFromString(funcProp.content);
 };
 
 // 处理ReactNode属性，将ReactNodeProperty转换为React节点
