@@ -16,6 +16,9 @@ export interface ContainerPropsSchema {
 		customContainer?: FunctionReactNodeProperty;
 		collapsible?: boolean;
 		defaultCollapsed?: boolean;
+		// WhenProps 相关属性
+		effectedBy?: string[];
+		show?: FunctionProperty;
 	};
 }
 
@@ -32,5 +35,12 @@ export const getDefaultContainerProps = (): ContainerPropsSchema => ({
 		layout: 'vertical',
 		containerType: 'Card',
 		collapsible: false,
+		defaultCollapsed: false,
+		// WhenProps 默认值
+		effectedBy: [],
+		show: {
+			type: 'function',
+			content: 'return true;',
+		},
 	},
 });

@@ -10,10 +10,8 @@ import {
 	Tabs,
 } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import {
-	ReactNodeProperty,
-	ComponentSchema,
-} from '../../../Schema/specialProperties';
+import { ReactNodeProperty } from '../../../Schema/specialProperties';
+import { ComponentSchema } from '../../../Schema/component';
 import MonacoEditor from '../../ConfigBuilder/components/FormMode/MonacoEditor';
 import {
 	ComponentType,
@@ -72,7 +70,6 @@ const ReactNodeConfigPanel: FC<ReactNodeConfigPanelProps> = ({
 			onChange={handleJSXChange}
 			language="jsx"
 			height="120px"
-			placeholder={placeholder}
 		/>
 	);
 
@@ -124,7 +121,6 @@ const ReactNodeConfigPanel: FC<ReactNodeConfigPanelProps> = ({
 						}}
 						language="json"
 						height="120px"
-						placeholder="请输入组件属性 (JSON格式)"
 					/>
 				</Form.Item>
 			</div>

@@ -31,6 +31,10 @@ export const getDefaultCheckboxGroupProps = (): CheckboxGroupPropsSchema => ({
 	type: 'checkboxGroup',
 	properties: {
 		...baseProps,
-		options: [],
+		options: [
+			{ label: '选项1', value: 'option1' },
+			{ label: '选项2', value: 'option2' },
+			{ label: '选项3', value: 'option3' },
+		],
 	},
 });

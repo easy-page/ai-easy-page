@@ -58,6 +58,7 @@ import {
 	getDefaultDynamicFormProps,
 } from './dynamicForm';
 import { CustomPropsSchema, getDefaultCustomProps } from './custom';
+import { ComponentType } from '../../components/ConfigBuilder/components/FormMode/ComponentTypes';
 
 // 组件属性 Schema 联合类型
 export type ComponentPropsSchema =
@@ -94,7 +95,7 @@ export const ComponentPropsSchemaMap = {
 
 // 获取组件的默认属性Schema
 export function getDefaultComponentPropsSchema(
-	componentType: string
+	componentType: ComponentType
 ): ComponentPropsSchema {
 	switch (componentType) {
 		case 'Input':

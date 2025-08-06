@@ -1,19 +1,27 @@
-import { FC, useState } from 'react';
-import { Button, message, Card } from 'antd';
+import React, { FC, useState, useEffect } from 'react';
+import {
+	Button,
+	Card,
+	Col,
+	Row,
+	Space,
+	message,
+	Modal,
+	Form,
+	Select,
+	Switch,
+} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { FormSchema } from '../../../../Schema';
 import ConfigHeader from '../ConfigHeader';
 import NodeTree from './NodeTree';
 import AddComponentModal from './AddComponentModal';
-import {
-	ComponentType,
-	ComponentDisplayNames,
-	getDefaultComponentProps,
-} from './ComponentTypes';
+import { ComponentType, ComponentDisplayNames } from './ComponentTypes';
 import { canUseFormItem } from './ComponentConfig';
 import './index.less';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import NodeConfigPanel from '../../../NodeConfigPanel';
+import { getDefaultComponentPropsSchema } from '@/pages/PlaygroundPage/Schema/componentSchemas';
 
 interface FormModeProps {
 	schema: FormSchema | null;
@@ -47,7 +55,10 @@ const FormMode: FC<FormModeProps> = ({
 
 		const newComponent = {
 			type: componentType,
-			props: getDefaultComponentProps(componentType),
+			props: getDefaultComponentPropsSchema(componentType).properties as Record<
+				string,
+				any
+			>,
 			isFormComponent: finalIsFormComponent,
 			formItem: finalIsFormComponent
 				? {

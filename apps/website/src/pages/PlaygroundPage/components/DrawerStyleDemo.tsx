@@ -102,13 +102,22 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 						<Form.Item label="加载组件">
 							<Space direction="vertical" style={{ width: '100%' }}>
 								<MonacoEditor
-									value={
-										(properties.loadingComponent as ReactNodeProperty)
-											?.content || ''
-									}
+									value={(() => {
+										const prop =
+											properties.loadingComponent as ReactNodeProperty;
+										if (
+											prop &&
+											typeof prop === 'object' &&
+											'type' in prop &&
+											prop.type === 'reactNode' &&
+											'content' in prop
+										) {
+											return prop.content;
+										}
+										return '';
+									})()}
 									language="jsx"
-									placeholder="请输入加载组件代码"
-									height={80}
+									height="80px"
 									onChange={(value: string) => {
 										onPropertyChange('properties.loadingComponent', {
 											type: 'reactNode',
@@ -144,8 +153,7 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 										(properties.onSubmit as FunctionProperty)?.content || ''
 									}
 									language="javascript"
-									placeholder="请输入提交处理函数"
-									height={80}
+									height="80px"
 									onChange={(value: string) => {
 										onPropertyChange('properties.onSubmit', {
 											type: 'function',
@@ -176,8 +184,7 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 										''
 									}
 									language="javascript"
-									placeholder="请输入值变化处理函数"
-									height={80}
+									height="80px"
 									onChange={(value: string) => {
 										onPropertyChange('properties.onValuesChange', {
 											type: 'function',

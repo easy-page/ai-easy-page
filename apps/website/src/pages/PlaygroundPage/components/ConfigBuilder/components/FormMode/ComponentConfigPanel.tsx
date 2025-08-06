@@ -11,11 +11,7 @@ import {
 	message,
 } from 'antd';
 import { RobotOutlined } from '@ant-design/icons';
-import {
-	ComponentType,
-	FormItemProps,
-	getDefaultComponentProps,
-} from './ComponentTypes';
+import { ComponentType, FormItemProps } from './ComponentTypes';
 import MonacoEditor from './MonacoEditor';
 
 const { Option } = Select;

@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
-import { Form, Input, Select, Switch } from 'antd';
+import { Form, Input, Select, Switch, Space, Button } from 'antd';
 import { ContainerPropsSchema } from '../../../Schema/componentSchemas/container';
 import MonacoEditor from '../../ConfigBuilder/components/FormMode/MonacoEditor';
 import ReactNodeConfigPanel from './ReactNodeConfigPanel';
 
 const { Option } = Select;
+const { TextArea } = Input;
 
 interface ContainerConfigPanelProps {
 	props: ContainerPropsSchema['properties'];
@@ -34,6 +35,29 @@ const ContainerConfigPanel: FC<ContainerConfigPanelProps> = ({
 			...props,
 			customContainer: {
 				type: 'functionReactNode' as const,
+				content,
+			},
+		};
+		onChange(newProps);
+	};
+
+	const handleEffectedByChange = (value: string) => {
+		const effectedBy = value
+			.split(',')
+			.map((field) => field.trim())
+			.filter(Boolean);
+		const newProps = {
+			...props,
+			effectedBy,
+		};
+		onChange(newProps);
+	};
+
+	const handleShowChange = (content: string) => {
+		const newProps = {
+			...props,
+			show: {
+				type: 'function' as const,
 				content,
 			},
 		};
@@ -107,6 +131,27 @@ const ContainerConfigPanel: FC<ContainerConfigPanelProps> = ({
 					language="jsx"
 					height="120px"
 				/>
+			</Form.Item>
+
+			{/* WhenProps 相关配置 */}
+			<Form.Item label="条件渲染">
+				<Space direction="vertical" style={{ width: '100%' }}>
+					<Form.Item label="影响字段" style={{ marginBottom: 8 }}>
+						<Input
+							value={props.effectedBy?.join(', ') || ''}
+							onChange={(e) => handleEffectedByChange(e.target.value)}
+							placeholder="请输入字段名，多个字段用逗号分隔"
+						/>
+					</Form.Item>
+					<Form.Item label="显示条件" style={{ marginBottom: 8 }}>
+						<MonacoEditor
+							value={props.show?.content || 'return true;'}
+							onChange={handleShowChange}
+							language="javascript"
+							height="100px"
+						/>
+					</Form.Item>
+				</Space>
 			</Form.Item>
 		</Form>
 	);

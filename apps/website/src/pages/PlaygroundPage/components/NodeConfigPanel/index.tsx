@@ -18,7 +18,7 @@ import { FormSchema, ComponentSchema } from '../../Schema';
 import { ReactNodeProperty } from '../../Schema/specialProperties';
 import { ComponentConfigPanelMap, FormItemConfigPanel } from './components';
 import FormConfigPanel from './components/FormConfigPanel';
-import { getDefaultComponentPropsSchema } from '../../Schema/componentProps';
+import { getDefaultComponentPropsSchema } from '../../Schema/componentSchemas';
 import './index.less';
 
 const { Text, Title } = Typography;
