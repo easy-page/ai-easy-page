@@ -375,15 +375,55 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 			onPropertyChange('properties.children', newChildren);
 		};
 
-		// 准备标签页内容
-		const tabItems = [];
+		// 如果有表单配置和组件配置，使用标签页
+		if (component.formItem && ComponentConfigPanel) {
+			const tabItems = [
+				{
+					key: 'formItem',
+					label: '表单属性',
+					children: (
+						<FormItemConfigPanel
+							props={component.formItem.properties || {}}
+							onChange={handleFormItemPropsChange}
+							onNodeSelect={onNodeSelect}
+							onExpand={onExpand}
+							onUpdateParentProperty={handleUpdateParentProperty}
+							componentIndex={nodeInfo.componentIndex}
+						/>
+					),
+				},
+				{
+					key: 'component',
+					label: '组件属性',
+					children: (
+						<ComponentConfigPanel
+							props={component.props || {}}
+							onChange={handleComponentPropsChange}
+							onNodeSelect={onNodeSelect}
+							onExpand={onExpand}
+							onUpdateParentProperty={handleUpdateParentProperty}
+							componentIndex={nodeInfo.componentIndex}
+						/>
+					),
+				},
+			];
 
-		// 如果有表单配置，添加表单属性标签页
-		if (component.formItem) {
-			tabItems.push({
-				key: 'formItem',
-				label: '表单属性',
-				children: (
+			return (
+				<div className="component-properties">
+					<Tabs
+						defaultActiveKey="formItem"
+						items={tabItems}
+						style={{ color: '#fff' }}
+						tabBarStyle={{ color: '#fff' }}
+					/>
+				</div>
+			);
+		}
+
+		// 如果只有表单配置，直接显示表单配置
+		if (component.formItem && !ComponentConfigPanel) {
+			return (
+				<div className="component-properties">
 					<FormItemConfigPanel
 						props={component.formItem.properties || {}}
 						onChange={handleFormItemPropsChange}
@@ -392,16 +432,14 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 						onUpdateParentProperty={handleUpdateParentProperty}
 						componentIndex={nodeInfo.componentIndex}
 					/>
-				),
-			});
+				</div>
+			);
 		}
 
-		// 如果有组件配置面板，添加组件属性标签页
-		if (ComponentConfigPanel) {
-			tabItems.push({
-				key: 'component',
-				label: '组件属性',
-				children: (
+		// 如果只有组件配置，直接显示组件配置
+		if (!component.formItem && ComponentConfigPanel) {
+			return (
+				<div className="component-properties">
 					<ComponentConfigPanel
 						props={component.props || {}}
 						onChange={handleComponentPropsChange}
@@ -410,20 +448,12 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 						onUpdateParentProperty={handleUpdateParentProperty}
 						componentIndex={nodeInfo.componentIndex}
 					/>
-				),
-			});
+				</div>
+			);
 		}
 
-		return (
-			<div className="component-properties">
-				<Tabs
-					defaultActiveKey="formItem"
-					items={tabItems}
-					style={{ color: '#fff' }}
-					tabBarStyle={{ color: '#fff' }}
-				/>
-			</div>
-		);
+		// 如果都没有，返回空
+		return null;
 	};
 
 	const renderArrayItemConfig = () => {
