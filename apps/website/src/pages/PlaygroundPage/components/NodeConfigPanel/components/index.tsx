@@ -13,6 +13,11 @@ import DynamicFormConfigPanel from './DynamicFormConfigPanel';
 import CustomConfigPanel from './CustomConfigPanel';
 import FormItemConfigPanel from './FormItemConfigPanel';
 import FormConfigPanel from './FormConfigPanel';
+import ReactNodeConfigPanel from './ReactNodeConfigPanel';
+import FunctionPropertyConfigPanel from './FunctionPropertyConfigPanel';
+import FunctionReactNodePropertyConfigPanel from './FunctionReactNodePropertyConfigPanel';
+import ReactNodeArrayConfigPanel from './ReactNodeArrayConfigPanel';
+import NodeSelectorModal from './NodeSelectorModal';
 
 // 组件配置面板映射
 export const ComponentConfigPanelMap = {
@@ -48,4 +53,9 @@ export {
 	CustomConfigPanel,
 	FormItemConfigPanel,
 	FormConfigPanel,
+	ReactNodeConfigPanel,
+	FunctionPropertyConfigPanel,
+	FunctionReactNodePropertyConfigPanel,
+	ReactNodeArrayConfigPanel,
+	NodeSelectorModal,
 };

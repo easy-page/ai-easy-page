@@ -15,9 +15,17 @@ import {
 } from 'antd';
 import { CloseOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { FormSchema, ComponentSchema } from '../../Schema';
-import { ReactNodeProperty } from '../../Schema/specialProperties';
+import {
+	ReactNodeProperty,
+	FunctionProperty,
+	FunctionReactNodeProperty,
+} from '../../Schema/specialProperties';
 import { ComponentConfigPanelMap, FormItemConfigPanel } from './components';
 import FormConfigPanel from './components/FormConfigPanel';
+import ReactNodeConfigPanel from './components/ReactNodeConfigPanel';
+import FunctionPropertyConfigPanel from './components/FunctionPropertyConfigPanel';
+import FunctionReactNodePropertyConfigPanel from './components/FunctionReactNodePropertyConfigPanel';
+import ReactNodeArrayConfigPanel from './components/ReactNodeArrayConfigPanel';
 import { getDefaultComponentPropsSchema } from '../../Schema/componentSchemas';
 import './index.less';
 
@@ -307,48 +315,72 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 
 		if (!currentValue) return null;
 
-		// 如果是 ReactNodeProperty 类型
+		// 如果是特殊属性类型
 		if (
 			currentValue &&
 			typeof currentValue === 'object' &&
 			'type' in currentValue
 		) {
-			const reactNodeProp = currentValue as ReactNodeProperty;
+			const handlePropertyChange = (newValue: any) => {
+				onPropertyChange(nodeInfo.propertyPath, newValue);
+			};
 
-			if (reactNodeProp.type === 'reactNode' && 'content' in reactNodeProp) {
+			// ReactNodeProperty 类型
+			if (currentValue.type === 'reactNode') {
 				return (
 					<div className="array-item-config">
 						<Title level={5} style={{ color: '#fff' }}>
-							JSX 内容配置
+							数组项配置 - ReactNode
 						</Title>
-						<Form layout="vertical">
-							<Form.Item label="JSX 内容">
-								<TextArea
-									value={reactNodeProp.content}
-									onChange={(e) => {
-										const newValue = {
-											...reactNodeProp,
-											content: e.target.value,
-										};
-										onPropertyChange(nodeInfo.propertyPath, newValue);
-									}}
-									rows={6}
-									placeholder="请输入JSX内容"
-									style={{
-										background: 'rgba(255, 255, 255, 0.08)',
-										border: '1px solid rgba(0, 255, 255, 0.3)',
-										color: '#fff',
-									}}
-								/>
-							</Form.Item>
-						</Form>
+						<ReactNodeConfigPanel
+							value={currentValue as ReactNodeProperty}
+							onChange={handlePropertyChange}
+							label="ReactNode 配置"
+						/>
+					</div>
+				);
+			}
+
+			// FunctionProperty 类型
+			if (currentValue.type === 'function') {
+				return (
+					<div className="array-item-config">
+						<Title level={5} style={{ color: '#fff' }}>
+							数组项配置 - Function
+						</Title>
+						<FunctionPropertyConfigPanel
+							value={currentValue as FunctionProperty}
+							onChange={handlePropertyChange}
+							label="函数配置"
+						/>
+					</div>
+				);
+			}
+
+			// FunctionReactNodeProperty 类型
+			if (currentValue.type === 'functionReactNode') {
+				return (
+					<div className="array-item-config">
+						<Title level={5} style={{ color: '#fff' }}>
+							数组项配置 - FunctionReactNode
+						</Title>
+						<FunctionReactNodePropertyConfigPanel
+							value={currentValue as FunctionReactNodeProperty}
+							onChange={handlePropertyChange}
+							label="函数组件配置"
+						/>
 					</div>
 				);
 			}
 
 			// 如果是 ComponentSchema 类型
-			if (reactNodeProp.type && reactNodeProp.type !== 'reactNode') {
-				const componentSchema = reactNodeProp as ComponentSchema;
+			if (
+				currentValue.type &&
+				currentValue.type !== 'reactNode' &&
+				currentValue.type !== 'function' &&
+				currentValue.type !== 'functionReactNode'
+			) {
+				const componentSchema = currentValue as ComponentSchema;
 				return (
 					<div className="array-item-config">
 						<Title level={5} style={{ color: '#fff' }}>
@@ -495,95 +527,83 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 		const component = children[nodeInfo.componentIndex!];
 		const propValue = component?.props?.[nodeInfo.propName!];
 
-		// 如果是 ReactNodeProperty 类型
+		// 处理不同类型的属性
 		if (propValue && typeof propValue === 'object' && 'type' in propValue) {
-			const reactNodeProp = propValue as ReactNodeProperty;
+			const handlePropertyChange = (newValue: any) => {
+				const newChildren = [...children];
+				const newComponent = { ...newChildren[nodeInfo.componentIndex!] };
+				newComponent.props = {
+					...newComponent.props,
+					[nodeInfo.propName!]: newValue,
+				};
+				newChildren[nodeInfo.componentIndex!] = newComponent;
+				onPropertyChange('properties.children', newChildren);
+			};
 
-			if (reactNodeProp.type === 'reactNode' && 'content' in reactNodeProp) {
+			// ReactNodeProperty 类型
+			if (propValue.type === 'reactNode') {
 				return (
 					<div className="property-config">
 						<Title level={5} style={{ color: '#fff' }}>
-							组件属性配置
+							组件属性配置 - {nodeInfo.propName}
 						</Title>
-						<Card
-							size="small"
-							style={{
-								marginBottom: 16,
-								background: 'rgba(0, 255, 255, 0.05)',
-								border: '1px solid rgba(0, 255, 255, 0.2)',
-							}}
-						>
-							<Space direction="vertical" style={{ width: '100%' }}>
-								<Text strong style={{ color: '#fff' }}>
-									属性名: {nodeInfo.propName}
-								</Text>
-								<Text
-									type="secondary"
-									style={{ color: 'rgba(255, 255, 255, 0.6)' }}
-								>
-									类型: ReactNode
-								</Text>
-								<Button
-									type="primary"
-									size="small"
-									onClick={() => {
-										// 确保父节点（属性节点）被展开
-										const parentKey = selectedNode;
-										const reactNodeKey = `${selectedNode}-reactnode-0`;
-
-										// 如果父节点还没有展开，先展开父节点
-										if (!expandedKeys.includes(parentKey)) {
-											const newExpandedKeys = [...expandedKeys, parentKey];
-											onExpand?.(newExpandedKeys);
-										}
-
-										// 选中对应的ReactNode节点
-										onNodeSelect?.(reactNodeKey);
-									}}
-								>
-									配置
-								</Button>
-							</Space>
-						</Card>
+						<ReactNodeConfigPanel
+							value={propValue as ReactNodeProperty}
+							onChange={handlePropertyChange}
+							label={`${nodeInfo.propName} (ReactNode)`}
+						/>
 					</div>
 				);
 			}
 
-			// 如果 useSchema 为 true 且有 schema
-			if (reactNodeProp.useSchema && reactNodeProp.schema) {
-				const componentSchema = reactNodeProp.schema;
+			// FunctionProperty 类型
+			if (propValue.type === 'function') {
 				return (
 					<div className="property-config">
 						<Title level={5} style={{ color: '#fff' }}>
-							组件配置
+							组件属性配置 - {nodeInfo.propName}
 						</Title>
-						<Card
-							size="small"
-							style={{
-								marginBottom: 16,
-								background: 'rgba(255, 255, 255, 0.05)',
-								border: '1px solid rgba(255, 255, 255, 0.1)',
-							}}
-						>
-							<Space direction="vertical" style={{ width: '100%' }}>
-								<Text strong style={{ color: '#fff' }}>
-									组件类型: {componentSchema.type}
-								</Text>
-								<Text
-									type="secondary"
-									style={{ color: 'rgba(255, 255, 255, 0.6)' }}
-								>
-									子组件数量: {componentSchema.children?.length || 0}
-								</Text>
-							</Space>
-						</Card>
+						<FunctionPropertyConfigPanel
+							value={propValue as FunctionProperty}
+							onChange={handlePropertyChange}
+							label={`${nodeInfo.propName} (Function)`}
+						/>
+					</div>
+				);
+			}
 
-						<Text
-							type="secondary"
-							style={{ color: 'rgba(255, 255, 255, 0.6)' }}
-						>
-							组件属性配置功能正在开发中...
-						</Text>
+			// FunctionReactNodeProperty 类型
+			if (propValue.type === 'functionReactNode') {
+				return (
+					<div className="property-config">
+						<Title level={5} style={{ color: '#fff' }}>
+							组件属性配置 - {nodeInfo.propName}
+						</Title>
+						<FunctionReactNodePropertyConfigPanel
+							value={propValue as FunctionReactNodeProperty}
+							onChange={handlePropertyChange}
+							label={`${nodeInfo.propName} (FunctionReactNode)`}
+						/>
+					</div>
+				);
+			}
+
+			// ReactNodeProperty[] 数组类型
+			if (
+				Array.isArray(propValue) &&
+				propValue.length > 0 &&
+				propValue[0]?.type === 'reactNode'
+			) {
+				return (
+					<div className="property-config">
+						<Title level={5} style={{ color: '#fff' }}>
+							组件属性配置 - {nodeInfo.propName}
+						</Title>
+						<ReactNodeArrayConfigPanel
+							value={propValue as ReactNodeProperty[]}
+							onChange={handlePropertyChange}
+							label={`${nodeInfo.propName} (ReactNodeArray)`}
+						/>
 					</div>
 				);
 			}
@@ -613,74 +633,54 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 				typeof reactNodeValue === 'object' &&
 				'type' in reactNodeValue
 			) {
-				if (
-					reactNodeValue.type === 'reactNode' &&
-					'content' in reactNodeValue
-				) {
+				const handlePropertyChange = (newValue: any) => {
+					onPropertyChange(nodeInfo.propertyPath, newValue);
+				};
+
+				// ReactNodeProperty 类型
+				if (reactNodeValue.type === 'reactNode') {
 					return (
 						<div className="reactnode-config">
 							<Title level={5} style={{ color: '#fff' }}>
-								JSX 内容配置
+								ReactNode 配置
 							</Title>
-							<Form layout="vertical">
-								<Form.Item label="JSX 内容">
-									<TextArea
-										value={reactNodeValue.content}
-										onChange={(e) => {
-											const newValue = {
-												...reactNodeValue,
-												content: e.target.value,
-											};
-											onPropertyChange(nodeInfo.propertyPath, newValue);
-										}}
-										rows={6}
-										placeholder="请输入JSX内容"
-										style={{
-											background: 'rgba(255, 255, 255, 0.08)',
-											border: '1px solid rgba(0, 255, 255, 0.3)',
-											color: '#fff',
-										}}
-									/>
-								</Form.Item>
-							</Form>
+							<ReactNodeConfigPanel
+								value={reactNodeValue as ReactNodeProperty}
+								onChange={handlePropertyChange}
+								label="ReactNode 配置"
+							/>
 						</div>
 					);
 				}
 
-				// 如果 useSchema 为 true 且有 schema
-				if (reactNodeValue.useSchema && reactNodeValue.schema) {
+				// FunctionProperty 类型
+				if (reactNodeValue.type === 'function') {
 					return (
 						<div className="reactnode-config">
 							<Title level={5} style={{ color: '#fff' }}>
-								组件配置
+								函数配置
 							</Title>
-							<Card
-								size="small"
-								style={{
-									marginBottom: 16,
-									background: 'rgba(255, 255, 255, 0.05)',
-									border: '1px solid rgba(255, 255, 255, 0.1)',
-								}}
-							>
-								<Space direction="vertical" style={{ width: '100%' }}>
-									<Text strong style={{ color: '#fff' }}>
-										组件类型: {reactNodeValue.schema.type}
-									</Text>
-									<Text
-										type="secondary"
-										style={{ color: 'rgba(255, 255, 255, 0.6)' }}
-									>
-										子组件数量: {reactNodeValue.schema.children?.length || 0}
-									</Text>
-								</Space>
-							</Card>
+							<FunctionPropertyConfigPanel
+								value={reactNodeValue as FunctionProperty}
+								onChange={handlePropertyChange}
+								label="函数配置"
+							/>
+						</div>
+					);
+				}
 
-							<Text
-								type="secondary"
-								style={{ color: 'rgba(255, 255, 255, 0.6)' }}
-							>
-								组件配置功能正在开发中...
-							</Text>
+				// FunctionReactNodeProperty 类型
+				if (reactNodeValue.type === 'functionReactNode') {
+					return (
+						<div className="reactnode-config">
+							<Title level={5} style={{ color: '#fff' }}>
+								函数组件配置
+							</Title>
+							<FunctionReactNodePropertyConfigPanel
+								value={reactNodeValue as FunctionReactNodeProperty}
+								onChange={handlePropertyChange}
+								label="函数组件配置"
+							/>
 						</div>
 					);
 				}

@@ -1,25 +1,12 @@
 import React, { FC, useState } from 'react';
-import {
-	Form,
-	Input,
-	Select,
-	Button,
-	Space,
-	Typography,
-	Card,
-	Tabs,
-} from 'antd';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Card, Typography, Button, Space, Switch, Form } from 'antd';
+import { RobotOutlined, PlusOutlined } from '@ant-design/icons';
 import { ReactNodeProperty } from '../../../Schema/specialProperties';
 import { ComponentSchema } from '../../../Schema/component';
 import MonacoEditor from '../../ConfigBuilder/components/FormMode/MonacoEditor';
-import {
-	ComponentType,
-	ComponentDisplayNames,
-} from '../../ConfigBuilder/components/FormMode/ComponentTypes';
+import NodeSelectorModal from './NodeSelectorModal';
 
-const { Option } = Select;
-const { Text, Title } = Typography;
+const { Title, Text } = Typography;
 
 interface ReactNodeConfigPanelProps {
 	value?: ReactNodeProperty;
@@ -31,130 +18,149 @@ interface ReactNodeConfigPanelProps {
 const ReactNodeConfigPanel: FC<ReactNodeConfigPanelProps> = ({
 	value,
 	onChange,
-	label = 'React节点',
-	placeholder = '请输入JSX内容或选择组件',
+	label = 'React节点配置',
+	placeholder = '请输入React节点代码',
 }) => {
-	const [configType, setConfigType] = useState<'jsx' | 'schema'>(
-		value && value.useSchema ? 'schema' : 'jsx'
-	);
+	const [isSchemaMode, setIsSchemaMode] = useState(value?.useSchema || false);
+	const [modalVisible, setModalVisible] = useState(false);
 
-	const handleTypeChange = (type: 'jsx' | 'schema') => {
-		setConfigType(type);
-		if (type === 'jsx') {
-			onChange?.({
-				type: 'reactNode',
-				content: '',
-			});
-		} else {
+	const handleStringModeChange = (content: string) => {
+		onChange?.({
+			type: 'reactNode',
+			content,
+			useSchema: false,
+		});
+	};
+
+	const handleSchemaModeChange = (schema: ComponentSchema) => {
+		onChange?.({
+			type: 'reactNode',
+			useSchema: true,
+			schema,
+		});
+	};
+
+	const handleModeSwitch = (checked: boolean) => {
+		setIsSchemaMode(checked);
+		if (checked) {
+			// 切换到节点模式时，清空字符串内容
 			onChange?.({
 				type: 'reactNode',
 				useSchema: true,
-				schema: {
-					type: 'Input',
-					props: {},
-				} as ComponentSchema,
+				schema: value?.schema,
+			});
+		} else {
+			// 切换到字符串模式时，保留字符串内容
+			onChange?.({
+				type: 'reactNode',
+				content: value?.content,
+				useSchema: false,
 			});
 		}
 	};
 
-	const handleJSXChange = (content: string) => {
-		onChange?.({
-			type: 'reactNode',
-			content,
-		});
+	const handleAIAssist = () => {
+		// TODO: 实现AI编辑功能
+		console.log('AI编辑功能待实现');
 	};
 
-	const handleSchemaChange = (componentSchema: ComponentSchema) => {
-		onChange?.({
-			type: 'reactNode',
-			useSchema: true,
-			schema: componentSchema,
-		});
+	const handleAddNode = () => {
+		setModalVisible(true);
 	};
 
-	const renderJSXConfig = () => (
-		<MonacoEditor
-			value={value && 'content' in value ? value.content || '' : ''}
-			onChange={handleJSXChange}
-			language="jsx"
-			height="120px"
-		/>
-	);
+	const handleModalConfirm = (componentSchema: ComponentSchema) => {
+		handleSchemaModeChange(componentSchema);
+		setModalVisible(false);
+	};
 
-	const renderSchemaConfig = () => {
-		// 获取 schema 值
-		const componentSchema =
-			value?.schema || ({ type: 'Input', props: {} } as ComponentSchema);
-
-		return (
-			<div>
-				<Form.Item label="组件类型">
-					<Select
-						value={componentSchema.type}
-						onChange={(type) => {
-							handleSchemaChange({
-								...componentSchema,
-								type,
-							});
-						}}
-					>
-						{Object.entries(ComponentDisplayNames).map(([key, name]) => (
-							<Option key={key} value={key}>
-								{name}
-							</Option>
-						))}
-					</Select>
-				</Form.Item>
-
-				<Form.Item label="组件属性">
-					<MonacoEditor
-						value={JSON.stringify(componentSchema.props || {}, null, 2)}
-						onChange={(content) => {
-							try {
-								const props = JSON.parse(content);
-								handleSchemaChange({
-									...componentSchema,
-									props,
-								});
-							} catch (error) {
-								// 解析错误时不更新
-							}
-						}}
-						language="json"
-						height="120px"
-					/>
-				</Form.Item>
-			</div>
-		);
+	const handleModalCancel = () => {
+		setModalVisible(false);
 	};
 
 	return (
-		<Card size="small" style={{ marginBottom: 16 }}>
-			<Title level={5}>{label}</Title>
+		<>
+			<Card size="small" style={{ marginBottom: 16 }}>
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+						marginBottom: 8,
+					}}
+				>
+					<Title level={5} style={{ margin: 0 }}>
+						{label}
+					</Title>
+					<Space>
+						<Form.Item label="节点模式" style={{ margin: 0 }}>
+							<Switch
+								checked={isSchemaMode}
+								onChange={handleModeSwitch}
+								checkedChildren="节点"
+								unCheckedChildren="字符串"
+							/>
+						</Form.Item>
+						{!isSchemaMode && (
+							<Button
+								type="primary"
+								icon={<RobotOutlined />}
+								size="small"
+								onClick={handleAIAssist}
+							>
+								AI编辑
+							</Button>
+						)}
+					</Space>
+				</div>
 
-			<Form.Item label="配置类型">
-				<Select value={configType} onChange={handleTypeChange}>
-					<Option value="jsx">JSX内容</Option>
-					<Option value="component">组件配置</Option>
-				</Select>
-			</Form.Item>
+				{!isSchemaMode ? (
+					<MonacoEditor
+						value={value?.content || ''}
+						onChange={handleStringModeChange}
+						language="javascript"
+						height="200px"
+					/>
+				) : (
+					<div>
+						{value?.schema ? (
+							<div
+								style={{
+									padding: 12,
+									border: '1px solid #d9d9d9',
+									borderRadius: 6,
+								}}
+							>
+								<Text type="secondary">已配置节点: {value.schema.type}</Text>
+								<Button
+									type="link"
+									size="small"
+									onClick={handleAddNode}
+									style={{ marginLeft: 8 }}
+								>
+									重新配置
+								</Button>
+							</div>
+						) : (
+							<Button
+								type="dashed"
+								icon={<PlusOutlined />}
+								onClick={handleAddNode}
+								style={{ width: '100%', height: 100 }}
+							>
+								添加节点
+							</Button>
+						)}
+					</div>
+				)}
+			</Card>
 
-			<Tabs
-				activeKey={configType}
-				items={[
-					{
-						key: 'jsx',
-						label: 'JSX内容',
-						children: renderJSXConfig(),
-					},
-					{
-						key: 'schema',
-						label: '组件配置',
-						children: renderSchemaConfig(),
-					},
-				]}
+			<NodeSelectorModal
+				visible={modalVisible}
+				onCancel={handleModalCancel}
+				onConfirm={handleModalConfirm}
+				title="选择React节点组件"
 			/>
-		</Card>
+		</>
 	);
 };
 
