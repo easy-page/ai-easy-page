@@ -794,4 +794,19 @@ export const FullFormDemo: React.FC = () => {
 
 # 优化配置面板
 
--
+- 配置面板位置：apps/website/src/pages/PlaygroundPage/components/NodeConfigPanel
+- schema 位置：apps/website/src/pages/PlaygroundPage/Schema
+
+首先
+
+- 针对：FunctionReactNodeProperty 类型设计一个组件：monaco editor 呈现，并具备 AI 编辑能力
+- 针对：ReactNodeProperty 配置，设计一个组件：
+
+  - 有一个开关，关闭，则表示使用字符串配置，展示 monacoEditor 组件，并可以进行 AI 编辑
+  - 打开，则进入节点配置模式， 展示新建按钮，点击后出现左侧组件树一样的新增节点弹窗，apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/NodeTree.tsx
+  - 新增节点后，选中对应节点，节点新增到对应组件对应属性上。
+  - 注意考虑：ReactNodeProperty[] 属性的情况
+
+- 针对：FunctionProperty，类型设计一个组件：monaco editor 呈现，并具备 AI 编辑能力，这个和 FunctionReactNodeProperty 用两个组件吧，可能后面会有差别，暂时一样而已。
+
+基于上述描述优化配置，用合适的组件优化我的配置面板：apps/website/src/pages/PlaygroundPage/components/NodeConfigPanel，结合 Schema 里的类型，给相应类型的属性，在配置面板里用对应组件去配置
