@@ -91,30 +91,44 @@ const processFunctionProperty = (
 // 处理ReactNode属性，将ReactNodeProperty转换为React节点
 const processReactNodeProperty = (
 	nodeProp: ReactNodeProperty | undefined,
-	jsxParser: JSXParser
+	jsxParser: JSXParser,
+	renderComponent?: (schema: ComponentSchema, key?: string) => React.ReactNode
 ): React.ReactNode => {
-	if (!nodeProp || nodeProp.type !== 'reactNode') {
+	if (!nodeProp) {
 		return undefined;
 	}
 
-	try {
-		console.log('开始解析JSX:', nodeProp.content);
-		// 使用JSX解析器解析包含JSX的字符串
-		const result = jsxParser.parse(nodeProp.content);
-		console.log('JSX解析结果:', result);
-		if (result.success) {
-			console.log('解析成功，返回结果:', result.result);
-			return result.result;
-		} else {
-			console.warn('JSX解析失败，返回原始内容:', nodeProp.content);
-			// 如果解析失败，返回一个简单的div包装
+	// 如果是 ComponentSchema 类型，直接渲染组件
+	if (nodeProp.type && nodeProp.type !== 'reactNode') {
+		if (renderComponent) {
+			return renderComponent(nodeProp as ComponentSchema);
+		}
+		return undefined;
+	}
+
+	// 处理字符串类型的 ReactNodeProperty
+	if (nodeProp.type === 'reactNode' && 'content' in nodeProp) {
+		try {
+			console.log('开始解析JSX:', nodeProp.content);
+			// 使用JSX解析器解析包含JSX的字符串
+			const result = jsxParser.parse(nodeProp.content);
+			console.log('JSX解析结果:', result);
+			if (result.success) {
+				console.log('解析成功，返回结果:', result.result);
+				return result.result;
+			} else {
+				console.warn('JSX解析失败，返回原始内容:', nodeProp.content);
+				// 如果解析失败，返回一个简单的div包装
+				return <div>{nodeProp.content}</div>;
+			}
+		} catch (error) {
+			console.warn('ReactNode属性解析失败:', error);
+			// 解析失败时返回一个简单的div包装
 			return <div>{nodeProp.content}</div>;
 		}
-	} catch (error) {
-		console.warn('ReactNode属性解析失败:', error);
-		// 解析失败时返回一个简单的div包装
-		return <div>{nodeProp.content}</div>;
 	}
+
+	return undefined;
 };
 
 // 处理函数组件属性，将FunctionReactNodeProperty转换为React组件函数
@@ -149,7 +163,8 @@ const processFunctionReactNodeProperty = (
 // 处理组件属性，将配置转换为组件props
 const processComponentProps = (
 	props: Record<string, any> = {},
-	jsxParser: JSXParser
+	jsxParser: JSXParser,
+	renderComponent?: (schema: ComponentSchema, key?: string) => React.ReactNode
 ): Record<string, any> => {
 	const processedProps: Record<string, any> = {};
 
@@ -174,7 +189,8 @@ const processComponentProps = (
 				// 处理ReactNode属性
 				const node = processReactNodeProperty(
 					value as ReactNodeProperty,
-					jsxParser
+					jsxParser,
+					renderComponent
 				);
 				if (node !== undefined) {
 					processedProps[key] = node;
@@ -192,7 +208,8 @@ const processComponentProps = (
 								) {
 									const parsedField = processReactNodeProperty(
 										field as ReactNodeProperty,
-										jsxParser
+										jsxParser,
+										renderComponent
 									);
 									console.log(
 										'解析后的字段:',
@@ -297,7 +314,11 @@ export class SchemaEngine {
 		}
 
 		// 处理组件属性
-		const componentProps = processComponentProps(schema.props, this.jsxParser);
+		const componentProps = processComponentProps(
+			schema.props,
+			this.jsxParser,
+			this.renderComponent.bind(this)
+		);
 
 		// 处理子组件
 		const children = schema.children?.map((child, index) =>

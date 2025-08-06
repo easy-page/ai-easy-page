@@ -11,6 +11,7 @@ import {
 } from 'antd';
 import { DynamicFormPropsSchema } from '../../../Schema/componentProps';
 import MonacoEditor from '../../ConfigBuilder/components/FormMode/MonacoEditor';
+import ReactNodeConfigPanel from './ReactNodeConfigPanel';
 
 interface DynamicFormConfigPanelProps {
 	props: DynamicFormPropsSchema['properties'];
@@ -38,13 +39,10 @@ const DynamicFormConfigPanel: FC<DynamicFormConfigPanelProps> = ({
 		onChange(newProps);
 	};
 
-	const handleHeadersChange = (index: number, content: string) => {
+	const handleHeadersChange = (index: number, value: any) => {
 		const currentHeaders = props.headers || [];
 		const newHeaders = [...currentHeaders];
-		newHeaders[index] = {
-			type: 'reactNode' as const,
-			content,
-		};
+		newHeaders[index] = value;
 		const newProps = {
 			...props,
 			headers: newHeaders,
@@ -98,13 +96,19 @@ const DynamicFormConfigPanel: FC<DynamicFormConfigPanelProps> = ({
 		onChange(newProps);
 	};
 
-	const handleRestAllChange = (rowIndex: number, checked: boolean) => {
+	const handleFieldsChange = (
+		rowIndex: number,
+		fieldIndex: number,
+		value: any
+	) => {
 		const currentRows = props.rows || [];
 		const newRows = [...currentRows];
-		if (newRows[rowIndex]) {
+		if (newRows[rowIndex] && newRows[rowIndex].fields) {
+			const newFields = [...newRows[rowIndex].fields];
+			newFields[fieldIndex] = value;
 			newRows[rowIndex] = {
 				...newRows[rowIndex],
-				restAll: checked,
+				fields: newFields,
 			};
 		}
 		const newProps = {
@@ -114,18 +118,56 @@ const DynamicFormConfigPanel: FC<DynamicFormConfigPanelProps> = ({
 		onChange(newProps);
 	};
 
-	const handleFieldsChange = (rowIndex: number, content: string) => {
+	const addField = (rowIndex: number) => {
+		const currentRows = props.rows || [];
+		const newRows = [...currentRows];
+		if (newRows[rowIndex]) {
+			const currentFields = newRows[rowIndex].fields || [];
+			const newFields = [
+				...currentFields,
+				{
+					type: 'reactNode' as const,
+					content: '<div>字段</div>',
+				},
+			];
+			newRows[rowIndex] = {
+				...newRows[rowIndex],
+				fields: newFields,
+			};
+		}
+		const newProps = {
+			...props,
+			rows: newRows,
+		};
+		onChange(newProps);
+	};
+
+	const removeField = (rowIndex: number, fieldIndex: number) => {
+		const currentRows = props.rows || [];
+		const newRows = [...currentRows];
+		if (newRows[rowIndex] && newRows[rowIndex].fields) {
+			const newFields = newRows[rowIndex].fields.filter(
+				(_, i) => i !== fieldIndex
+			);
+			newRows[rowIndex] = {
+				...newRows[rowIndex],
+				fields: newFields,
+			};
+		}
+		const newProps = {
+			...props,
+			rows: newRows,
+		};
+		onChange(newProps);
+	};
+
+	const handleRestAllChange = (rowIndex: number, checked: boolean) => {
 		const currentRows = props.rows || [];
 		const newRows = [...currentRows];
 		if (newRows[rowIndex]) {
 			newRows[rowIndex] = {
 				...newRows[rowIndex],
-				fields: [
-					{
-						type: 'reactNode' as const,
-						content,
-					},
-				],
+				restAll: checked,
 			};
 		}
 		const newProps = {
@@ -257,13 +299,9 @@ const DynamicFormConfigPanel: FC<DynamicFormConfigPanelProps> = ({
 											删除
 										</Button>
 									</Space>
-									<MonacoEditor
-										value={header.content}
-										onChange={(value) =>
-											handleHeadersChange(index, value || '')
-										}
-										language="jsx"
-										height="100px"
+									<ReactNodeConfigPanel
+										value={header}
+										onChange={(value) => handleHeadersChange(index, value)}
 									/>
 								</div>
 							))}
@@ -327,12 +365,44 @@ const DynamicFormConfigPanel: FC<DynamicFormConfigPanelProps> = ({
 							</Form.Item>
 
 							<Form.Item label="字段配置" style={{ marginBottom: '8px' }}>
-								<MonacoEditor
-									value={row.fields?.[0]?.content || ''}
-									onChange={(value) => handleFieldsChange(index, value || '')}
-									language="jsx"
-									height="120px"
-								/>
+								<Space direction="vertical" style={{ width: '100%' }}>
+									{(row.fields || []).map((field, fieldIndex) => (
+										<div
+											key={fieldIndex}
+											style={{
+												border: '1px solid #d9d9d9',
+												padding: '8px',
+												borderRadius: '6px',
+											}}
+										>
+											<Space
+												style={{
+													width: '100%',
+													justifyContent: 'space-between',
+													marginBottom: '8px',
+												}}
+											>
+												<span>字段 {fieldIndex + 1}</span>
+												<Button
+													size="small"
+													danger
+													onClick={() => removeField(index, fieldIndex)}
+												>
+													删除
+												</Button>
+											</Space>
+											<ReactNodeConfigPanel
+												value={field}
+												onChange={(value) =>
+													handleFieldsChange(index, fieldIndex, value)
+												}
+											/>
+										</div>
+									))}
+									<Button type="dashed" onClick={() => addField(index)} block>
+										添加字段
+									</Button>
+								</Space>
 							</Form.Item>
 						</div>
 					))}

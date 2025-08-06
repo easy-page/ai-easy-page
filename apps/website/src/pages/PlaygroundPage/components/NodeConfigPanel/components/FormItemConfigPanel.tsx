@@ -15,6 +15,7 @@ import {
 import { RobotOutlined } from '@ant-design/icons';
 import { FormItemProps } from '../../../Schema/formItem';
 import MonacoEditor from '../../ConfigBuilder/components/FormMode/MonacoEditor';
+import ReactNodeConfigPanel from './ReactNodeConfigPanel';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -33,6 +34,20 @@ const FormItemConfigPanel: FC<FormItemConfigPanelProps> = ({
 
 	const handleValuesChange = (changedValues: any, allValues: any) => {
 		onChange(allValues);
+	};
+
+	const handleTipsChange = (value: any) => {
+		onChange({
+			...props,
+			tips: value,
+		});
+	};
+
+	const handleExtraChange = (value: any) => {
+		onChange({
+			...props,
+			extra: value,
+		});
 	};
 
 	return (
@@ -101,29 +116,12 @@ const FormItemConfigPanel: FC<FormItemConfigPanelProps> = ({
 				<Row gutter={16}>
 					<Col span={24}>
 						<Form.Item label="提示信息">
-							<Space direction="vertical" style={{ width: '100%' }}>
-								<MonacoEditor
-									value={props.tips?.content || ''}
-									language="javascript"
-									height="80px"
-									onChange={(value: string) => {
-										onChange({
-											...props,
-											tips: { type: 'reactNode', content: value },
-										});
-									}}
-								/>
-								<Button
-									type="text"
-									size="small"
-									icon={<RobotOutlined />}
-									onClick={() => {
-										// AI编辑功能暂未实现
-									}}
-								>
-									AI 编辑
-								</Button>
-							</Space>
+							<ReactNodeConfigPanel
+								value={props.tips}
+								onChange={handleTipsChange}
+								label="提示信息"
+								placeholder="请输入提示信息或选择组件"
+							/>
 						</Form.Item>
 					</Col>
 
@@ -135,29 +133,12 @@ const FormItemConfigPanel: FC<FormItemConfigPanelProps> = ({
 
 					<Col span={24}>
 						<Form.Item label="额外信息">
-							<Space direction="vertical" style={{ width: '100%' }}>
-								<MonacoEditor
-									value={props.extra?.content || ''}
-									language="javascript"
-									height="80px"
-									onChange={(value: string) => {
-										onChange({
-											...props,
-											extra: { type: 'reactNode', content: value },
-										});
-									}}
-								/>
-								<Button
-									type="text"
-									size="small"
-									icon={<RobotOutlined />}
-									onClick={() => {
-										// AI编辑功能暂未实现
-									}}
-								>
-									AI 编辑
-								</Button>
-							</Space>
+							<ReactNodeConfigPanel
+								value={props.extra}
+								onChange={handleExtraChange}
+								label="额外信息"
+								placeholder="请输入额外信息或选择组件"
+							/>
 						</Form.Item>
 					</Col>
 				</Row>

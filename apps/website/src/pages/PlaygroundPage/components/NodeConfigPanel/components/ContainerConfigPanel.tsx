@@ -1,7 +1,10 @@
 import React, { FC } from 'react';
-import { Form, Input, Switch, Select } from 'antd';
-import { ContainerPropsSchema } from '../../../Schema/componentProps';
+import { Form, Input, Select, Switch } from 'antd';
+import { ContainerPropsSchema } from '../../../Schema/componentSchemas/container';
 import MonacoEditor from '../../ConfigBuilder/components/FormMode/MonacoEditor';
+import ReactNodeConfigPanel from './ReactNodeConfigPanel';
+
+const { Option } = Select;
 
 interface ContainerConfigPanelProps {
 	props: ContainerPropsSchema['properties'];
@@ -18,13 +21,10 @@ const ContainerConfigPanel: FC<ContainerConfigPanelProps> = ({
 		onChange(allValues);
 	};
 
-	const handleTitleChange = (content: string) => {
+	const handleTitleChange = (value: any) => {
 		const newProps = {
 			...props,
-			title: {
-				type: 'reactNode' as const,
-				content,
-			},
+			title: value,
 		};
 		onChange(newProps);
 	};
@@ -48,11 +48,11 @@ const ContainerConfigPanel: FC<ContainerConfigPanelProps> = ({
 			onValuesChange={handleValuesChange}
 		>
 			<Form.Item label="标题">
-				<MonacoEditor
-					value={props.title?.content || ''}
+				<ReactNodeConfigPanel
+					value={props.title}
 					onChange={handleTitleChange}
-					language="jsx"
-					height="80px"
+					label="标题内容"
+					placeholder="请输入标题内容或选择组件"
 				/>
 			</Form.Item>
 
@@ -105,20 +105,8 @@ const ContainerConfigPanel: FC<ContainerConfigPanelProps> = ({
 					value={props.customContainer?.content || ''}
 					onChange={handleCustomContainerChange}
 					language="jsx"
-					height="150px"
+					height="120px"
 				/>
-			</Form.Item>
-
-			<Form.Item label="占位符" name="placeholder">
-				<Input placeholder="请输入占位符文本" />
-			</Form.Item>
-
-			<Form.Item label="禁用" name="disabled" valuePropName="checked">
-				<Switch />
-			</Form.Item>
-
-			<Form.Item label="CSS类名" name="className">
-				<Input placeholder="请输入CSS类名" />
 			</Form.Item>
 		</Form>
 	);

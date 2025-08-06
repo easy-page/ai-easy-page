@@ -17,6 +17,7 @@ import {
 	ReactNodeProperty,
 } from '../../../Schema/specialProperties';
 import MonacoEditor from '../../ConfigBuilder/components/FormMode/MonacoEditor';
+import ReactNodeConfigPanel from './ReactNodeConfigPanel';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -69,32 +70,14 @@ const FormConfigPanel: FC<FormConfigPanelProps> = ({
 
 				<Col span={24}>
 					<Form.Item label="加载组件">
-						<Space direction="vertical" style={{ width: '100%' }}>
-							<MonacoEditor
-								value={
-									(properties.loadingComponent as ReactNodeProperty)?.content ||
-									''
-								}
-								language="jsx"
-								height="80px"
-								onChange={(value: string) => {
-									onPropertyChange('properties.loadingComponent', {
-										type: 'reactNode',
-										content: value,
-									});
-								}}
-							/>
-							<Button
-								type="text"
-								size="small"
-								icon={<RobotOutlined />}
-								onClick={() => {
-									// AI编辑功能暂未实现
-								}}
-							>
-								AI 编辑
-							</Button>
-						</Space>
+						<ReactNodeConfigPanel
+							value={properties.loadingComponent}
+							onChange={(value) => {
+								onPropertyChange('properties.loadingComponent', value);
+							}}
+							label="加载组件"
+							placeholder="请输入加载组件内容或选择组件"
+						/>
 					</Form.Item>
 				</Col>
 			</Row>
@@ -109,7 +92,7 @@ const FormConfigPanel: FC<FormConfigPanelProps> = ({
 						<Space direction="vertical" style={{ width: '100%' }}>
 							<MonacoEditor
 								value={(properties.onSubmit as FunctionProperty)?.content || ''}
-								language="javascript"
+								language="typescript"
 								height="80px"
 								onChange={(value: string) => {
 									onPropertyChange('properties.onSubmit', {
@@ -139,7 +122,7 @@ const FormConfigPanel: FC<FormConfigPanelProps> = ({
 								value={
 									(properties.onValuesChange as FunctionProperty)?.content || ''
 								}
-								language="javascript"
+								language="typescript"
 								height="80px"
 								onChange={(value: string) => {
 									onPropertyChange('properties.onValuesChange', {
