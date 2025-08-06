@@ -820,3 +820,7 @@ export const FullFormDemo: React.FC = () => {
 2. 在 apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/ComponentTypes.ts 增加上面增加的表单组件选择项
 
 3. 有些组件不适合被表单元素包裹，因此不用扩展到：packages/easy-page-pc/src/components 里，比如：Button 等，但是可以添加到创建选项里，比如：Button、Icon、Divider 等，方便选择
+
+# 组件选择页面
+
+现在组件很多了，有什么更好的方式便于选择和创建么，帮我设计下？
