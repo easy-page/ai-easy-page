@@ -18,14 +18,6 @@ const ComponentConfigPanel: FC<ComponentConfigPanelProps> = ({
 
 	return (
 		<div className="component-config-panel">
-			<div className="config-header">
-				<div className="component-icon">{component.icon}</div>
-				<div className="component-info">
-					<div className="component-name">{component.label}</div>
-					<div className="component-description">{component.description}</div>
-				</div>
-			</div>
-
 			<div className="config-content">
 				<div className="config-item">
 					<div>
@@ -47,33 +39,13 @@ const ComponentConfigPanel: FC<ComponentConfigPanelProps> = ({
 				</div>
 
 				{isFormComponent && (
-					<div
-						style={{
-							fontSize: '12px',
-							color: '#52c41a',
-							marginTop: '8px',
-							padding: '8px',
-							backgroundColor: '#f6ffed',
-							borderRadius: '4px',
-							border: '1px solid #b7eb8f',
-						}}
-					>
+					<div className="form-component-note">
 						表单组件会被包裹在FormItem中，支持表单验证和标签显示
 					</div>
 				)}
 
 				{!isFormComponent && config?.canUseFormItem && (
-					<div
-						style={{
-							fontSize: '12px',
-							color: '#666',
-							marginTop: '8px',
-							padding: '8px',
-							backgroundColor: '#fafafa',
-							borderRadius: '4px',
-							border: '1px solid #d9d9d9',
-						}}
-					>
+					<div className="non-form-component-note">
 						非表单组件直接渲染，不包含表单相关的功能
 					</div>
 				)}

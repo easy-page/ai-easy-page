@@ -113,13 +113,9 @@ const ComponentPreview: FC<ComponentPreviewProps> = ({ selectedComponent }) => {
 
 		return (
 			<div className="preview-content">
-				<div className="preview-header">
-					<h4>{selectedComponent.label} 预览</h4>
-					<p>{selectedComponent.description}</p>
-				</div>
 				<div className="preview-form">
 					<Form>
-						<FormItem id="preview" label="预览">
+						<FormItem id="preview" label="">
 							<Component {...previewProps} />
 						</FormItem>
 					</Form>

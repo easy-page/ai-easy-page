@@ -220,3 +220,237 @@
 .ant-tree .ant-tree-node-content-wrapper {
 	color: rgba(0, 255, 255, 0.8) !important;
 }
+
+// 添加组件面板深色主题样式
+.add-component-modal {
+	.modal-content {
+		.modal-layout {
+			.left-panel {
+				border-right: 1px solid rgba(0, 255, 255, 0.2) !important;
+			}
+
+			.right-panel {
+				.component-config {
+					border-top: 1px solid rgba(0, 255, 255, 0.2) !important;
+				}
+			}
+		}
+	}
+}
+
+// 组件列表深色主题样式
+.component-list {
+	.component-list-item {
+		&:hover {
+			background-color: rgba(0, 255, 255, 0.1) !important;
+		}
+
+		&.selected {
+			background-color: rgba(0, 255, 255, 0.2) !important;
+			border: 1px solid rgba(0, 255, 255, 0.5) !important;
+		}
+
+		.component-item-content {
+			.component-item-icon {
+				color: rgba(0, 255, 255, 0.8) !important;
+			}
+
+			.component-item-info {
+				.component-item-title {
+					color: #fff !important;
+				}
+
+				.component-item-description {
+					color: rgba(255, 255, 255, 0.6) !important;
+				}
+			}
+		}
+	}
+}
+
+// 组件网格深色主题样式
+.component-grid {
+	.component-card {
+		background: rgba(255, 255, 255, 0.02) !important;
+		border: 1px solid rgba(0, 255, 255, 0.2) !important;
+
+		&:hover {
+			border-color: rgba(0, 255, 255, 0.6) !important;
+			background: rgba(0, 255, 255, 0.05) !important;
+		}
+
+		&.selected {
+			border-color: rgba(0, 255, 255, 0.8) !important;
+			background: rgba(0, 255, 255, 0.1) !important;
+		}
+
+		.component-title {
+			color: #fff !important;
+		}
+
+		.component-description {
+			color: rgba(255, 255, 255, 0.6) !important;
+		}
+	}
+}
+
+// 分类面板深色主题样式
+.category-panel {
+	.category-header {
+		background: rgba(0, 255, 255, 0.05) !important;
+		border: 1px solid rgba(0, 255, 255, 0.2) !important;
+
+		.category-name {
+			color: #fff !important;
+		}
+
+		.category-description {
+			color: rgba(255, 255, 255, 0.6) !important;
+		}
+	}
+}
+
+// 收藏和最近使用面板深色主题样式
+.favorite-panel,
+.recent-panel {
+	.panel-header {
+		background: rgba(250, 173, 20, 0.1) !important;
+		border: 1px solid rgba(250, 173, 20, 0.3) !important;
+		border-left: 4px solid rgba(250, 173, 20, 0.6) !important;
+
+		.panel-icon {
+			color: rgba(250, 173, 20, 0.8) !important;
+		}
+
+		.panel-title {
+			color: rgba(250, 173, 20, 0.9) !important;
+		}
+	}
+
+	.empty-state {
+		color: rgba(255, 255, 255, 0.5) !important;
+	}
+}
+
+// 组件配置面板深色主题样式
+.component-config-panel {
+	.component-info {
+		.component-name {
+			color: #fff !important;
+		}
+
+		.component-description {
+			color: rgba(255, 255, 255, 0.6) !important;
+		}
+	}
+
+	.config-content {
+		background: rgba(255, 255, 255, 0.02) !important;
+		border: 1px solid rgba(0, 255, 255, 0.2) !important;
+
+		.config-label {
+			color: #fff !important;
+		}
+
+		.config-note {
+			color: rgba(255, 77, 79, 0.8) !important;
+		}
+	}
+}
+
+// 搜索面板深色主题样式
+.search-panel {
+	.no-results {
+		color: rgba(255, 255, 255, 0.5) !important;
+	}
+}
+
+// 预览区域深色主题样式
+.preview-content {
+	.preview-header {
+		h4 {
+			color: #fff !important;
+		}
+
+		p {
+			color: rgba(255, 255, 255, 0.6) !important;
+		}
+	}
+
+	.preview-form {
+		background: rgba(255, 255, 255, 0.02) !important;
+		border: 1px solid rgba(0, 255, 255, 0.2) !important;
+	}
+
+	.preview-placeholder,
+	.preview-error {
+		color: rgba(255, 255, 255, 0.5) !important;
+	}
+}
+
+// Tabs 深色主题样式
+.ant-tabs {
+	.ant-tabs-tab {
+		color: rgba(255, 255, 255, 0.7) !important;
+
+		&:hover {
+			color: rgba(0, 255, 255, 0.8) !important;
+		}
+
+		&.ant-tabs-tab-active {
+			color: rgba(0, 255, 255, 0.9) !important;
+		}
+	}
+
+	.ant-tabs-ink-bar {
+		background: rgba(0, 255, 255, 0.8) !important;
+	}
+}
+
+// Modal 深色主题样式
+.ant-modal {
+	.ant-modal-content {
+		background: rgba(30, 30, 30, 0.95) !important;
+		border: 1px solid rgba(0, 255, 255, 0.3) !important;
+		border-radius: 8px !important;
+	}
+
+	.ant-modal-header {
+		background: rgba(0, 255, 255, 0.05) !important;
+		border-bottom: 1px solid rgba(0, 255, 255, 0.2) !important;
+
+		.ant-modal-title {
+			color: #fff !important;
+		}
+	}
+
+	.ant-modal-body {
+		background: transparent !important;
+	}
+
+	.ant-modal-footer {
+		border-top: 1px solid rgba(0, 255, 255, 0.2) !important;
+		background: rgba(0, 255, 255, 0.02) !important;
+	}
+}
+
+// Empty 组件深色主题样式
+.ant-empty {
+	.ant-empty-description {
+		color: rgba(255, 255, 255, 0.5) !important;
+	}
+}
+
+// List 组件深色主题样式
+.ant-list {
+	.ant-list-item {
+		border-bottom: 1px solid rgba(0, 255, 255, 0.1) !important;
+	}
+}
+
+// Tag 组件深色主题样式
+.ant-tag {
+	background: rgba(0, 255, 255, 0.1) !important;
+	border: 1px solid rgba(0, 255, 255, 0.3) !important;
+	color: rgba(0, 255, 255, 0.8) !important;
+}

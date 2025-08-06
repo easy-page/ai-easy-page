@@ -33,22 +33,8 @@ const CategoryPanel: FC<CategoryPanelProps> = ({
 
 	console.log('components12323', components, category);
 
-	const categoryConfig = useMemo(() => {
-		return COMPONENT_CATEGORIES.find((cat) => cat.id === category);
-	}, [category]);
-
 	return (
 		<div className="category-panel">
-			<div className="category-header">
-				<div className="category-icon">{categoryConfig?.icon}</div>
-				<div className="category-info">
-					<div className="category-name">{categoryConfig?.name}</div>
-					<div className="category-description">
-						{categoryConfig?.description}
-					</div>
-				</div>
-			</div>
-
 			<ComponentList
 				components={components}
 				selectedComponent={selectedComponent}
