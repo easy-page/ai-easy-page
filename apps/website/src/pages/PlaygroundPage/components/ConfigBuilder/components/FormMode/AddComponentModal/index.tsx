@@ -152,22 +152,7 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 
 	return (
 		<Modal
-			title={
-				<div
-					style={{
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'space-between',
-					}}
-				>
-					<span>添加组件</span>
-					{selectedComponent && (
-						<Tag color="blue" style={{ margin: 0 }}>
-							{selectedComponent.label}
-						</Tag>
-					)}
-				</div>
-			}
+			title="添加组件"
 			open={visible}
 			onOk={handleOk}
 			onCancel={handleCancel}

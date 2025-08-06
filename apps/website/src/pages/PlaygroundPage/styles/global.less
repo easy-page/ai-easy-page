@@ -296,18 +296,7 @@
 
 // 分类面板深色主题样式
 .category-panel {
-	.category-header {
-		background: rgba(0, 255, 255, 0.05) !important;
-		border: 1px solid rgba(0, 255, 255, 0.2) !important;
-
-		.category-name {
-			color: #fff !important;
-		}
-
-		.category-description {
-			color: rgba(255, 255, 255, 0.6) !important;
-		}
-	}
+	// 分类头部样式已在 index.less 中定义，这里只需要深色主题覆盖
 }
 
 // 收藏和最近使用面板深色主题样式
@@ -334,16 +323,6 @@
 
 // 组件配置面板深色主题样式
 .component-config-panel {
-	.component-info {
-		.component-name {
-			color: #fff !important;
-		}
-
-		.component-description {
-			color: rgba(255, 255, 255, 0.6) !important;
-		}
-	}
-
 	.config-content {
 		background: rgba(255, 255, 255, 0.02) !important;
 		border: 1px solid rgba(0, 255, 255, 0.2) !important;
@@ -367,21 +346,6 @@
 
 // 预览区域深色主题样式
 .preview-content {
-	.preview-header {
-		h4 {
-			color: #fff !important;
-		}
-
-		p {
-			color: rgba(255, 255, 255, 0.6) !important;
-		}
-	}
-
-	.preview-form {
-		background: rgba(255, 255, 255, 0.02) !important;
-		border: 1px solid rgba(0, 255, 255, 0.2) !important;
-	}
-
 	.preview-placeholder,
 	.preview-error {
 		color: rgba(255, 255, 255, 0.5) !important;
@@ -454,3 +418,36 @@
 	border: 1px solid rgba(0, 255, 255, 0.3) !important;
 	color: rgba(0, 255, 255, 0.8) !important;
 }
+
+// 表单组件说明样式
+.form-component-note {
+	font-size: 12px !important;
+	color: rgba(82, 196, 26, 0.8) !important;
+	margin-top: 8px !important;
+	padding: 8px !important;
+	background-color: rgba(82, 196, 26, 0.1) !important;
+	border-radius: 4px !important;
+	border: 1px solid rgba(82, 196, 26, 0.3) !important;
+}
+
+.non-form-component-note {
+	font-size: 12px !important;
+	color: rgba(255, 255, 255, 0.6) !important;
+	margin-top: 8px !important;
+	padding: 8px !important;
+	background-color: rgba(255, 255, 255, 0.02) !important;
+	border-radius: 4px !important;
+	border: 1px solid rgba(0, 255, 255, 0.2) !important;
+}
+
+// 组件预览样式
+// .component-preview {
+// 	background: rgba(255, 255, 255, 0.02) !important;
+// 	border: 1px solid rgba(0, 255, 255, 0.2) !important;
+// 	border-radius: 8px !important;
+// 	padding: 16px !important;
+// 	min-height: 200px !important;
+// 	display: flex !important;
+// 	align-items: center !important;
+// 	justify-content: center !important;
+// }
