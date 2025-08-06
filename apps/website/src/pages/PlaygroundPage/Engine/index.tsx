@@ -130,6 +130,26 @@ const processComponentProps = (
 				if (node !== undefined) {
 					processedProps[key] = node;
 				}
+			} else if (key === 'rows' && Array.isArray(value)) {
+				// 特殊处理DynamicForm的rows配置
+				processedProps[key] = value.map((row: any) => ({
+					...row,
+					fields: Array.isArray(row.fields)
+						? row.fields.map((field: any) => {
+								if (
+									field &&
+									typeof field === 'object' &&
+									field.type === 'reactNode'
+								) {
+									return processReactNodeProperty(
+										field as ReactNodeProperty,
+										jsxParser
+									);
+								}
+								return field;
+						  })
+						: row.fields,
+				}));
 			} else {
 				// 其他对象属性直接传递
 				processedProps[key] = value;
@@ -236,7 +256,11 @@ export class SchemaEngine {
 			);
 
 			return (
-				<FormItem key={key} {...formItemProps}>
+				<FormItem
+					key={key}
+					id={schema.formItem.properties?.id || `form-item-${key}`}
+					{...formItemProps}
+				>
 					{React.createElement(Component, { ...componentProps }, children)}
 				</FormItem>
 			);

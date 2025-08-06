@@ -200,15 +200,32 @@ export function getDefaultComponentProps(type: ComponentType): any {
 		case ComponentType.SELECT:
 			return {
 				...baseProps,
-				options: [],
+				options: [
+					{ label: '选项1', value: 'option1' },
+					{ label: '选项2', value: 'option2' },
+					{ label: '选项3', value: 'option3' },
+				],
 				allowClear: true,
 				showSearch: false,
 			};
 		case ComponentType.CHECKBOX_GROUP:
+			return {
+				...baseProps,
+				options: [
+					{ label: '选项1', value: 'option1' },
+					{ label: '选项2', value: 'option2' },
+					{ label: '选项3', value: 'option3' },
+				],
+			};
 		case ComponentType.RADIO_GROUP:
 			return {
 				...baseProps,
-				options: [],
+				options: [
+					{ label: '选项1', value: 'option1' },
+					{ label: '选项2', value: 'option2' },
+					{ label: '选项3', value: 'option3' },
+				],
+				optionType: 'default',
 			};
 		case ComponentType.TEXTAREA:
 			return {
@@ -233,12 +250,60 @@ export function getDefaultComponentProps(type: ComponentType): any {
 			return {
 				...baseProps,
 				title: '容器',
+				titleType: 'h2',
+				layout: 'vertical',
 				collapsible: false,
+				children: [], // 容器需要子组件
+			};
+		case ComponentType.DYNAMIC_FORM:
+			return {
+				...baseProps,
+				id: 'dynamic-form',
+				maxRow: 10,
+				minRow: 1,
+				containerType: 'tab',
+				rows: [
+					{
+						rowIndexs: [0],
+						fields: [
+							// 默认添加一个输入框作为示例
+							{
+								type: 'Input',
+								props: {
+									id: 'field1',
+									placeholder: '请输入内容',
+									allowClear: true,
+								},
+								isFormComponent: true,
+								formItem: {
+									type: 'formItem',
+									properties: {
+										id: 'field1',
+										label: '字段1',
+										required: false,
+										labelLayout: 'vertical',
+									},
+								},
+							},
+						],
+					},
+				],
 			};
 		case ComponentType.CUSTOM:
 			return {
 				...baseProps,
 				content: '// 在这里编写自定义组件代码\nreturn <div>自定义组件</div>;',
+			};
+		case ComponentType.CHECKBOX:
+			return {
+				...baseProps,
+				label: '复选框',
+			};
+		case ComponentType.RADIO:
+			return {
+				...baseProps,
+				label: '单选框',
+				value: 'radio-value',
 			};
 		default:
 			return baseProps;

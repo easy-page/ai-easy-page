@@ -13,6 +13,7 @@ export interface TimePickerProps {
 	format?: string;
 	showNow?: boolean;
 	use12Hours?: boolean;
+	allowClear?: boolean;
 }
 
 export const TimePicker: React.FC<TimePickerProps> = ({
@@ -22,6 +23,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
 	format = 'HH:mm:ss',
 	showNow = true,
 	use12Hours = false,
+	allowClear = true,
 	...props
 }) => {
 	// 将字符串转换为 dayjs 对象
@@ -41,6 +43,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
 			format={format}
 			showNow={showNow}
 			use12Hours={use12Hours}
+			allowClear={allowClear}
 			style={{ minWidth: 150, ...props.style }}
 			{...props}
 		/>

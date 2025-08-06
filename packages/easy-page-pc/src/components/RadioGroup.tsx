@@ -14,6 +14,7 @@ export interface RadioGroupProps {
 	value?: FieldValue;
 	onChange?: (value: FieldValue) => void;
 	options?: RadioOption[];
+	optionType?: 'default' | 'button';
 	disabled?: boolean;
 	style?: React.CSSProperties;
 	className?: string;
@@ -23,6 +24,7 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
 	value,
 	onChange,
 	options = [],
+	optionType = 'default',
 	...props
 }) => {
 	const handleChange = (e: any) => {
@@ -34,6 +36,7 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
 			value={value as string | number}
 			onChange={handleChange}
 			options={options}
+			optionType={optionType}
 			{...props}
 		/>
 	);

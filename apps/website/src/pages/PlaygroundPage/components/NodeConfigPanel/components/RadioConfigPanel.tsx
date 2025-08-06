@@ -21,6 +21,14 @@ const RadioConfigPanel: FC<RadioConfigPanelProps> = ({ props, onChange }) => {
 			initialValues={props}
 			onValuesChange={handleValuesChange}
 		>
+			<Form.Item label="标签文本" name="label">
+				<Input placeholder="请输入标签文本" />
+			</Form.Item>
+
+			<Form.Item label="选项值" name="value">
+				<Input placeholder="请输入选项值" />
+			</Form.Item>
+
 			<Form.Item label="占位符" name="placeholder">
 				<Input placeholder="请输入占位符文本" />
 			</Form.Item>

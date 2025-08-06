@@ -12,6 +12,7 @@ export interface DatePickerProps {
 	className?: string;
 	showTime?: boolean;
 	format?: string;
+	allowClear?: boolean;
 }
 
 export const DatePicker: React.FC<DatePickerProps> = ({
@@ -19,6 +20,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 	onChange,
 	showTime = false,
 	format = showTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD',
+	allowClear = true,
 	...props
 }) => {
 	// 将字符串转换为 dayjs 对象
@@ -36,6 +38,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 			onChange={handleChange}
 			showTime={showTime}
 			format={format}
+			allowClear={allowClear}
 			style={{ minWidth: 200, ...props.style }}
 			{...props}
 		/>

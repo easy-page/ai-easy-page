@@ -14,6 +14,7 @@ export interface DateRangePickerProps {
 	className?: string;
 	showTime?: boolean;
 	format?: string;
+	allowClear?: boolean;
 }
 
 export const DateRangePicker: React.FC<DateRangePickerProps> = ({
@@ -22,6 +23,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
 	placeholder = ['开始日期', '结束日期'],
 	showTime = false,
 	format = showTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD',
+	allowClear = true,
 	...props
 }) => {
 	// 将字符串数组转换为 dayjs 对象数组
@@ -44,6 +46,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
 			placeholder={placeholder}
 			showTime={showTime}
 			format={format}
+			allowClear={allowClear}
 			style={{ minWidth: 300, ...props.style }}
 			{...props}
 		/>

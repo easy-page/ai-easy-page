@@ -12,6 +12,7 @@ export interface TextAreaProps {
 	rows?: number;
 	showCount?: boolean;
 	maxLength?: number;
+	autoSize?: boolean | { minRows?: number; maxRows?: number };
 	style?: React.CSSProperties;
 	className?: string;
 }
@@ -22,6 +23,7 @@ export const TextArea: React.FC<TextAreaProps> = ({
 	rows = 4,
 	showCount = false,
 	maxLength,
+	autoSize,
 	...props
 }) => {
 	const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -35,6 +37,7 @@ export const TextArea: React.FC<TextAreaProps> = ({
 			rows={rows}
 			showCount={showCount}
 			maxLength={maxLength}
+			autoSize={autoSize}
 			{...props}
 		/>
 	);
