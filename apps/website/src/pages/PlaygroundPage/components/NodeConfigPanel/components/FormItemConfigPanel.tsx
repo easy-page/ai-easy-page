@@ -16,6 +16,7 @@ import { RobotOutlined } from '@ant-design/icons';
 import { FormItemProps } from '../../../Schema/formItem';
 import MonacoEditor from '../../ConfigBuilder/components/FormMode/MonacoEditor';
 import ReactNodeConfigPanel from './ReactNodeConfigPanel';
+import { ComponentSchema } from '../../../Schema/component';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -24,11 +25,22 @@ const { Title } = Typography;
 interface FormItemConfigPanelProps {
 	props: FormItemProps;
 	onChange: (props: FormItemProps) => void;
+	onNodeSelect?: (nodeId: string) => void;
+	onExpand?: (expandedKeys: string[]) => void;
+	onUpdateParentProperty?: (
+		propertyPath: string,
+		componentSchema: ComponentSchema
+	) => void;
+	componentIndex?: number; // 当前组件的索引
 }
 
 const FormItemConfigPanel: FC<FormItemConfigPanelProps> = ({
 	props,
 	onChange,
+	onNodeSelect,
+	onExpand,
+	onUpdateParentProperty,
+	componentIndex,
 }) => {
 	const [form] = Form.useForm();
 
@@ -121,6 +133,9 @@ const FormItemConfigPanel: FC<FormItemConfigPanelProps> = ({
 								onChange={handleTipsChange}
 								label="提示信息"
 								placeholder="请输入提示信息或选择组件"
+								onNodeSelect={onNodeSelect}
+								onExpand={onExpand}
+								componentIndex={componentIndex}
 							/>
 						</Form.Item>
 					</Col>
@@ -138,6 +153,9 @@ const FormItemConfigPanel: FC<FormItemConfigPanelProps> = ({
 								onChange={handleExtraChange}
 								label="额外信息"
 								placeholder="请输入额外信息或选择组件"
+								onNodeSelect={onNodeSelect}
+								onExpand={onExpand}
+								componentIndex={componentIndex}
 							/>
 						</Form.Item>
 					</Col>

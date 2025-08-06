@@ -26,13 +26,26 @@ const MonacoEditor: FC<MonacoEditorProps> = ({
 			style={{
 				height,
 				fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
-				fontSize: '12px',
-				lineHeight: '1.5',
-				background: '#1e1e1e',
-				border: '1px solid #d9d9d9',
-				color: '#fff',
-				borderRadius: '6px',
+				fontSize: '13px',
+				lineHeight: '1.6',
+				background: 'rgba(30, 30, 30, 0.8)',
+				border: '1px solid rgba(0, 255, 255, 0.3)',
+				color: '#e6e6e6',
+				borderRadius: '8px',
 				resize: 'none',
+				padding: '12px',
+				boxSizing: 'border-box',
+				transition: 'all 0.3s ease',
+				boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.3)',
+			}}
+			onFocus={(e) => {
+				e.target.style.borderColor = 'rgba(0, 255, 255, 0.6)';
+				e.target.style.boxShadow =
+					'inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(0, 255, 255, 0.1)';
+			}}
+			onBlur={(e) => {
+				e.target.style.borderColor = 'rgba(0, 255, 255, 0.3)';
+				e.target.style.boxShadow = 'inset 0 1px 3px rgba(0, 0, 0, 0.3)';
 			}}
 			placeholder={`// 在这里编写${language}代码`}
 		/>

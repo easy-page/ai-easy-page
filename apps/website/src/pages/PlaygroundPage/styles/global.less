@@ -40,6 +40,128 @@
 	}
 }
 
+// Switch 组件深色主题样式
+.ant-switch {
+	background: rgba(255, 255, 255, 0.2) !important;
+	border: 1px solid rgba(255, 255, 255, 0.3) !important;
+
+	&.ant-switch-checked {
+		background: rgba(0, 255, 255, 0.6) !important;
+		border-color: rgba(0, 255, 255, 0.8) !important;
+	}
+
+	.ant-switch-handle {
+		background: #fff !important;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+		border-radius: 50% !important;
+		width: 20px !important;
+		height: 20px !important;
+		top: 2px !important;
+	}
+
+	.ant-switch-inner {
+		color: rgba(255, 255, 255, 0.8) !important;
+		font-size: 11px !important;
+		font-weight: 500 !important;
+	}
+
+	&:hover {
+		&.ant-switch-checked {
+			background: rgba(0, 255, 255, 0.7) !important;
+		}
+		&:not(.ant-switch-checked) {
+			background: rgba(255, 255, 255, 0.3) !important;
+		}
+	}
+
+	&:focus {
+		box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2) !important;
+	}
+}
+
+// Select 组件深色主题样式
+.ant-select {
+	.ant-select-selector {
+		background: rgba(255, 255, 255, 0.08) !important;
+		border: 1px solid rgba(0, 255, 255, 0.3) !important;
+		color: #fff !important;
+		border-radius: 6px !important;
+
+		&:hover,
+		&:focus {
+			border-color: rgba(0, 255, 255, 0.6) !important;
+			box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.1) !important;
+		}
+	}
+
+	.ant-select-selection-item {
+		color: #fff !important;
+	}
+
+	.ant-select-arrow {
+		color: rgba(255, 255, 255, 0.6) !important;
+	}
+
+	&.ant-select-focused .ant-select-selector {
+		border-color: rgba(0, 255, 255, 0.6) !important;
+		box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.1) !important;
+	}
+}
+
+// Select 下拉菜单样式
+.ant-select-dropdown {
+	background: rgba(30, 30, 30, 0.95) !important;
+	border: 1px solid rgba(0, 255, 255, 0.3) !important;
+	border-radius: 8px !important;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+
+	.ant-select-item {
+		color: rgba(255, 255, 255, 0.8) !important;
+		background: transparent !important;
+
+		&:hover {
+			background: rgba(0, 255, 255, 0.1) !important;
+			color: #fff !important;
+		}
+
+		&.ant-select-item-option-selected {
+			background: rgba(0, 255, 255, 0.2) !important;
+			color: #fff !important;
+		}
+
+		&.ant-select-item-option-active {
+			background: rgba(0, 255, 255, 0.15) !important;
+			color: #fff !important;
+		}
+	}
+}
+
+// Form 组件深色主题样式
+.ant-form-item-label > label {
+	color: rgba(255, 255, 255, 0.9) !important;
+	font-weight: 500 !important;
+}
+
+// Card 组件深色主题样式
+.ant-card {
+	background: rgba(255, 255, 255, 0.02) !important;
+	border: 1px solid rgba(0, 255, 255, 0.2) !important;
+	border-radius: 8px !important;
+
+	.ant-card-head {
+		background: rgba(0, 255, 255, 0.05) !important;
+		border-bottom: 1px solid rgba(0, 255, 255, 0.2) !important;
+
+		.ant-card-head-title {
+			color: #fff !important;
+		}
+	}
+
+	.ant-card-body {
+		background: transparent !important;
+	}
+}
+
 // 节点树样式 - 增加优先级覆盖 Ant Design 默认样式
 .node-tree-component,
 .form-mode .node-tree-container .custom-tree {

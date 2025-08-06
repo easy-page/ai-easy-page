@@ -1,25 +1,27 @@
-import { FC } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import {
+	Card,
+	Typography,
+	Button,
+	Space,
+	Divider,
 	Form,
 	Input,
 	Select,
-	Button,
-	Typography,
-	Divider,
+	Switch,
 	Row,
 	Col,
 	Tabs,
-	Card,
-	Space,
 	Table,
 } from 'antd';
 import { CloseOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { FormSchema, ComponentSchema } from '../../Schema';
+import { FormSchema } from '../../Schema/form';
 import {
 	ReactNodeProperty,
 	FunctionProperty,
 	FunctionReactNodeProperty,
 } from '../../Schema/specialProperties';
+import { ComponentSchema } from '../../Schema/component';
 import { ComponentConfigPanelMap, FormItemConfigPanel } from './components';
 import FormConfigPanel from './components/FormConfigPanel';
 import ReactNodeConfigPanel from './components/ReactNodeConfigPanel';
@@ -29,9 +31,9 @@ import ReactNodeArrayConfigPanel from './components/ReactNodeArrayConfigPanel';
 import { getDefaultComponentPropsSchema } from '../../Schema/componentSchemas';
 import './index.less';
 
-const { Text, Title } = Typography;
-const { TextArea } = Input;
+const { Title, Text } = Typography;
 const { Option } = Select;
+const { TextArea } = Input;
 
 interface NodeConfigPanelProps {
 	schema: FormSchema | null;
@@ -41,6 +43,11 @@ interface NodeConfigPanelProps {
 	onExpand?: (expandedKeys: string[]) => void;
 	expandedKeys?: string[];
 	onClose?: () => void;
+	// 新增：用于更新父组件的属性，使其在左侧树中显示为组件节点
+	onUpdateParentProperty?: (
+		propertyPath: string,
+		componentSchema: ComponentSchema
+	) => void;
 }
 
 interface NodeInfo {
@@ -66,9 +73,8 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 	onExpand,
 	expandedKeys = [],
 	onClose,
+	onUpdateParentProperty,
 }) => {
-	console.log('NodeConfigPanel render:', { schema, selectedNode, onClose });
-
 	if (!selectedNode) {
 		return (
 			<div className="node-config-empty">
@@ -166,11 +172,35 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 			const propIndex = parts.indexOf('prop');
 			const componentIndex = parseInt(parts[1]);
 			const propName = parts[propIndex + 1];
+
+			// 检查这个属性是否是直接的组件 schema
+			const propertyPath = `properties.children.${componentIndex}.props.${propName}`;
+
+			// 手动获取属性值，避免调用未定义的函数
+			const children = schema?.properties?.children || [];
+			const parentComponent = children[componentIndex];
+			const propertyValue = parentComponent?.props?.[propName];
+
+			// 如果属性值是直接的组件 schema（如 title 属性中的 Input 组件）
+			if (
+				propertyValue &&
+				typeof propertyValue === 'object' &&
+				'type' in propertyValue &&
+				propertyValue.type !== 'reactNode'
+			) {
+				return {
+					type: 'component',
+					componentIndex,
+					propName,
+					propertyPath: propertyPath,
+				};
+			}
+
 			return {
 				type: 'property',
 				componentIndex,
 				propName,
-				propertyPath: `properties.children.${componentIndex}.props.${propName}`,
+				propertyPath: propertyPath,
 			};
 		}
 
@@ -240,6 +270,10 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 			<FormConfigPanel
 				properties={properties}
 				onPropertyChange={onPropertyChange}
+				onNodeSelect={onNodeSelect}
+				onExpand={onExpand}
+				onUpdateParentProperty={handleUpdateParentProperty}
+				componentIndex={nodeInfo?.componentIndex}
 			/>
 		);
 	};
@@ -247,10 +281,25 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 	const renderComponentProperties = () => {
 		if (!nodeInfo || nodeInfo.type !== 'component') return null;
 
-		const children = schema.properties?.children || [];
-		const component = children[nodeInfo.componentIndex!];
+		let component: ComponentSchema;
 
-		if (!component) return null;
+		const children = schema.properties?.children || [];
+
+		// 如果这是属性中的组件（如 title 属性中的 Input 组件）
+		if (nodeInfo.propName) {
+			const parentComponent = children[nodeInfo.componentIndex!];
+			if (!parentComponent || !parentComponent.props) return null;
+
+			const propValue = parentComponent.props[nodeInfo.propName];
+			if (!propValue || typeof propValue !== 'object' || !('type' in propValue))
+				return null;
+
+			component = propValue as ComponentSchema;
+		} else {
+			// 这是普通的子组件
+			component = children[nodeInfo.componentIndex!];
+			if (!component) return null;
+		}
 
 		const componentType = component.type;
 		const ComponentConfigPanel =
@@ -260,49 +309,119 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 
 		const handleComponentPropsChange = (newProps: any) => {
 			const newChildren = [...children];
-			newChildren[nodeInfo.componentIndex!] = {
-				...newChildren[nodeInfo.componentIndex!],
-				props: newProps,
-			};
+
+			if (nodeInfo.propName) {
+				// 更新属性中的组件
+				const parentComponent = newChildren[nodeInfo.componentIndex!];
+				if (parentComponent && parentComponent.props) {
+					const propComponent = parentComponent.props[
+						nodeInfo.propName
+					] as ComponentSchema;
+					if (propComponent) {
+						parentComponent.props[nodeInfo.propName] = {
+							...propComponent,
+							props: newProps,
+						};
+					}
+				}
+			} else {
+				// 更新普通子组件
+				newChildren[nodeInfo.componentIndex!] = {
+					...newChildren[nodeInfo.componentIndex!],
+					props: newProps,
+				};
+			}
+
 			onPropertyChange('properties.children', newChildren);
 		};
 
 		const handleFormItemPropsChange = (newFormItemProps: any) => {
 			const newChildren = [...children];
-			newChildren[nodeInfo.componentIndex!] = {
-				...newChildren[nodeInfo.componentIndex!],
-				formItem: {
-					type: 'formItem' as const,
-					properties: {
-						...newChildren[nodeInfo.componentIndex!].formItem?.properties,
-						...newFormItemProps,
+
+			if (nodeInfo.propName) {
+				// 更新属性中的组件
+				const parentComponent = newChildren[nodeInfo.componentIndex!];
+				if (parentComponent && parentComponent.props) {
+					const propComponent = parentComponent.props[
+						nodeInfo.propName
+					] as ComponentSchema;
+					if (propComponent) {
+						parentComponent.props[nodeInfo.propName] = {
+							...propComponent,
+							formItem: {
+								type: 'formItem' as const,
+								properties: {
+									...propComponent.formItem?.properties,
+									...newFormItemProps,
+								},
+							},
+						};
+					}
+				}
+			} else {
+				// 更新普通子组件
+				newChildren[nodeInfo.componentIndex!] = {
+					...newChildren[nodeInfo.componentIndex!],
+					formItem: {
+						type: 'formItem' as const,
+						properties: {
+							...newChildren[nodeInfo.componentIndex!].formItem?.properties,
+							...newFormItemProps,
+						},
 					},
-				},
-			};
+				};
+			}
+
 			onPropertyChange('properties.children', newChildren);
 		};
 
-		return (
-			<div className="component-properties">
-				<Title level={5} style={{ color: '#fff' }}>
-					组件配置
-				</Title>
-				{ComponentConfigPanel && (
+		// 准备标签页内容
+		const tabItems = [];
+
+		// 如果有表单配置，添加表单属性标签页
+		if (component.formItem) {
+			tabItems.push({
+				key: 'formItem',
+				label: '表单属性',
+				children: (
+					<FormItemConfigPanel
+						props={component.formItem.properties || {}}
+						onChange={handleFormItemPropsChange}
+						onNodeSelect={onNodeSelect}
+						onExpand={onExpand}
+						onUpdateParentProperty={handleUpdateParentProperty}
+						componentIndex={nodeInfo.componentIndex}
+					/>
+				),
+			});
+		}
+
+		// 如果有组件配置面板，添加组件属性标签页
+		if (ComponentConfigPanel) {
+			tabItems.push({
+				key: 'component',
+				label: '组件属性',
+				children: (
 					<ComponentConfigPanel
 						props={component.props || {}}
 						onChange={handleComponentPropsChange}
+						onNodeSelect={onNodeSelect}
+						onExpand={onExpand}
+						onUpdateParentProperty={handleUpdateParentProperty}
+						componentIndex={nodeInfo.componentIndex}
 					/>
-				)}
+				),
+			});
+		}
 
-				{component.formItem && (
-					<>
-						<Divider style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
-						<FormItemConfigPanel
-							props={component.formItem.properties || {}}
-							onChange={handleFormItemPropsChange}
-						/>
-					</>
-				)}
+		return (
+			<div className="component-properties">
+				<Tabs
+					defaultActiveKey="formItem"
+					items={tabItems}
+					style={{ color: '#fff' }}
+					tabBarStyle={{ color: '#fff' }}
+				/>
 			</div>
 		);
 	};
@@ -336,6 +455,11 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 							value={currentValue as ReactNodeProperty}
 							onChange={handlePropertyChange}
 							label="ReactNode 配置"
+							onNodeSelect={onNodeSelect}
+							onExpand={onExpand}
+							onUpdateParentProperty={handleUpdateParentProperty}
+							propertyPath={nodeInfo.propertyPath}
+							componentIndex={nodeInfo.componentIndex}
 						/>
 					</div>
 				);
@@ -551,6 +675,11 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 							value={propValue as ReactNodeProperty}
 							onChange={handlePropertyChange}
 							label={`${nodeInfo.propName} (ReactNode)`}
+							onNodeSelect={onNodeSelect}
+							onExpand={onExpand}
+							onUpdateParentProperty={handleUpdateParentProperty}
+							propertyPath={nodeInfo.propName}
+							componentIndex={nodeInfo.componentIndex}
 						/>
 					</div>
 				);
@@ -603,6 +732,10 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 							value={propValue as ReactNodeProperty[]}
 							onChange={handlePropertyChange}
 							label={`${nodeInfo.propName} (ReactNodeArray)`}
+							onNodeSelect={onNodeSelect}
+							onExpand={onExpand}
+							onUpdateParentProperty={handleUpdateParentProperty}
+							componentIndex={nodeInfo.componentIndex}
 						/>
 					</div>
 				);
@@ -648,6 +781,11 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 								value={reactNodeValue as ReactNodeProperty}
 								onChange={handlePropertyChange}
 								label="ReactNode 配置"
+								onNodeSelect={onNodeSelect}
+								onExpand={onExpand}
+								onUpdateParentProperty={handleUpdateParentProperty}
+								propertyPath={nodeInfo.propertyPath}
+								componentIndex={nodeInfo.componentIndex}
 							/>
 						</div>
 					);
@@ -699,11 +837,52 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 		);
 	};
 
+	// 同步内部展开状态到外部
+	useEffect(() => {
+		if (onExpand) {
+			onExpand(expandedKeys);
+		}
+	}, [expandedKeys, onExpand]);
+
+	// 处理更新父组件属性的回调
+	const handleUpdateParentProperty = (
+		propertyPath: string,
+		componentSchema: ComponentSchema
+	) => {
+		// 这里需要根据当前选中的节点来更新对应的属性
+		// 例如：如果当前选中的是容器组件，propertyPath 是 'title'
+		// 那么需要将 title 属性从 ReactNodeProperty 更新为 ComponentSchema
+		if (nodeInfo && nodeInfo.type === 'component') {
+			const children = schema.properties?.children || [];
+			const component = children[nodeInfo.componentIndex!];
+
+			if (component) {
+				// 更新组件的属性，将 ReactNodeProperty 替换为 ComponentSchema
+				const newProps = {
+					...component.props,
+					[propertyPath]: componentSchema,
+				};
+
+				const newChildren = [...children];
+				newChildren[nodeInfo.componentIndex!] = {
+					...newChildren[nodeInfo.componentIndex!],
+					props: newProps,
+				};
+
+				// 通知父组件更新
+				onPropertyChange('properties.children', newChildren);
+			}
+		} else if (nodeInfo && nodeInfo.type === 'property') {
+			// 如果当前选中的是属性节点，直接更新该属性
+			onPropertyChange(nodeInfo.propertyPath, componentSchema);
+		}
+	};
+
 	return (
 		<div className="node-config-panel">
 			<div className="config-header">
 				<Title level={4} style={{ color: '#fff' }}>
-					节点配置
+					组件配置
 				</Title>
 				{onClose && (
 					<Button type="text" icon={<CloseOutlined />} onClick={onClose} />

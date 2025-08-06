@@ -1,9 +1,10 @@
 import React, { FC, useState } from 'react';
-import { Card, Typography, Button, Space, List, Popconfirm } from 'antd';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Card, Typography, Button, List, Space, Popconfirm } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ReactNodeProperty } from '../../../Schema/specialProperties';
 import ReactNodeConfigPanel from './ReactNodeConfigPanel';
 import NodeSelectorModal from './NodeSelectorModal';
+import { ComponentSchema } from '../../../Schema/component';
 
 const { Title } = Typography;
 
@@ -11,12 +12,23 @@ interface ReactNodeArrayConfigPanelProps {
 	value?: ReactNodeProperty[];
 	onChange?: (value: ReactNodeProperty[]) => void;
 	label?: string;
+	onNodeSelect?: (nodeId: string) => void;
+	onExpand?: (expandedKeys: string[]) => void;
+	onUpdateParentProperty?: (
+		propertyPath: string,
+		componentSchema: ComponentSchema
+	) => void;
+	componentIndex?: number; // 当前组件的索引
 }
 
 const ReactNodeArrayConfigPanel: FC<ReactNodeArrayConfigPanelProps> = ({
 	value = [],
 	onChange,
 	label = 'React节点数组配置',
+	onNodeSelect,
+	onExpand,
+	onUpdateParentProperty,
+	componentIndex,
 }) => {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -166,7 +178,7 @@ const ReactNodeArrayConfigPanel: FC<ReactNodeArrayConfigPanelProps> = ({
 
 				{value.length > 0 && (
 					<div style={{ marginTop: 16 }}>
-						<Title level={6} style={{ color: '#fff', marginBottom: 8 }}>
+						<Title level={5} style={{ color: '#fff', marginBottom: 8 }}>
 							节点详细配置
 						</Title>
 						{value.map((item, index) => (
@@ -175,6 +187,10 @@ const ReactNodeArrayConfigPanel: FC<ReactNodeArrayConfigPanelProps> = ({
 									value={item}
 									onChange={(newValue) => handleNodeChange(index, newValue)}
 									label={`节点 ${index + 1}`}
+									onNodeSelect={onNodeSelect}
+									onExpand={onExpand}
+									onUpdateParentProperty={onUpdateParentProperty}
+									componentIndex={componentIndex}
 								/>
 							</div>
 						))}

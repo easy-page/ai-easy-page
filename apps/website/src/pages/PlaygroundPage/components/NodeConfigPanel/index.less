@@ -5,7 +5,7 @@
 	overflow-x: hidden; // 禁止水平滚动
 	animation: fadeInUp 0.3s ease-out;
 	position: relative;
-	padding: 12px;
+	// padding: 12px;
 
 	// 关闭按钮
 	.config-panel-close-btn {
@@ -58,6 +58,33 @@
 		.ant-typography {
 			color: #fff !important;
 			margin-bottom: 12px !important;
+		}
+
+		// 标签页样式
+		.ant-tabs {
+			.ant-tabs-tab {
+				color: rgba(255, 255, 255, 0.7) !important;
+
+				&:hover {
+					color: rgba(255, 255, 255, 0.9) !important;
+				}
+
+				&.ant-tabs-tab-active {
+					color: #00ffff !important;
+				}
+			}
+
+			.ant-tabs-tab-btn {
+				color: inherit !important;
+			}
+
+			.ant-tabs-ink-bar {
+				background: #00ffff !important;
+			}
+
+			.ant-tabs-content-holder {
+				color: #fff;
+			}
 		}
 
 		.ant-form-item {

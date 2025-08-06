@@ -810,3 +810,6 @@ export const FullFormDemo: React.FC = () => {
 - 针对：FunctionProperty，类型设计一个组件：monaco editor 呈现，并具备 AI 编辑能力，这个和 FunctionReactNodeProperty 用两个组件吧，可能后面会有差别，暂时一样而已。
 
 基于上述描述优化配置，用合适的组件优化我的配置面板：apps/website/src/pages/PlaygroundPage/components/NodeConfigPanel，结合 Schema 里的类型，给相应类型的属性，在配置面板里用对应组件去配置
+
+我用容器组件，点击了标题属性，点击添加节点，选择输入框，然后报错了，
+这个 title.useSchema 打开的时候，要用 title.schema 去解析渲染，如果关闭采用 title.content, 帮忙看看是不是这里判断出错了，导致渲染错。

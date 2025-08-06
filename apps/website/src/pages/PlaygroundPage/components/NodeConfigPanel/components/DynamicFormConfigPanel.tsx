@@ -4,10 +4,14 @@ import {
 	Input,
 	InputNumber,
 	Select,
+	Switch,
 	Button,
 	Space,
-	Checkbox,
+	Row,
+	Col,
+	Typography,
 	Divider,
+	Checkbox,
 } from 'antd';
 import { DynamicFormPropsSchema } from '../../../Schema/componentProps';
 import MonacoEditor from '../../ConfigBuilder/components/FormMode/MonacoEditor';
@@ -16,11 +20,19 @@ import ReactNodeConfigPanel from './ReactNodeConfigPanel';
 interface DynamicFormConfigPanelProps {
 	props: DynamicFormPropsSchema['properties'];
 	onChange: (props: DynamicFormPropsSchema['properties']) => void;
+	onNodeSelect?: (nodeId: string) => void;
+	onExpand?: (expandedKeys: string[]) => void;
+	onUpdateParentProperty?: (propertyPath: string, componentSchema: any) => void;
+	componentIndex?: number; // 当前组件的索引
 }
 
 const DynamicFormConfigPanel: FC<DynamicFormConfigPanelProps> = ({
 	props,
 	onChange,
+	onNodeSelect,
+	onExpand,
+	onUpdateParentProperty,
+	componentIndex,
 }) => {
 	const [form] = Form.useForm();
 
@@ -302,6 +314,11 @@ const DynamicFormConfigPanel: FC<DynamicFormConfigPanelProps> = ({
 									<ReactNodeConfigPanel
 										value={header}
 										onChange={(value) => handleHeadersChange(index, value)}
+										onNodeSelect={onNodeSelect}
+										onExpand={onExpand}
+										onUpdateParentProperty={onUpdateParentProperty}
+										propertyPath={`headers.${index}`}
+										componentIndex={componentIndex}
 									/>
 								</div>
 							))}
@@ -396,6 +413,11 @@ const DynamicFormConfigPanel: FC<DynamicFormConfigPanelProps> = ({
 												onChange={(value) =>
 													handleFieldsChange(index, fieldIndex, value)
 												}
+												onNodeSelect={onNodeSelect}
+												onExpand={onExpand}
+												onUpdateParentProperty={onUpdateParentProperty}
+												propertyPath={`rows.${index}.fields.${fieldIndex}`}
+												componentIndex={componentIndex}
 											/>
 										</div>
 									))}

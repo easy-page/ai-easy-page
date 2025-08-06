@@ -171,7 +171,15 @@ const NodeTree: FC<NodeTreeProps> = ({
 			const currentPropertyPath = `${propertyPath}.props.${key}`;
 
 			// 如果不过滤，显示所有属性
-			if (!filterReactNodeOnly) {
+			// 或者如果过滤，但当前属性是 ReactNode 相关或直接的组件 schema
+			if (
+				!filterReactNodeOnly ||
+				isReactNodeProperty(value) ||
+				(value &&
+					typeof value === 'object' &&
+					'type' in value &&
+					value.type !== 'reactNode')
+			) {
 				// 如果是数组类型
 				if (Array.isArray(value)) {
 					properties.push({
@@ -372,7 +380,7 @@ const NodeTree: FC<NodeTreeProps> = ({
 							<Space>
 								<FileOutlined style={{ color: '#1890ff' }} />
 								<Text style={{ color: '#fff' }}>
-									{componentSchema.type || 'Component'}
+									【{key}】{componentSchema.type || 'Component'}
 								</Text>
 								{canHaveChildren && (
 									<Badge

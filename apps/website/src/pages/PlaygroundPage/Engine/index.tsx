@@ -99,14 +99,15 @@ const processReactNodeProperty = (
 	}
 
 	// 处理字符串类型的 ReactNodeProperty
-	if (nodeProp.type === 'reactNode' && 'content' in nodeProp) {
+	if (
+		nodeProp.type === 'reactNode' &&
+		'content' in nodeProp &&
+		!nodeProp.useSchema
+	) {
 		try {
-			console.log('开始解析JSX:', nodeProp.content);
 			// 使用JSX解析器解析包含JSX的字符串
-			const result = jsxParser.parse(nodeProp.content);
-			console.log('JSX解析结果:', result);
+			const result = jsxParser.parse(nodeProp.content || '');
 			if (result.success) {
-				console.log('解析成功，返回结果:', result.result);
 				return result.result;
 			} else {
 				console.warn('JSX解析失败，返回原始内容:', nodeProp.content);
@@ -118,11 +119,25 @@ const processReactNodeProperty = (
 			// 解析失败时返回一个简单的div包装
 			return <div>{nodeProp.content}</div>;
 		}
-	}
+	} else if (nodeProp.useSchema && nodeProp.schema && renderComponent) {
+		try {
+			const result = renderComponent(nodeProp.schema);
 
-	// 如果 useSchema 为 true 且有 schema，使用 schema 渲染
-	if (nodeProp.useSchema && nodeProp.schema && renderComponent) {
-		return renderComponent(nodeProp.schema);
+			// 确保返回的是有效的 React 元素
+			if (result === undefined || result === null) {
+				console.warn('Schema 渲染返回了 undefined 或 null，返回默认内容');
+				return <div>渲染失败</div>;
+			}
+
+			return result;
+		} catch (error) {
+			console.warn('Schema 渲染失败:', error);
+			return (
+				<div>
+					渲染失败: {error instanceof Error ? error.message : String(error)}
+				</div>
+			);
+		}
 	}
 
 	return undefined;
@@ -191,6 +206,26 @@ const processComponentProps = (
 				);
 				if (node !== undefined) {
 					processedProps[key] = node;
+				}
+			} else if (
+				value.type &&
+				value.type !== 'function' &&
+				value.type !== 'functionReactNode' &&
+				renderComponent
+			) {
+				// 处理直接的组件 schema（如 title 属性中的 Input 组件）
+				try {
+					const node = renderComponent(value as ComponentSchema);
+					if (node !== undefined) {
+						processedProps[key] = node;
+					}
+				} catch (error) {
+					console.warn('直接组件 schema 处理失败:', error);
+					processedProps[key] = (
+						<div>
+							渲染失败: {error instanceof Error ? error.message : String(error)}
+						</div>
+					);
 				}
 			} else if (key === 'rows' && Array.isArray(value)) {
 				// 特殊处理DynamicForm的rows配置

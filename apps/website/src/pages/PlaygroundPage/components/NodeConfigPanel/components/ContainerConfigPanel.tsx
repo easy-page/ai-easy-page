@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
-import { Form, Input, Select, Switch, Space, Button } from 'antd';
-import { ContainerPropsSchema } from '../../../Schema/componentSchemas/container';
+import { Form, Input, Select, Switch, Space, Typography } from 'antd';
+import { ContainerPropsSchema } from '../../../Schema/componentProps';
 import MonacoEditor from '../../ConfigBuilder/components/FormMode/MonacoEditor';
 import ReactNodeConfigPanel from './ReactNodeConfigPanel';
+import { ComponentSchema } from '../../../Schema/component';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -10,11 +11,22 @@ const { TextArea } = Input;
 interface ContainerConfigPanelProps {
 	props: ContainerPropsSchema['properties'];
 	onChange: (props: ContainerPropsSchema['properties']) => void;
+	onNodeSelect?: (nodeId: string) => void;
+	onExpand?: (expandedKeys: string[]) => void;
+	onUpdateParentProperty?: (
+		propertyPath: string,
+		componentSchema: ComponentSchema
+	) => void;
+	componentIndex?: number; // 当前组件的索引
 }
 
 const ContainerConfigPanel: FC<ContainerConfigPanelProps> = ({
 	props,
 	onChange,
+	onNodeSelect,
+	onExpand,
+	onUpdateParentProperty,
+	componentIndex,
 }) => {
 	const [form] = Form.useForm();
 
@@ -77,6 +89,11 @@ const ContainerConfigPanel: FC<ContainerConfigPanelProps> = ({
 					onChange={handleTitleChange}
 					label="标题内容"
 					placeholder="请输入标题内容或选择组件"
+					onNodeSelect={onNodeSelect}
+					onExpand={onExpand}
+					onUpdateParentProperty={onUpdateParentProperty}
+					propertyPath="title"
+					componentIndex={componentIndex}
 				/>
 			</Form.Item>
 

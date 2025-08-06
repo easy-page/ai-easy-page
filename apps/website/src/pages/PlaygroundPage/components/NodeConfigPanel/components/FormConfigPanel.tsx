@@ -18,6 +18,7 @@ import {
 } from '../../../Schema/specialProperties';
 import MonacoEditor from '../../ConfigBuilder/components/FormMode/MonacoEditor';
 import ReactNodeConfigPanel from './ReactNodeConfigPanel';
+import { ComponentSchema } from '../../../Schema/component';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -26,11 +27,22 @@ const { Title } = Typography;
 interface FormConfigPanelProps {
 	properties: FormSchema['properties'];
 	onPropertyChange: (propertyPath: string, value: any) => void;
+	onNodeSelect?: (nodeId: string) => void;
+	onExpand?: (expandedKeys: string[]) => void;
+	onUpdateParentProperty?: (
+		propertyPath: string,
+		componentSchema: ComponentSchema
+	) => void;
+	componentIndex?: number; // 当前组件的索引
 }
 
 const FormConfigPanel: FC<FormConfigPanelProps> = ({
 	properties,
 	onPropertyChange,
+	onNodeSelect,
+	onExpand,
+	onUpdateParentProperty,
+	componentIndex,
 }) => {
 	return (
 		<div className="form-properties">
@@ -77,6 +89,11 @@ const FormConfigPanel: FC<FormConfigPanelProps> = ({
 							}}
 							label="加载组件"
 							placeholder="请输入加载组件内容或选择组件"
+							onNodeSelect={onNodeSelect}
+							onExpand={onExpand}
+							onUpdateParentProperty={onUpdateParentProperty}
+							propertyPath="loadingComponent"
+							componentIndex={componentIndex}
 						/>
 					</Form.Item>
 				</Col>
