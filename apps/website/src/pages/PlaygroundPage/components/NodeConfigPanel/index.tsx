@@ -29,6 +29,9 @@ interface NodeConfigPanelProps {
 	schema: FormSchema | null;
 	selectedNode: string | null;
 	onPropertyChange: (propertyPath: string, value: any) => void;
+	onNodeSelect?: (nodeId: string) => void;
+	onExpand?: (expandedKeys: string[]) => void;
+	expandedKeys?: string[];
 	onClose?: () => void;
 }
 
@@ -51,6 +54,9 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 	schema,
 	selectedNode,
 	onPropertyChange,
+	onNodeSelect,
+	onExpand,
+	expandedKeys = [],
 	onClose,
 }) => {
 	console.log('NodeConfigPanel render:', { schema, selectedNode, onClose });
@@ -489,41 +495,6 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 		const component = children[nodeInfo.componentIndex!];
 		const propValue = component?.props?.[nodeInfo.propName!];
 
-		// 如果是数组类型（如 rows）
-		if (Array.isArray(propValue)) {
-			return (
-				<div className="property-config">
-					<Title level={5} style={{ color: '#fff' }}>
-						数组配置
-					</Title>
-					<Card
-						size="small"
-						style={{
-							marginBottom: 16,
-							background: 'rgba(0, 255, 255, 0.05)',
-							border: '1px solid rgba(0, 255, 255, 0.2)',
-						}}
-					>
-						<Space direction="vertical" style={{ width: '100%' }}>
-							<Text strong style={{ color: '#fff' }}>
-								数组长度: {propValue.length}
-							</Text>
-							<Text
-								type="secondary"
-								style={{ color: 'rgba(255, 255, 255, 0.6)' }}
-							>
-								属性名: {nodeInfo.propName}
-							</Text>
-						</Space>
-					</Card>
-
-					<Text type="secondary" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-						请点击左侧树中的具体数组项进行配置
-					</Text>
-				</div>
-			);
-		}
-
 		// 如果是 ReactNodeProperty 类型
 		if (propValue && typeof propValue === 'object' && 'type' in propValue) {
 			const reactNodeProp = propValue as ReactNodeProperty;
@@ -532,29 +503,48 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 				return (
 					<div className="property-config">
 						<Title level={5} style={{ color: '#fff' }}>
-							JSX 内容配置
+							组件属性配置
 						</Title>
-						<Form layout="vertical">
-							<Form.Item label="JSX 内容">
-								<TextArea
-									value={reactNodeProp.content}
-									onChange={(e) => {
-										const newValue = {
-											...reactNodeProp,
-											content: e.target.value,
-										};
-										onPropertyChange(nodeInfo.propertyPath, newValue);
+						<Card
+							size="small"
+							style={{
+								marginBottom: 16,
+								background: 'rgba(0, 255, 255, 0.05)',
+								border: '1px solid rgba(0, 255, 255, 0.2)',
+							}}
+						>
+							<Space direction="vertical" style={{ width: '100%' }}>
+								<Text strong style={{ color: '#fff' }}>
+									属性名: {nodeInfo.propName}
+								</Text>
+								<Text
+									type="secondary"
+									style={{ color: 'rgba(255, 255, 255, 0.6)' }}
+								>
+									类型: ReactNode
+								</Text>
+								<Button
+									type="primary"
+									size="small"
+									onClick={() => {
+										// 确保父节点（属性节点）被展开
+										const parentKey = selectedNode;
+										const reactNodeKey = `${selectedNode}-reactnode-0`;
+
+										// 如果父节点还没有展开，先展开父节点
+										if (!expandedKeys.includes(parentKey)) {
+											const newExpandedKeys = [...expandedKeys, parentKey];
+											onExpand?.(newExpandedKeys);
+										}
+
+										// 选中对应的ReactNode节点
+										onNodeSelect?.(reactNodeKey);
 									}}
-									rows={6}
-									placeholder="请输入JSX内容"
-									style={{
-										background: 'rgba(255, 255, 255, 0.08)',
-										border: '1px solid rgba(0, 255, 255, 0.3)',
-										color: '#fff',
-									}}
-								/>
-							</Form.Item>
-						</Form>
+								>
+									配置
+								</Button>
+							</Space>
+						</Card>
 					</div>
 				);
 			}
@@ -599,41 +589,8 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 			}
 		}
 
-		// 普通属性
-		return (
-			<div className="property-config">
-				<Title level={5} style={{ color: '#fff' }}>
-					属性配置
-				</Title>
-				<Form layout="vertical">
-					<Form.Item label="属性名">
-						<Input
-							value={nodeInfo.propName}
-							disabled
-							style={{
-								background: 'rgba(255, 255, 255, 0.05)',
-								border: '1px solid rgba(255, 255, 255, 0.1)',
-								color: 'rgba(255, 255, 255, 0.6)',
-							}}
-						/>
-					</Form.Item>
-					<Form.Item label="属性值">
-						<Input
-							value={String(propValue)}
-							onChange={(e) => {
-								onPropertyChange(nodeInfo.propertyPath, e.target.value);
-							}}
-							placeholder="请输入属性值"
-							style={{
-								background: 'rgba(255, 255, 255, 0.08)',
-								border: '1px solid rgba(0, 255, 255, 0.3)',
-								color: '#fff',
-							}}
-						/>
-					</Form.Item>
-				</Form>
-			</div>
-		);
+		// 普通属性 - 不显示
+		return null;
 	};
 
 	const renderReactNodeConfig = () => {

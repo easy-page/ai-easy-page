@@ -20,6 +20,7 @@ const PlaygroundPage: FC = () => {
 		undefined
 	);
 	const [selectedNode, setSelectedNode] = useState<string | null>(null);
+	const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
 
 	const handleTabChange = (key: string) => {
 		setActiveTab(key);
@@ -90,6 +91,8 @@ const PlaygroundPage: FC = () => {
 											onSchemaChange={handleSchemaChange}
 											selectedNode={selectedNode}
 											onNodeSelect={handleNodeSelect}
+											expandedKeys={expandedKeys}
+											onExpand={setExpandedKeys}
 										/>
 									),
 								},
@@ -126,6 +129,9 @@ const PlaygroundPage: FC = () => {
 							<NodeConfigPanel
 								schema={currentSchema || null}
 								selectedNode={selectedNode}
+								onNodeSelect={handleNodeSelect}
+								onExpand={setExpandedKeys}
+								expandedKeys={expandedKeys}
 								onPropertyChange={handlePropertyChange}
 								onClose={handleCloseConfigPanel}
 							/>

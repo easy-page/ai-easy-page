@@ -30,6 +30,8 @@ interface FormModeProps {
 	selectedNode?: string | null;
 	onNodeSelect?: (nodeId: string) => void;
 	onSchemaChange?: (schema: FormSchema) => void;
+	expandedKeys?: string[];
+	onExpand?: (expandedKeys: string[]) => void;
 }
 
 const FormMode: FC<FormModeProps> = ({
@@ -39,11 +41,29 @@ const FormMode: FC<FormModeProps> = ({
 	selectedNode,
 	onNodeSelect,
 	onSchemaChange,
+	expandedKeys: externalExpandedKeys,
+	onExpand: externalOnExpand,
 }) => {
 	const [schemaData, setSchemaData] = useState<FormSchema | null>(schema);
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [currentParentId, setCurrentParentId] = useState<string>('');
-	const [expandedKeys, setExpandedKeys] = useState<string[]>(['form']);
+	const [expandedKeys, setExpandedKeys] = useState<string[]>(
+		externalExpandedKeys || []
+	);
+
+	// 同步外部展开状态
+	useEffect(() => {
+		if (externalExpandedKeys) {
+			setExpandedKeys(externalExpandedKeys);
+		}
+	}, [externalExpandedKeys]);
+
+	// 同步内部展开状态到外部
+	useEffect(() => {
+		if (externalOnExpand) {
+			externalOnExpand(expandedKeys);
+		}
+	}, [expandedKeys, externalOnExpand]);
 
 	const handleAddComponent = (
 		componentType: ComponentType,
@@ -350,6 +370,9 @@ const FormMode: FC<FormModeProps> = ({
 					<NodeConfigPanel
 						schema={schemaData}
 						selectedNode={selectedNode || null}
+						onNodeSelect={onNodeSelect || (() => {})}
+						onExpand={setExpandedKeys}
+						expandedKeys={expandedKeys}
 						onPropertyChange={(propertyPath: string, value: any) => {
 							// 这里需要根据propertyPath来更新schema
 							if (schemaData) {

@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { Tree, Button, Space, Typography, Badge } from 'antd';
+import { FC, useState } from 'react';
+import { Tree, Button, Space, Typography, Badge, Switch } from 'antd';
 import {
 	PlusOutlined,
 	DeleteOutlined,
@@ -58,6 +58,42 @@ const supportsArrayProps = (componentType: string): boolean => {
 	return componentsWithArrayProps.includes(componentType);
 };
 
+// 检查值是否为ReactNodeProperty
+const isReactNodeProperty = (value: any): value is ReactNodeProperty => {
+	if (!value || typeof value !== 'object') {
+		return false;
+	}
+
+	// 检查是否有 type 属性
+	if (!('type' in value)) {
+		return false;
+	}
+
+	// 如果是 { type: 'reactNode', content: string }
+	if (value.type === 'reactNode' && 'content' in value) {
+		return true;
+	}
+
+	// 如果是 ComponentSchema 类型（有 type 属性但不是 'reactNode'）
+	if (value.type && value.type !== 'reactNode') {
+		return true;
+	}
+
+	return false;
+};
+
+// 检查数组中是否包含ReactNodeProperty
+const hasReactNodeInArray = (array: any[]): boolean => {
+	return array.some((item) => isReactNodeProperty(item));
+};
+
+// 检查对象中是否包含ReactNodeProperty数组
+const hasReactNodeArrayInObject = (obj: Record<string, any>): boolean => {
+	return Object.values(obj).some(
+		(value) => Array.isArray(value) && hasReactNodeInArray(value)
+	);
+};
+
 const NodeTree: FC<NodeTreeProps> = ({
 	schema,
 	selectedNode,
@@ -67,6 +103,8 @@ const NodeTree: FC<NodeTreeProps> = ({
 	expandedKeys = [],
 	onExpand,
 }) => {
+	const [filterReactNodeOnly, setFilterReactNodeOnly] = useState(true);
+
 	// 递归构建 ReactNodeProperty 的树节点
 	const buildReactNodeTree = (
 		nodeProp: ReactNodeProperty,
@@ -187,52 +225,168 @@ const NodeTree: FC<NodeTreeProps> = ({
 			const propKey = `${parentKey}-prop-${key}`;
 			const currentPropertyPath = `${propertyPath}.props.${key}`;
 
-			// 如果是数组类型（如 rows.fields）
-			if (Array.isArray(value)) {
-				properties.push({
-					key: propKey,
-					title: (
-						<Space>
-							<UnorderedListOutlined style={{ color: '#722ed1' }} />
-							<Text style={{ color: '#fff' }}>{key}</Text>
-							<Badge count={value.length} size="small" />
-							<Button
-								type="text"
-								size="small"
-								icon={<PlusOutlined />}
-								onClick={(e) => {
-									e.stopPropagation();
-									onAddNode(propKey, 'array-item');
-								}}
-							/>
-						</Space>
-					),
-					isProperty: true,
-					propertyPath: currentPropertyPath,
-					nodeType: 'array',
-					children: value.map((item, index) => {
-						const itemKey = `${propKey}-item-${index}`;
-						const itemPropertyPath = `${currentPropertyPath}.${index}`;
+			// 如果不过滤，显示所有属性
+			if (!filterReactNodeOnly) {
+				// 如果是数组类型
+				if (Array.isArray(value)) {
+					properties.push({
+						key: propKey,
+						title: (
+							<Space>
+								<UnorderedListOutlined style={{ color: '#722ed1' }} />
+								<Text style={{ color: '#fff' }}>{key}</Text>
+								<Badge count={value.length} size="small" />
+								<Button
+									type="text"
+									size="small"
+									icon={<PlusOutlined />}
+									onClick={(e) => {
+										e.stopPropagation();
+										onAddNode(propKey, 'array-item');
+									}}
+								/>
+							</Space>
+						),
+						isProperty: true,
+						propertyPath: currentPropertyPath,
+						nodeType: 'array',
+						children: value.map((item, index) => {
+							const itemKey = `${propKey}-item-${index}`;
+							const itemPropertyPath = `${currentPropertyPath}.${index}`;
 
-						// 如果数组元素是 ReactNodeProperty
-						if (item && typeof item === 'object' && 'type' in item) {
-							return buildReactNodeTree(
-								item as ReactNodeProperty,
-								itemKey,
-								0,
-								itemPropertyPath
-							);
-						}
+							// 如果数组元素是 ReactNodeProperty
+							if (isReactNodeProperty(item)) {
+								return buildReactNodeTree(item, itemKey, 0, itemPropertyPath);
+							}
 
-						// 如果数组元素是对象（如 rows 中的 row 对象）
-						if (item && typeof item === 'object' && !('type' in item)) {
-							const rowObj = item as Record<string, any>;
+							// 如果数组元素是对象（如 rows 中的 row 对象）
+							if (item && typeof item === 'object' && !('type' in item)) {
+								const rowObj = item as Record<string, any>;
+								return {
+									key: itemKey,
+									title: (
+										<Space>
+											<FolderOutlined style={{ color: '#fa8c16' }} />
+											<Text style={{ color: '#fff' }}>Row {index + 1}</Text>
+											<Button
+												type="text"
+												size="small"
+												icon={<DeleteOutlined />}
+												onClick={(e) => {
+													e.stopPropagation();
+													onDeleteNode(itemKey);
+												}}
+											/>
+										</Space>
+									),
+									isProperty: true,
+									propertyPath: itemPropertyPath,
+									nodeType: 'property',
+									children: Object.entries(rowObj).map(([rowKey, rowValue]) => {
+										const rowPropKey = `${itemKey}-rowprop-${rowKey}`;
+										const rowPropPath = `${itemPropertyPath}.${rowKey}`;
+
+										// 如果 row 属性是数组
+										if (Array.isArray(rowValue)) {
+											return {
+												key: rowPropKey,
+												title: (
+													<Space>
+														<UnorderedListOutlined
+															style={{ color: '#722ed1' }}
+														/>
+														<Text style={{ color: '#fff' }}>{rowKey}</Text>
+														<Badge count={rowValue.length} size="small" />
+														<Button
+															type="text"
+															size="small"
+															icon={<PlusOutlined />}
+															onClick={(e) => {
+																e.stopPropagation();
+																onAddNode(rowPropKey, 'array-item');
+															}}
+														/>
+													</Space>
+												),
+												isProperty: true,
+												propertyPath: rowPropPath,
+												nodeType: 'array',
+												children: rowValue.map((fieldItem, fieldIndex) => {
+													const fieldKey = `${rowPropKey}-field-${fieldIndex}`;
+													const fieldPath = `${rowPropPath}.${fieldIndex}`;
+
+													if (isReactNodeProperty(fieldItem)) {
+														return buildReactNodeTree(
+															fieldItem,
+															fieldKey,
+															0,
+															fieldPath
+														);
+													}
+
+													return {
+														key: fieldKey,
+														title: (
+															<Space>
+																<SettingOutlined style={{ color: '#722ed1' }} />
+																<Text style={{ color: '#fff' }}>
+																	Item {fieldIndex + 1}
+																</Text>
+																<Text
+																	type="secondary"
+																	style={{ fontSize: '12px' }}
+																>
+																	{typeof fieldItem}
+																</Text>
+																<Button
+																	type="text"
+																	size="small"
+																	icon={<DeleteOutlined />}
+																	onClick={(e) => {
+																		e.stopPropagation();
+																		onDeleteNode(fieldKey);
+																	}}
+																/>
+															</Space>
+														),
+														isProperty: true,
+														propertyPath: fieldPath,
+														nodeType: 'property',
+													};
+												}),
+											};
+										}
+
+										// 普通属性
+										return {
+											key: rowPropKey,
+											title: (
+												<Space>
+													<SettingOutlined style={{ color: '#722ed1' }} />
+													<Text style={{ color: '#fff' }}>{rowKey}</Text>
+													<Text type="secondary" style={{ fontSize: '12px' }}>
+														{typeof rowValue}
+													</Text>
+												</Space>
+											),
+											isProperty: true,
+											propertyPath: rowPropPath,
+											nodeType: 'property',
+										};
+									}),
+								};
+							}
+
+							// 普通数组元素
 							return {
 								key: itemKey,
 								title: (
 									<Space>
-										<FolderOutlined style={{ color: '#fa8c16' }} />
-										<Text style={{ color: '#fff' }}>Row {index + 1}</Text>
+										<SettingOutlined style={{ color: '#722ed1' }} />
+										<Text style={{ color: '#fff' }}>Item {index + 1}</Text>
+										<Text type="secondary" style={{ fontSize: '12px' }}>
+											{typeof item}
+										</Text>
 										<Button
 											type="text"
 											size="small"
@@ -247,124 +401,182 @@ const NodeTree: FC<NodeTreeProps> = ({
 								isProperty: true,
 								propertyPath: itemPropertyPath,
 								nodeType: 'property',
-								children: Object.entries(rowObj).map(([rowKey, rowValue]) => {
-									const rowPropKey = `${itemKey}-rowprop-${rowKey}`;
-									const rowPropPath = `${itemPropertyPath}.${rowKey}`;
-
-									// 如果 row 属性是 ReactNodeProperty 数组（如 fields）
-									if (
-										Array.isArray(rowValue) &&
-										rowValue.length > 0 &&
-										rowValue[0] &&
-										typeof rowValue[0] === 'object' &&
-										'type' in rowValue[0]
-									) {
-										return {
-											key: rowPropKey,
-											title: (
-												<Space>
-													<UnorderedListOutlined style={{ color: '#722ed1' }} />
-													<Text style={{ color: '#fff' }}>{rowKey}</Text>
-													<Badge count={rowValue.length} size="small" />
-													<Button
-														type="text"
-														size="small"
-														icon={<PlusOutlined />}
-														onClick={(e) => {
-															e.stopPropagation();
-															onAddNode(rowPropKey, 'array-item');
-														}}
-													/>
-												</Space>
-											),
-											isProperty: true,
-											propertyPath: rowPropPath,
-											nodeType: 'array',
-											children: rowValue.map((fieldItem, fieldIndex) => {
-												const fieldKey = `${rowPropKey}-field-${fieldIndex}`;
-												const fieldPath = `${rowPropPath}.${fieldIndex}`;
-												return buildReactNodeTree(
-													fieldItem as ReactNodeProperty,
-													fieldKey,
-													0,
-													fieldPath
-												);
-											}),
-										};
-									}
-
-									// 普通属性
-									return {
-										key: rowPropKey,
-										title: (
-											<Space>
-												<SettingOutlined style={{ color: '#722ed1' }} />
-												<Text style={{ color: '#fff' }}>{rowKey}</Text>
-												<Text type="secondary" style={{ fontSize: '12px' }}>
-													{typeof rowValue}
-												</Text>
-											</Space>
-										),
-										isProperty: true,
-										propertyPath: rowPropPath,
-										nodeType: 'property',
-									};
-								}),
 							};
+						}),
+					});
+				}
+				// 如果是 ReactNodeProperty 类型
+				else if (isReactNodeProperty(value)) {
+					properties.push(
+						buildReactNodeTree(value, propKey, 0, currentPropertyPath)
+					);
+				}
+				// 普通属性
+				else {
+					properties.push({
+						key: propKey,
+						title: (
+							<Space>
+								<SettingOutlined style={{ color: '#722ed1' }} />
+								<Text style={{ color: '#fff' }}>{key}</Text>
+								<Text type="secondary" style={{ fontSize: '12px' }}>
+									{typeof value}
+								</Text>
+							</Space>
+						),
+						isProperty: true,
+						propertyPath: currentPropertyPath,
+						nodeType: 'property',
+					});
+				}
+			}
+			// 如果过滤，只显示ReactNode相关属性
+			else {
+				// 如果是数组类型
+				if (Array.isArray(value)) {
+					// 检查数组中是否包含ReactNodeProperty（直接检查或嵌套检查）
+					const hasReactNodeItems = value.some((item) => {
+						// 直接是ReactNodeProperty
+						if (isReactNodeProperty(item)) {
+							return true;
 						}
+						// 或者是对象，且对象中包含ReactNodeProperty数组
+						if (item && typeof item === 'object' && !('type' in item)) {
+							const obj = item as Record<string, any>;
+							return Object.values(obj).some(
+								(val) =>
+									Array.isArray(val) &&
+									val.some((subItem) => isReactNodeProperty(subItem))
+							);
+						}
+						return false;
+					});
 
-						// 普通数组元素
-						return {
-							key: itemKey,
+					// 只有当数组包含ReactNodeProperty时才显示
+					if (hasReactNodeItems) {
+						properties.push({
+							key: propKey,
 							title: (
 								<Space>
-									<SettingOutlined style={{ color: '#722ed1' }} />
-									<Text style={{ color: '#fff' }}>Item {index + 1}</Text>
-									<Text type="secondary" style={{ fontSize: '12px' }}>
-										{typeof item}
-									</Text>
-									<Button
-										type="text"
-										size="small"
-										icon={<DeleteOutlined />}
-										onClick={(e) => {
-											e.stopPropagation();
-											onDeleteNode(itemKey);
-										}}
-									/>
+									<UnorderedListOutlined style={{ color: '#722ed1' }} />
+									<Text style={{ color: '#fff' }}>{key}</Text>
+									<Badge count={value.length} size="small" />
 								</Space>
 							),
 							isProperty: true,
-							propertyPath: itemPropertyPath,
-							nodeType: 'property',
-						};
-					}),
-				});
-			}
+							propertyPath: currentPropertyPath,
+							nodeType: 'array',
+							children: value
+								.map((item, index) => {
+									const itemKey = `${propKey}-item-${index}`;
+									const itemPropertyPath = `${currentPropertyPath}.${index}`;
 
-			// 如果是 ReactNodeProperty 类型
-			else if (value && typeof value === 'object' && 'type' in value) {
-				const reactNodeProp = value as ReactNodeProperty;
-				properties.push(
-					buildReactNodeTree(reactNodeProp, propKey, 0, currentPropertyPath)
-				);
-			} else {
-				// 普通属性
-				properties.push({
-					key: propKey,
-					title: (
-						<Space>
-							<SettingOutlined style={{ color: '#722ed1' }} />
-							<Text style={{ color: '#fff' }}>{key}</Text>
-							<Text type="secondary" style={{ fontSize: '12px' }}>
-								{typeof value}
-							</Text>
-						</Space>
-					),
-					isProperty: true,
-					propertyPath: currentPropertyPath,
-					nodeType: 'property',
-				});
+									// 如果数组元素是 ReactNodeProperty
+									if (isReactNodeProperty(item)) {
+										return buildReactNodeTree(
+											item,
+											itemKey,
+											0,
+											itemPropertyPath
+										);
+									}
+
+									// 如果数组元素是对象（如 rows 中的 row 对象）
+									if (item && typeof item === 'object' && !('type' in item)) {
+										const rowObj = item as Record<string, any>;
+										// 检查对象中是否包含ReactNodeProperty数组
+										const reactNodeFields = Object.entries(rowObj).filter(
+											([rowKey, rowValue]) =>
+												Array.isArray(rowValue) &&
+												rowValue.some((subItem) => isReactNodeProperty(subItem))
+										);
+
+										// 只有当对象包含ReactNodeProperty数组时才显示
+										if (reactNodeFields.length > 0) {
+											const children: TreeNode[] = [];
+
+											reactNodeFields.forEach(([rowKey, rowValue]) => {
+												const rowPropKey = `${itemKey}-rowprop-${rowKey}`;
+												const rowPropPath = `${itemPropertyPath}.${rowKey}`;
+
+												// 如果 row 属性是 ReactNodeProperty 数组（如 fields）
+												if (Array.isArray(rowValue)) {
+													const fieldChildren: TreeNode[] = [];
+
+													rowValue.forEach((fieldItem, fieldIndex) => {
+														const fieldKey = `${rowPropKey}-field-${fieldIndex}`;
+														const fieldPath = `${rowPropPath}.${fieldIndex}`;
+
+														// 只展示ReactNode类型的字段
+														if (isReactNodeProperty(fieldItem)) {
+															fieldChildren.push(
+																buildReactNodeTree(
+																	fieldItem,
+																	fieldKey,
+																	0,
+																	fieldPath
+																)
+															);
+														}
+													});
+
+													if (fieldChildren.length > 0) {
+														children.push({
+															key: rowPropKey,
+															title: (
+																<Space>
+																	<UnorderedListOutlined
+																		style={{ color: '#722ed1' }}
+																	/>
+																	<Text style={{ color: '#fff' }}>
+																		{rowKey}
+																	</Text>
+																	<Badge count={rowValue.length} size="small" />
+																</Space>
+															),
+															isProperty: true,
+															propertyPath: rowPropPath,
+															nodeType: 'array',
+															children: fieldChildren,
+														});
+													}
+												}
+											});
+
+											if (children.length > 0) {
+												return {
+													key: itemKey,
+													title: (
+														<Space>
+															<FolderOutlined style={{ color: '#fa8c16' }} />
+															<Text style={{ color: '#fff' }}>
+																Row {index + 1}
+															</Text>
+														</Space>
+													),
+													isProperty: true,
+													propertyPath: itemPropertyPath,
+													nodeType: 'property',
+													children,
+												};
+											}
+										}
+									}
+
+									// 如果不是ReactNode类型，不显示
+									return null;
+								})
+								.filter((item): item is TreeNode => item !== null),
+						});
+					}
+				}
+				// 如果是 ReactNodeProperty 类型
+				else if (isReactNodeProperty(value)) {
+					properties.push(
+						buildReactNodeTree(value, propKey, 0, currentPropertyPath)
+					);
+				}
+				// 普通属性 - 过滤模式下不显示
 			}
 		});
 
@@ -465,6 +677,14 @@ const NodeTree: FC<NodeTreeProps> = ({
 
 	return (
 		<div className="node-tree">
+			<Space style={{ marginBottom: '10px' }}>
+				<Switch
+					checked={filterReactNodeOnly}
+					onChange={(checked) => setFilterReactNodeOnly(checked)}
+					unCheckedChildren="All"
+					checkedChildren="ReactNode Only"
+				/>
+			</Space>
 			<Tree
 				treeData={buildTreeData()}
 				selectedKeys={selectedNode ? [selectedNode] : []}

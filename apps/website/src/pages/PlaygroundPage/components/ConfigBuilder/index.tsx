@@ -10,12 +10,16 @@ interface ConfigBuilderProps {
 	onSchemaChange?: (schema: FormSchema) => void;
 	selectedNode?: string | null;
 	onNodeSelect?: (nodeId: string) => void;
+	expandedKeys?: string[];
+	onExpand?: (expandedKeys: string[]) => void;
 }
 
 const ConfigBuilder: FC<ConfigBuilderProps> = ({
 	onSchemaChange,
 	selectedNode,
 	onNodeSelect,
+	expandedKeys,
+	onExpand,
 }) => {
 	const [currentSchema, setCurrentSchema] = useState<FormSchema | null>(null);
 	const [buildMode, setBuildMode] = useState<'select' | 'form' | 'page'>(
@@ -57,6 +61,8 @@ const ConfigBuilder: FC<ConfigBuilderProps> = ({
 					selectedNode={selectedNode}
 					onNodeSelect={onNodeSelect}
 					onSchemaChange={onSchemaChange}
+					expandedKeys={expandedKeys}
+					onExpand={onExpand}
 				/>
 			);
 		case 'page':
