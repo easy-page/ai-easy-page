@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { List, Button, Tooltip, Tag } from 'antd';
 import { StarOutlined, StarFilled } from '@ant-design/icons';
 import { ComponentTypeOption } from '../data/componentOptions';
-import { ComponentType } from '@/pages/PlaygroundPage/constant/componentTypes';
+import { ComponentType } from '../../../../../constant/componentTypes';
 
 interface ComponentListProps {
 	components: ComponentTypeOption[];
@@ -48,7 +48,7 @@ const ComponentList: FC<ComponentListProps> = ({
 									{component.description}
 								</div>
 								{!component.canUseFormItem && (
-									<Tag size="small" color="red" style={{ marginTop: 4 }}>
+									<Tag color="red" style={{ marginTop: 4 }}>
 										非表单组件
 									</Tag>
 								)}

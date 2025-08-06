@@ -1,4 +1,4 @@
-import { ComponentType } from '../types/componentTypes';
+import { ComponentType } from '../../../../../constant/componentTypes';
 import { ComponentCategory } from '../types/componentCategories';
 
 // 组件类型选项接口

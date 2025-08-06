@@ -1,5 +1,3 @@
-import { ComponentType } from './componentTypes';
-
 // 组件分类枚举
 export enum ComponentCategory {
 	FORM_INPUT = 'form-input',

@@ -58,7 +58,7 @@ import {
 	getDefaultDynamicFormProps,
 } from './dynamicForm';
 import { CustomPropsSchema, getDefaultCustomProps } from './custom';
-import { ComponentType } from '../../components/ConfigBuilder/components/FormMode/types/componentTypes';
+import { ComponentType } from '../../constant/componentTypes';
 
 // 组件属性 Schema 联合类型
 export type ComponentPropsSchema =

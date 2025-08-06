@@ -8,7 +8,7 @@ import {
 	getComponentOptionsByCategory,
 } from '../data/componentOptions';
 import ComponentList from './ComponentList';
-import { ComponentType } from '@/pages/PlaygroundPage/constant/componentTypes';
+import { ComponentType } from '../types';
 
 interface CategoryPanelProps {
 	category: ComponentCategory;

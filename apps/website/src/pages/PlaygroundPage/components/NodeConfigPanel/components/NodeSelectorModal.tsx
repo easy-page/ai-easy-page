@@ -2,10 +2,8 @@ import React, { FC, useState } from 'react';
 import { Modal, Tree, Button, Space, Typography, Form, Select } from 'antd';
 import { PlusOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { ComponentSchema } from '../../../Schema/component';
-import {
-	ComponentDisplayNames,
-	ComponentType,
-} from '../../ConfigBuilder/components/FormMode/types';
+import { ComponentDisplayNames } from '../../ConfigBuilder/components/FormMode/types';
+import { ComponentType } from '../../../constant/componentTypes';
 
 const { Option } = Select;
 const { Text, Title } = Typography;

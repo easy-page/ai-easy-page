@@ -16,7 +16,7 @@ import {
 	StarFilled,
 	FireOutlined,
 } from '@ant-design/icons';
-import { ComponentType } from '../types/componentTypes';
+import { ComponentType } from '../../../../../constant/componentTypes';
 import {
 	ComponentCategory,
 	COMPONENT_CATEGORIES,

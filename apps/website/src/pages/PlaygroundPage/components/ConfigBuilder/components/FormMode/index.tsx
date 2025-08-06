@@ -22,7 +22,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 import NodeConfigPanel from '../../../NodeConfigPanel';
 import { getDefaultComponentPropsSchema } from '@/pages/PlaygroundPage/Schema/componentSchemas';
 import { ComponentDisplayNames } from './types';
-import { ComponentType } from '@/pages/PlaygroundPage/constant/componentTypes';
+import { ComponentType } from './types';
 
 interface FormModeProps {
 	schema: FormSchema | null;

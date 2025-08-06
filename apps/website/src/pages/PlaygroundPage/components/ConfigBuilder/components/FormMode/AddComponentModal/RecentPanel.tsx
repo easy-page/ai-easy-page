@@ -5,7 +5,7 @@ import {
 	ComponentTypeOption,
 	ComponentTypeOptionsWithCategory,
 } from '../data/componentOptions';
-import { ComponentType } from '../types/componentTypes';
+import { ComponentType } from '../../../../../constant/componentTypes';
 import ComponentList from './ComponentList';
 
 interface RecentPanelProps {

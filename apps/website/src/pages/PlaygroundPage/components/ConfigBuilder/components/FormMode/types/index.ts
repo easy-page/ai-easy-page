@@ -1,5 +1,5 @@
 // 导出所有类型定义
-export * from './componentTypes';
+export { ComponentType } from '../../../../../constant/componentTypes';
 export * from './componentCategories';
 export * from './componentProps';
 export * from './formItemProps';

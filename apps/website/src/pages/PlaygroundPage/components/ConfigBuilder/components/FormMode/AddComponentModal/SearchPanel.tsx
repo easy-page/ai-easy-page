@@ -5,7 +5,7 @@ import {
 	ComponentTypeOption,
 	searchComponentOptions,
 } from '../data/componentOptions';
-import { ComponentType } from '../types/componentTypes';
+import { ComponentType } from '../../../../../constant/componentTypes';
 import ComponentList from './ComponentList';
 
 interface SearchPanelProps {

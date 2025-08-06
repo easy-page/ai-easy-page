@@ -36,7 +36,7 @@ import {
 	ResultProps,
 } from 'antd';
 import { CustomProps, IconProps } from './componentProps';
-import { ComponentType } from './componentTypes';
+import { ComponentType } from '../../../../../constant/componentTypes';
 
 // 组件属性映射
 export const ComponentPropsMap: Record<ComponentType, any> = {

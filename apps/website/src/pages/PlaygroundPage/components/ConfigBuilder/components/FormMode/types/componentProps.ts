@@ -1,5 +1,4 @@
 import React from 'react';
-import { ComponentType } from './componentTypes';
 
 // 组件属性定义
 export interface ComponentProps {

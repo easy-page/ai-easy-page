@@ -13,7 +13,7 @@ import {
 import { RobotOutlined } from '@ant-design/icons';
 import MonacoEditor from './MonacoEditor';
 import { FormItemProps } from './types';
-import { ComponentType } from '@/pages/PlaygroundPage/constant/componentTypes';
+import { ComponentType } from './types';
 
 const { Option } = Select;
 const { TextArea } = Input;

@@ -1,4 +1,4 @@
-import { ComponentType } from './componentTypes';
+import { ComponentType } from '../../../../../constant/componentTypes';
 
 export const ComponentTypeOptions = [
 	{ label: '输入框', value: ComponentType.INPUT },
