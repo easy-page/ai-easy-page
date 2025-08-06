@@ -40,8 +40,9 @@
 	}
 }
 
-// 节点树样式
-.node-tree-component {
+// 节点树样式 - 增加优先级覆盖 Ant Design 默认样式
+.node-tree-component,
+.form-mode .node-tree-container .custom-tree {
 	background: transparent;
 	color: #fff;
 
@@ -69,4 +70,24 @@
 	.ant-tree-line .ant-tree-switcher-line-icon {
 		background-color: rgba(0, 255, 255, 0.3) !important;
 	}
+}
+
+// 全局覆盖 Ant Design 树节点样式 - 使用更高优先级
+:where(.css-dev-only-do-not-override-1ebzvzn).ant-tree
+	.ant-tree-node-content-wrapper.ant-tree-node-selected,
+.ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected {
+	background-color: rgba(0, 255, 255, 0.2) !important;
+	color: #fff !important;
+}
+
+:where(.css-dev-only-do-not-override-1ebzvzn).ant-tree
+	.ant-tree-node-content-wrapper:hover,
+.ant-tree .ant-tree-node-content-wrapper:hover {
+	background-color: rgba(0, 255, 255, 0.1) !important;
+}
+
+:where(.css-dev-only-do-not-override-1ebzvzn).ant-tree
+	.ant-tree-node-content-wrapper,
+.ant-tree .ant-tree-node-content-wrapper {
+	color: rgba(0, 255, 255, 0.8) !important;
 }

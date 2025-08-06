@@ -92,14 +92,14 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 				</Form.Item>
 
 				{/* 显示组件描述 */}
-				{currentConfig && (
+				{/* {currentConfig && (
 					<Alert
 						message={currentConfig.description}
 						type="info"
 						showIcon
 						style={{ marginBottom: 16 }}
 					/>
-				)}
+				)} */}
 
 				<Form.Item label="是否为表单组件">
 					<Space>

@@ -9,9 +9,13 @@ import {
 	Row,
 	Col,
 	Tabs,
+	Card,
+	Space,
+	Table,
 } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
-import { FormSchema } from '../../Schema';
+import { CloseOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { FormSchema, ComponentSchema } from '../../Schema';
+import { ReactNodeProperty } from '../../Schema/specialProperties';
 import { ComponentConfigPanelMap, FormItemConfigPanel } from './components';
 import FormConfigPanel from './components/FormConfigPanel';
 import { getDefaultComponentPropsSchema } from '../../Schema/componentProps';
@@ -28,6 +32,21 @@ interface NodeConfigPanelProps {
 	onClose?: () => void;
 }
 
+interface NodeInfo {
+	type:
+		| 'form'
+		| 'component'
+		| 'property'
+		| 'array'
+		| 'reactNode'
+		| 'array-item';
+	propertyPath: string;
+	componentIndex?: number;
+	propName?: string;
+	index?: number;
+	parentPath?: string;
+}
+
 const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 	schema,
 	selectedNode,
@@ -39,7 +58,9 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 	if (!selectedNode) {
 		return (
 			<div className="node-config-empty">
-				<Text type="secondary">请选择一个节点进行配置</Text>
+				<Text type="secondary" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+					请选择一个节点进行配置
+				</Text>
 			</div>
 		);
 	}
@@ -47,12 +68,152 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 	// 如果没有schema但有选中的节点，显示基本配置
 	if (!schema) {
 		return (
-			<div className="form-properties">
-				<Title level={5}>节点配置</Title>
-				<Text type="secondary">请先创建表单结构以进行详细配置</Text>
+			<div
+				className="form-properties"
+				style={{
+					background: 'transparent',
+					height: '100%',
+					display: 'flex',
+					flexDirection: 'column',
+					justifyContent: 'center',
+					alignItems: 'center',
+				}}
+			>
+				<Title level={5} style={{ color: '#fff' }}>
+					节点配置
+				</Title>
+				<Text type="secondary" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+					请先创建表单结构以进行详细配置
+				</Text>
 			</div>
 		);
 	}
+
+	// 解析节点ID和属性路径
+	const parseNodeId = (nodeId: string): NodeInfo | null => {
+		const parts = nodeId.split('-');
+
+		// 如果是数组项节点 (如 rows.fields 中的某个字段)
+		if (nodeId.includes('-field-')) {
+			const fieldIndex = parts.indexOf('field');
+			const parentKey = parts.slice(0, fieldIndex).join('-');
+			const index = parseInt(parts[fieldIndex + 1]);
+
+			// 解析父节点的属性路径
+			const parentParse = parseNodeId(parentKey);
+			if (parentParse && parentParse.type === 'array') {
+				return {
+					type: 'array-item',
+					propertyPath: `${parentParse.propertyPath}.${index}`,
+					index,
+					parentPath: parentParse.propertyPath,
+				};
+			}
+		}
+
+		// 如果是数组项节点 (如 rows 中的某个 row)
+		if (nodeId.includes('-item-')) {
+			const itemIndex = parts.indexOf('item');
+			const parentKey = parts.slice(0, itemIndex).join('-');
+			const index = parseInt(parts[itemIndex + 1]);
+
+			// 解析父节点的属性路径
+			const parentParse = parseNodeId(parentKey);
+			if (parentParse && parentParse.type === 'array') {
+				return {
+					type: 'array-item',
+					propertyPath: `${parentParse.propertyPath}.${index}`,
+					index,
+					parentPath: parentParse.propertyPath,
+				};
+			}
+		}
+
+		// 如果是ReactNode属性节点
+		if (nodeId.includes('-reactnode-')) {
+			const reactNodeIndex = parts.indexOf('reactnode');
+			const parentKey = parts.slice(0, reactNodeIndex).join('-');
+			const index = parseInt(parts[reactNodeIndex + 1]);
+
+			// 解析父节点的属性路径
+			const parentParse = parseNodeId(parentKey);
+			if (parentParse && parentParse.type === 'property') {
+				return {
+					type: 'reactNode',
+					parentPath: parentParse.propertyPath,
+					index,
+					propertyPath: `${parentParse.propertyPath}.children.${index}`,
+				};
+			}
+		}
+
+		// 如果是属性节点
+		if (nodeId.includes('-prop-')) {
+			const propIndex = parts.indexOf('prop');
+			const componentIndex = parseInt(parts[1]);
+			const propName = parts[propIndex + 1];
+			return {
+				type: 'property',
+				componentIndex,
+				propName,
+				propertyPath: `properties.children.${componentIndex}.props.${propName}`,
+			};
+		}
+
+		// 如果是普通组件节点
+		if (nodeId.startsWith('child-')) {
+			const componentIndex = parseInt(parts[1]);
+			return {
+				type: 'component',
+				componentIndex,
+				propertyPath: `properties.children.${componentIndex}`,
+			};
+		}
+
+		// 如果是根节点
+		if (nodeId === 'form') {
+			return {
+				type: 'form',
+				propertyPath: 'properties',
+			};
+		}
+
+		return null;
+	};
+
+	const nodeInfo = parseNodeId(selectedNode);
+
+	// 获取指定路径的值
+	const getValueByPath = (obj: any, path: string): any => {
+		const parts = path.split('.');
+		let current = obj;
+		for (const part of parts) {
+			if (current && typeof current === 'object') {
+				current = current[part];
+			} else {
+				return undefined;
+			}
+		}
+		return current;
+	};
+
+	// 设置指定路径的值
+	const setValueByPath = (obj: any, path: string, value: any): any => {
+		const parts = path.split('.');
+		const newObj = { ...obj };
+		let current = newObj;
+
+		for (let i = 0; i < parts.length - 1; i++) {
+			const part = parts[i];
+			if (!(part in current) || typeof current[part] !== 'object') {
+				current[part] = {};
+			}
+			current = current[part];
+		}
+
+		current[parts[parts.length - 1]] = value;
+		return newObj;
+	};
 
 	const renderFormProperties = () => {
 		if (selectedNode !== 'form') {
@@ -70,15 +231,10 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 	};
 
 	const renderComponentProperties = () => {
-		if (selectedNode === 'form') return null;
+		if (!nodeInfo || nodeInfo.type !== 'component') return null;
 
-		// 解析节点ID获取对应的组件
-		const nodeIdParts = selectedNode.split('-');
-		if (nodeIdParts.length < 2) return null;
-
-		const childIndex = parseInt(nodeIdParts[1]);
 		const children = schema.properties?.children || [];
-		const component = children[childIndex];
+		const component = children[nodeInfo.componentIndex!];
 
 		if (!component) return null;
 
@@ -90,8 +246,8 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 
 		const handleComponentPropsChange = (newProps: any) => {
 			const newChildren = [...children];
-			newChildren[childIndex] = {
-				...newChildren[childIndex],
+			newChildren[nodeInfo.componentIndex!] = {
+				...newChildren[nodeInfo.componentIndex!],
 				props: newProps,
 			};
 			onPropertyChange('properties.children', newChildren);
@@ -99,118 +255,511 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 
 		const handleFormItemPropsChange = (newFormItemProps: any) => {
 			const newChildren = [...children];
-			newChildren[childIndex] = {
-				...newChildren[childIndex],
+			newChildren[nodeInfo.componentIndex!] = {
+				...newChildren[nodeInfo.componentIndex!],
 				formItem: {
 					type: 'formItem' as const,
-					properties: newFormItemProps,
+					properties: {
+						...newChildren[nodeInfo.componentIndex!].formItem?.properties,
+						...newFormItemProps,
+					},
 				},
 			};
 			onPropertyChange('properties.children', newChildren);
 		};
 
-		// 如果没有对应的配置面板，显示默认的JSON编辑器
-		if (!ComponentConfigPanel) {
-			return (
-				<div className="component-properties">
-					<Title level={5}>组件属性</Title>
-					<Row gutter={16}>
-						<Col span={24}>
-							<Form.Item label="组件类型">
-								<Input
-									value={component.type || ''}
-									onChange={(e) => {
-										const newChildren = [...children];
-										newChildren[childIndex] = {
-											...newChildren[childIndex],
-											type: e.target.value,
-										};
-										onPropertyChange('properties.children', newChildren);
-									}}
-								/>
-							</Form.Item>
-						</Col>
-						<Col span={24}>
-							<Form.Item label="组件属性">
-								<TextArea
-									rows={3}
-									placeholder="请输入组件属性 (JSON格式)"
-									value={JSON.stringify(component.props || {}, null, 2)}
-									onChange={(e) => {
-										try {
-											const value = JSON.parse(e.target.value);
-											handleComponentPropsChange(value);
-										} catch (error) {
-											// 解析错误时不更新
-										}
-									}}
-								/>
-							</Form.Item>
-						</Col>
-					</Row>
-				</div>
-			);
-		}
-
-		// 使用专门的配置面板
-		const tabItems = [
-			{
-				key: 'component',
-				label: '组件属性',
-				children: (
-					<ComponentConfigPanel
-						props={
-							component.props ||
-							getDefaultComponentPropsSchema(componentType).properties
-						}
-						onChange={handleComponentPropsChange}
-					/>
-				),
-			},
-		];
-
-		// 如果是表单组件，添加FormItem配置
-		if (component.formItem !== undefined) {
-			tabItems.push({
-				key: 'formItem',
-				label: '表单项属性',
-				children: (
-					<FormItemConfigPanel
-						props={component.formItem.properties || {}}
-						onChange={handleFormItemPropsChange}
-					/>
-				),
-			});
-		}
-
-		// 如果是表单组件，默认显示FormItem属性面板
-		const defaultActiveKey =
-			component.formItem !== undefined ? 'formItem' : 'component';
-
 		return (
 			<div className="component-properties">
-				<Title level={5}>组件配置</Title>
-				<Tabs items={tabItems} defaultActiveKey={defaultActiveKey} />
+				<Title level={5} style={{ color: '#fff' }}>
+					组件配置
+				</Title>
+				{ComponentConfigPanel && (
+					<ComponentConfigPanel
+						props={component.props || {}}
+						onChange={handleComponentPropsChange}
+					/>
+				)}
+
+				{component.formItem && (
+					<>
+						<Divider style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
+						<FormItemConfigPanel
+							props={component.formItem.properties || {}}
+							onChange={handleFormItemPropsChange}
+						/>
+					</>
+				)}
 			</div>
 		);
 	};
 
-	const formProps = renderFormProperties();
-	const componentProps = renderComponentProperties();
+	const renderArrayItemConfig = () => {
+		if (!nodeInfo || nodeInfo.type !== 'array-item') return null;
+
+		// 获取当前数组项的值
+		const currentValue = getValueByPath(schema, nodeInfo.propertyPath);
+
+		if (!currentValue) return null;
+
+		// 如果是 ReactNodeProperty 类型
+		if (
+			currentValue &&
+			typeof currentValue === 'object' &&
+			'type' in currentValue
+		) {
+			const reactNodeProp = currentValue as ReactNodeProperty;
+
+			if (reactNodeProp.type === 'reactNode' && 'content' in reactNodeProp) {
+				return (
+					<div className="array-item-config">
+						<Title level={5} style={{ color: '#fff' }}>
+							JSX 内容配置
+						</Title>
+						<Form layout="vertical">
+							<Form.Item label="JSX 内容">
+								<TextArea
+									value={reactNodeProp.content}
+									onChange={(e) => {
+										const newValue = {
+											...reactNodeProp,
+											content: e.target.value,
+										};
+										onPropertyChange(nodeInfo.propertyPath, newValue);
+									}}
+									rows={6}
+									placeholder="请输入JSX内容"
+									style={{
+										background: 'rgba(255, 255, 255, 0.08)',
+										border: '1px solid rgba(0, 255, 255, 0.3)',
+										color: '#fff',
+									}}
+								/>
+							</Form.Item>
+						</Form>
+					</div>
+				);
+			}
+
+			// 如果是 ComponentSchema 类型
+			if (reactNodeProp.type && reactNodeProp.type !== 'reactNode') {
+				const componentSchema = reactNodeProp as ComponentSchema;
+				return (
+					<div className="array-item-config">
+						<Title level={5} style={{ color: '#fff' }}>
+							组件配置
+						</Title>
+						<Card
+							size="small"
+							style={{
+								marginBottom: 16,
+								background: 'rgba(0, 255, 255, 0.05)',
+								border: '1px solid rgba(0, 255, 255, 0.2)',
+							}}
+						>
+							<Space direction="vertical" style={{ width: '100%' }}>
+								<Text strong style={{ color: '#fff' }}>
+									组件类型: {componentSchema.type}
+								</Text>
+								<Text
+									type="secondary"
+									style={{ color: 'rgba(255, 255, 255, 0.6)' }}
+								>
+									子组件数量: {componentSchema.children?.length || 0}
+								</Text>
+							</Space>
+						</Card>
+
+						<Text
+							type="secondary"
+							style={{ color: 'rgba(255, 255, 255, 0.6)' }}
+						>
+							组件属性配置功能正在开发中...
+						</Text>
+					</div>
+				);
+			}
+		}
+
+		// 如果是对象类型（如 row 对象）
+		if (
+			currentValue &&
+			typeof currentValue === 'object' &&
+			!('type' in currentValue)
+		) {
+			return (
+				<div className="array-item-config">
+					<Title level={5} style={{ color: '#fff' }}>
+						对象配置
+					</Title>
+					<Form layout="vertical">
+						{Object.entries(currentValue).map(([key, value]) => (
+							<Form.Item key={key} label={key}>
+								{typeof value === 'string' ? (
+									<Input
+										value={value as string}
+										onChange={(e) => {
+											const newValue = {
+												...currentValue,
+												[key]: e.target.value,
+											};
+											onPropertyChange(nodeInfo.propertyPath, newValue);
+										}}
+										style={{
+											background: 'rgba(255, 255, 255, 0.08)',
+											border: '1px solid rgba(0, 255, 255, 0.3)',
+											color: '#fff',
+										}}
+									/>
+								) : typeof value === 'number' ? (
+									<Input
+										type="number"
+										value={value as number}
+										onChange={(e) => {
+											const newValue = {
+												...currentValue,
+												[key]: Number(e.target.value),
+											};
+											onPropertyChange(nodeInfo.propertyPath, newValue);
+										}}
+										style={{
+											background: 'rgba(255, 255, 255, 0.08)',
+											border: '1px solid rgba(0, 255, 255, 0.3)',
+											color: '#fff',
+										}}
+									/>
+								) : (
+									<TextArea
+										value={JSON.stringify(value, null, 2)}
+										onChange={(e) => {
+											try {
+												const parsedValue = JSON.parse(e.target.value);
+												const newValue = {
+													...currentValue,
+													[key]: parsedValue,
+												};
+												onPropertyChange(nodeInfo.propertyPath, newValue);
+											} catch (error) {
+												// 解析错误时不更新
+											}
+										}}
+										rows={3}
+										style={{
+											background: 'rgba(255, 255, 255, 0.08)',
+											border: '1px solid rgba(0, 255, 255, 0.3)',
+											color: '#fff',
+										}}
+									/>
+								)}
+							</Form.Item>
+						))}
+					</Form>
+				</div>
+			);
+		}
+
+		// 普通值
+		return (
+			<div className="array-item-config">
+				<Title level={5} style={{ color: '#fff' }}>
+					值配置
+				</Title>
+				<Form layout="vertical">
+					<Form.Item label="值">
+						<Input
+							value={String(currentValue)}
+							onChange={(e) => {
+								onPropertyChange(nodeInfo.propertyPath, e.target.value);
+							}}
+							style={{
+								background: 'rgba(255, 255, 255, 0.08)',
+								border: '1px solid rgba(0, 255, 255, 0.3)',
+								color: '#fff',
+							}}
+						/>
+					</Form.Item>
+				</Form>
+			</div>
+		);
+	};
+
+	const renderPropertyConfig = () => {
+		if (!nodeInfo || nodeInfo.type !== 'property') return null;
+
+		const children = schema.properties?.children || [];
+		const component = children[nodeInfo.componentIndex!];
+		const propValue = component?.props?.[nodeInfo.propName!];
+
+		// 如果是数组类型（如 rows）
+		if (Array.isArray(propValue)) {
+			return (
+				<div className="property-config">
+					<Title level={5} style={{ color: '#fff' }}>
+						数组配置
+					</Title>
+					<Card
+						size="small"
+						style={{
+							marginBottom: 16,
+							background: 'rgba(0, 255, 255, 0.05)',
+							border: '1px solid rgba(0, 255, 255, 0.2)',
+						}}
+					>
+						<Space direction="vertical" style={{ width: '100%' }}>
+							<Text strong style={{ color: '#fff' }}>
+								数组长度: {propValue.length}
+							</Text>
+							<Text
+								type="secondary"
+								style={{ color: 'rgba(255, 255, 255, 0.6)' }}
+							>
+								属性名: {nodeInfo.propName}
+							</Text>
+						</Space>
+					</Card>
+
+					<Text type="secondary" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+						请点击左侧树中的具体数组项进行配置
+					</Text>
+				</div>
+			);
+		}
+
+		// 如果是 ReactNodeProperty 类型
+		if (propValue && typeof propValue === 'object' && 'type' in propValue) {
+			const reactNodeProp = propValue as ReactNodeProperty;
+
+			if (reactNodeProp.type === 'reactNode' && 'content' in reactNodeProp) {
+				return (
+					<div className="property-config">
+						<Title level={5} style={{ color: '#fff' }}>
+							JSX 内容配置
+						</Title>
+						<Form layout="vertical">
+							<Form.Item label="JSX 内容">
+								<TextArea
+									value={reactNodeProp.content}
+									onChange={(e) => {
+										const newValue = {
+											...reactNodeProp,
+											content: e.target.value,
+										};
+										onPropertyChange(nodeInfo.propertyPath, newValue);
+									}}
+									rows={6}
+									placeholder="请输入JSX内容"
+									style={{
+										background: 'rgba(255, 255, 255, 0.08)',
+										border: '1px solid rgba(0, 255, 255, 0.3)',
+										color: '#fff',
+									}}
+								/>
+							</Form.Item>
+						</Form>
+					</div>
+				);
+			}
+
+			// 如果是 ComponentSchema 类型
+			if (reactNodeProp.type && reactNodeProp.type !== 'reactNode') {
+				const componentSchema = reactNodeProp as ComponentSchema;
+				return (
+					<div className="property-config">
+						<Title level={5} style={{ color: '#fff' }}>
+							组件配置
+						</Title>
+						<Card
+							size="small"
+							style={{
+								marginBottom: 16,
+								background: 'rgba(255, 255, 255, 0.05)',
+								border: '1px solid rgba(255, 255, 255, 0.1)',
+							}}
+						>
+							<Space direction="vertical" style={{ width: '100%' }}>
+								<Text strong style={{ color: '#fff' }}>
+									组件类型: {componentSchema.type}
+								</Text>
+								<Text
+									type="secondary"
+									style={{ color: 'rgba(255, 255, 255, 0.6)' }}
+								>
+									子组件数量: {componentSchema.children?.length || 0}
+								</Text>
+							</Space>
+						</Card>
+
+						<Text
+							type="secondary"
+							style={{ color: 'rgba(255, 255, 255, 0.6)' }}
+						>
+							组件属性配置功能正在开发中...
+						</Text>
+					</div>
+				);
+			}
+		}
+
+		// 普通属性
+		return (
+			<div className="property-config">
+				<Title level={5} style={{ color: '#fff' }}>
+					属性配置
+				</Title>
+				<Form layout="vertical">
+					<Form.Item label="属性名">
+						<Input
+							value={nodeInfo.propName}
+							disabled
+							style={{
+								background: 'rgba(255, 255, 255, 0.05)',
+								border: '1px solid rgba(255, 255, 255, 0.1)',
+								color: 'rgba(255, 255, 255, 0.6)',
+							}}
+						/>
+					</Form.Item>
+					<Form.Item label="属性值">
+						<Input
+							value={String(propValue)}
+							onChange={(e) => {
+								onPropertyChange(nodeInfo.propertyPath, e.target.value);
+							}}
+							placeholder="请输入属性值"
+							style={{
+								background: 'rgba(255, 255, 255, 0.08)',
+								border: '1px solid rgba(0, 255, 255, 0.3)',
+								color: '#fff',
+							}}
+						/>
+					</Form.Item>
+				</Form>
+			</div>
+		);
+	};
+
+	const renderReactNodeConfig = () => {
+		if (!nodeInfo || nodeInfo.type !== 'reactNode') return null;
+
+		// 获取ReactNode的值
+		const pathParts = nodeInfo.parentPath!.split('.');
+		let currentValue = schema;
+		for (const part of pathParts) {
+			if (currentValue && typeof currentValue === 'object') {
+				currentValue = (currentValue as any)[part];
+			}
+		}
+
+		if (currentValue && Array.isArray((currentValue as any).children)) {
+			const reactNodeValue = (currentValue as any).children[nodeInfo.index!];
+
+			if (
+				reactNodeValue &&
+				typeof reactNodeValue === 'object' &&
+				'type' in reactNodeValue
+			) {
+				if (
+					reactNodeValue.type === 'reactNode' &&
+					'content' in reactNodeValue
+				) {
+					return (
+						<div className="reactnode-config">
+							<Title level={5} style={{ color: '#fff' }}>
+								JSX 内容配置
+							</Title>
+							<Form layout="vertical">
+								<Form.Item label="JSX 内容">
+									<TextArea
+										value={reactNodeValue.content}
+										onChange={(e) => {
+											const newValue = {
+												...reactNodeValue,
+												content: e.target.value,
+											};
+											onPropertyChange(nodeInfo.propertyPath, newValue);
+										}}
+										rows={6}
+										placeholder="请输入JSX内容"
+										style={{
+											background: 'rgba(255, 255, 255, 0.08)',
+											border: '1px solid rgba(0, 255, 255, 0.3)',
+											color: '#fff',
+										}}
+									/>
+								</Form.Item>
+							</Form>
+						</div>
+					);
+				}
+
+				// ComponentSchema类型
+				if (reactNodeValue.type && reactNodeValue.type !== 'reactNode') {
+					return (
+						<div className="reactnode-config">
+							<Title level={5} style={{ color: '#fff' }}>
+								嵌套组件配置
+							</Title>
+							<Card
+								size="small"
+								style={{
+									marginBottom: 16,
+									background: 'rgba(255, 255, 255, 0.05)',
+									border: '1px solid rgba(255, 255, 255, 0.1)',
+								}}
+							>
+								<Space direction="vertical" style={{ width: '100%' }}>
+									<Text strong style={{ color: '#fff' }}>
+										组件类型: {reactNodeValue.type}
+									</Text>
+									<Text
+										type="secondary"
+										style={{ color: 'rgba(255, 255, 255, 0.6)' }}
+									>
+										子组件数量: {reactNodeValue.children?.length || 0}
+									</Text>
+								</Space>
+							</Card>
+
+							<Text
+								type="secondary"
+								style={{ color: 'rgba(255, 255, 255, 0.6)' }}
+							>
+								嵌套组件配置功能正在开发中...
+							</Text>
+						</div>
+					);
+				}
+			}
+		}
+
+		return (
+			<div className="reactnode-config">
+				<Title level={5} style={{ color: '#fff' }}>
+					ReactNode 配置
+				</Title>
+				<Text type="secondary" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+					无法解析的节点类型
+				</Text>
+			</div>
+		);
+	};
 
 	return (
 		<div className="node-config-panel">
-			{/* 关闭按钮 */}
-			{onClose && (
-				<Button
-					type="text"
-					icon={<CloseOutlined />}
-					onClick={onClose}
-					className="config-panel-close-btn"
-				/>
-			)}
-			{formProps}
-			{componentProps}
+			<div className="config-header">
+				<Title level={4} style={{ color: '#fff' }}>
+					节点配置
+				</Title>
+				{onClose && (
+					<Button type="text" icon={<CloseOutlined />} onClick={onClose} />
+				)}
+			</div>
+
+			<div className="config-content">
+				{renderFormProperties()}
+				{renderComponentProperties()}
+				{renderPropertyConfig()}
+				{renderArrayItemConfig()}
+				{renderReactNodeConfig()}
+			</div>
 		</div>
 	);
 };

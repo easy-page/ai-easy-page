@@ -757,3 +757,37 @@ export const FullFormDemo: React.FC = () => {
 目前已经实现弹窗逻辑和添加组件的逻辑，还需要补充组件对应配置面板的逻辑。
 
 - 实现了组件 schema 定义：apps/website/src/pages/PlaygroundPage/Schema/componentProps.ts
+
+## 节点树问题
+
+### 需求
+
+将 ReactNodeProperty 增加了 ComponentSchema 的支持后：
+
+1. 属性配置面板应对这种复杂配置，就显得有点鸡肋了，而且无法做到新增和选择更多节点配置到属性中，因为这时候属性节点也是一个节点树
+2. 左侧的节点树也很难再描述一个节点上某个属性的节点树
+   帮我设计下，如何展现现在的：FormSchema 节点树和配置节点树
+
+以动态表单为例子：DynamicFormPropsSchema 中：
+
+- rows.fields 里是需要配置组件的，它可以是一个 ComponentSchema，
+- headers 也是：ComponentSchema
+  这就相当于，左侧的节点树，除了 children 里有子树，
+  节点的属性配置里，也可能有子树
+
+要求：
+
+1. 某个节点可能还有 n 个属性子树，这个怎么展现和交互
+2. 每个子树的节点的配置同正常的节点配置是一样的交互，一样的配置，如何管理
+
+### 项目结构
+
+- 右侧配置面板位置：apps/website/src/pages/PlaygroundPage/components/NodeConfigPanel
+- 左侧节点树：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode
+- 字段属性定义：apps/website/src/pages/PlaygroundPage/Schema
+- JSXParser：apps/website/src/pages/PlaygroundPage/JSXParser
+- 解析引擎：apps/website/src/pages/PlaygroundPage/Engine
+
+## TODO:
+
+1. 没有 children 属性的组件，不应该有添加按钮
