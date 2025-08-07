@@ -52,7 +52,7 @@ export const UploadFileBtn = ({ disabled }: UploadFileBtnProps) => {
 	const chatService = useService(ChatService);
 	return (
 		<IconButton
-			className=" text-large"
+			className="text-large"
 			onClick={(e) => {
 				e.currentTarget.blur(); // Removes focus from the button to prevent tooltip from showing
 				const inputElement = document.createElement('input');

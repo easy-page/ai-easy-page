@@ -30,11 +30,11 @@ export const TopSencePanel = ({
 	const template = curSenceConfig.senceInput.template;
 	return (
 		<div className="flex flex-row px-2 py-2 items-center rounded-t-2xl bg-background-tertiary-light justify-between">
-			<div className="flex flex-row items-center ">
+			<div className="flex flex-row items-center">
 				<div>{curSenceConfig.icon}</div>
 				<div className="text-regularPlus ml-2">{curSenceConfig.name}</div>
 			</div>
-			<div className="flex flex-row items-center ">
+			<div className="flex flex-row items-center">
 				{template ? (
 					<TemplateBtn
 						onClick={() => {

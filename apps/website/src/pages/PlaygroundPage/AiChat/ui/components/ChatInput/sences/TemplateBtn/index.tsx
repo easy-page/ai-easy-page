@@ -18,7 +18,7 @@ export const TemplateBtn = ({
 		<div
 			onClick={onClick}
 			className={classNames(
-				'flex items-center gap-1  px-3 py-1 rounded-md text-smallPlus cursor-pointer',
+				'flex items-center gap-1 px-3 py-1 rounded-md text-smallPlus cursor-pointer',
 				className,
 				{
 					'hover:bg-background-hover': !active,

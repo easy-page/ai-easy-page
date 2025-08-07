@@ -226,14 +226,14 @@ export const MoreSkillsBtn = ({ disabled }: MoreSkillsBtnProps) => {
 					}
 				}}
 				className={classNames(
-					'rounded-[10px] hover:bg-background-secondary  p-2 border border-md border-[#EBEBEB]',
+					'rounded-[10px] hover:bg-background-secondary p-2 border border-md border-[#EBEBEB]',
 					{
 						'opacity-50 cursor-not-allowed': isDisabled,
-						'cursor-pointer ': !isDisabled,
+						'cursor-pointer': !isDisabled,
 					}
 				)}
 			>
-				<div className="flex flex-row items-center px-2 ">
+				<div className="flex flex-row items-center px-2">
 					<MoreSkillsIcon />
 					<div className="ml-2 text-small">技能</div>
 				</div>

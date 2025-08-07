@@ -839,3 +839,13 @@ export const FullFormDemo: React.FC = () => {
 - 非表单模式下，不需要 Form 和 FormItem 包裹
 - 表单模式下，需要 Form 和 FormItem 包裹
 - 是否为表单组件这个配置要传给 example，表示是否是表单模式
+
+# 优化对话组件样式
+
+基于：apps/website/src/pages/PlaygroundPage/components/AIBuilder/index.less 进行样式优化：
+
+1. 历史对话悬浮弹窗样式修复
+2. 对话名称和修改对话的弹窗样式修复，符合当前项目主题
+3. 底部输入框样式修复，整体结构参考如图结构，不要调整我的结构和增加边框，就修改主题风格适配我的项目即可。
+
+所有样式的覆盖都放到：apps/website/src/pages/PlaygroundPage/components/AIBuilder/index.less

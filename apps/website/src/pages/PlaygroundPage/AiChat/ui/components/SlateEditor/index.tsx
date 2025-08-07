@@ -1,28 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-	createEditor,
-	Descendant,
-	Element as SlateElement,
-	Transforms,
-	Path,
-	NodeEntry,
-	Range,
-	Editor,
-	Node,
-	Text,
-	Point,
-} from 'slate';
-import {
-	Slate,
-	Editable,
-	withReact,
-	ReactEditor,
-	RenderElementProps,
-} from 'slate-react';
+import { Descendant, Transforms } from 'slate';
+import { Slate, Editable, ReactEditor } from 'slate-react';
 import styled from 'styled-components';
 import { PARAGRAPH_ELEMENT, renderElement } from './components';
-import { withCustomNodes } from './plugins/withCustomNodes';
-import { SENCE_ELEMENT } from './components/SenceElement';
 import { ChatService } from '../../../services/chatGlobalState';
 import { useObservable } from '../../../hooks/useObservable';
 
@@ -39,20 +19,6 @@ const StyledEditable = styled(Editable)`
 	min-height: 24px;
 	line-height: 1.5;
 	outline: none;
-
-	/* 基本占位符样式 */
-	&.slate-editor [data-slate-placeholder='true'] {
-		visibility: visible !important;
-		position: absolute !important;
-		color: hsl(var(--foreground-tertiary));
-		opacity: 0.333 !important;
-	}
-
-	/* 空输入框内的占位符位置 */
-	&.slate-editor [data-is-empty='true'] [data-slate-placeholder='true'] {
-		top: 0 !important;
-		left: 0.5rem !important;
-	}
 `;
 
 interface SlateEditorProps {

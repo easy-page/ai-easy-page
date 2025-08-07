@@ -24,10 +24,10 @@ export const SendBtn = ({ disabledSend, onSend, editor }: SendBtnProps) => {
 	console.log('1231231:', isEmpty);
 	return (
 		<IconButton
-			className={classNames('text-[#222222] text-[28px]', {
+			className={classNames('text-foreground-brand text-[28px]', {
 				'cursor-not-allowed text-foreground-disabled':
 					(!isWaiting && disabledSend) || isEmpty,
-				'hover:text-[#444444]': !isEmpty && !disabledSend,
+				'hover:text-foreground-brand-hover': !isEmpty && !disabledSend,
 			})}
 			disableBorder
 			disabledTips={'请输入内容'}

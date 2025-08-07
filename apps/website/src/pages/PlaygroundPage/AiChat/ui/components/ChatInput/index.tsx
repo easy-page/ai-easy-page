@@ -27,6 +27,7 @@ import { RouterNames } from '../../../routers/constant';
 import { InputToolsConfig } from '../../../common/interfaces/senceConfig/senceInput';
 import { Contexts } from './contexts';
 import { ReactEditor } from 'slate-react';
+import './index.less';
 
 export type ChatInputProps = {
 	chatMode: ChatMode;
@@ -154,10 +155,10 @@ export const ChatInput = ({ chatMode, extraTools }: ChatInputProps) => {
 					curSenceConfig={curSenceConfig}
 				/>
 			)}
-			<div className="flex flex-col  px-4  pb-2 w-full  min-h-[120px]">
+			<div className="flex flex-col px-4 pb-2 w-full min-h-[120px]">
 				<Contexts />
 				<div
-					className="max-h-[250px] overflow-auto flex-1 "
+					className="max-h-[250px] overflow-auto flex-1"
 					onClick={() => {
 						try {
 							ReactEditor.focus(editor);
