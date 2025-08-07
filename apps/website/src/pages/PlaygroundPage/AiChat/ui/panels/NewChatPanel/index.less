@@ -1,0 +1,49 @@
+.title-container {
+    position: relative;
+    text-align: center;
+}
+
+.text-container {
+    position: relative;
+    display: inline-block;
+    font-size: 24px;
+    overflow: hidden;
+}
+
+.text {
+    position: relative;
+    z-index: 2;
+    font-weight: bold;
+    animation: reveal 1s ease-in-out forwards;
+}
+
+.user-name-text {
+    display: inline-block;
+    // padding-right: 20px;
+    // background: url('https://s3plus.meituan.net/zspt-fe/jarvis/star_1.gif') no-repeat right center;
+    // background-size: contain;
+}
+
+.chat-input-container {
+    width: 100%;
+    max-width: 800px;
+    padding: 0 16px;
+}
+
+@keyframes reveal {
+    from {
+        clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    }
+    to {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+}
+
+@keyframes cover {
+    from {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+    to {
+        clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+    }
+}

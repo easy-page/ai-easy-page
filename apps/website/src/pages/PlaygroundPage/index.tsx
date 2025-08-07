@@ -82,7 +82,7 @@ const PlaygroundPage: FC = () => {
 									key: 'config',
 									label: (
 										<span>
-											<SettingOutlined />
+											<SettingOutlined style={{ marginRight: 4 }} />
 											配置搭建
 										</span>
 									),
@@ -100,7 +100,7 @@ const PlaygroundPage: FC = () => {
 									key: 'ai',
 									label: (
 										<span>
-											<RobotOutlined />
+											<RobotOutlined style={{ marginRight: 4 }} />
 											AI 搭建
 										</span>
 									),

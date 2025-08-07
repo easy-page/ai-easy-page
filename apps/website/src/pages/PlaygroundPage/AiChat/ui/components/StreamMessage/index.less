@@ -1,0 +1,71 @@
+.planning-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.planning-text {
+    background: linear-gradient(90deg, #1890ff 0%, #000000 100%);
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textGradient 2s ease-in-out infinite;
+    font-weight: 500;
+}
+
+.rotating-dots {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #1890ff;
+    opacity: 0.3;
+}
+
+.dot-1 {
+    animation: dotRotate1 1.5s ease-in-out infinite;
+}
+
+.dot-2 {
+    animation: dotRotate2 1.5s ease-in-out infinite;
+}
+
+@keyframes textGradient {
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes dotRotate1 {
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: translateX(0);
+    }
+    50% {
+        opacity: 1;
+        transform: translateX(5px);
+    }
+}
+
+@keyframes dotRotate2 {
+    0%,
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    50% {
+        opacity: 0.3;
+        transform: translateX(-5px);
+    }
+}

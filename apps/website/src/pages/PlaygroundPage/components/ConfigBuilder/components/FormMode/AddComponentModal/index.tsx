@@ -1,32 +1,11 @@
-import React, { FC, useState, useEffect, useMemo } from 'react';
-import {
-	Modal,
-	Tabs,
-	Input,
-	Space,
-	Card,
-	Button,
-	Tag,
-	Tooltip,
-	Empty,
-} from 'antd';
-import {
-	SearchOutlined,
-	StarOutlined,
-	StarFilled,
-	FireOutlined,
-} from '@ant-design/icons';
+import React, { FC, useState, useEffect } from 'react';
+import { Modal, Tabs, Input } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import { ComponentType } from '../../../../../constant/componentTypes';
-import {
-	ComponentCategory,
-	COMPONENT_CATEGORIES,
-} from '../types/componentCategories';
-import {
-	ComponentTypeOption,
-	searchComponentOptions,
-} from '../data/componentOptions';
+import { ComponentCategory } from '../types/componentCategories';
+import { ComponentTypeOption } from '../data/componentOptions';
 import { getComponentConfig } from '../ComponentConfig';
-import CategoryPanel from './CategoryPanel';
+import CategoryBrowser from './CategoryBrowser';
 import SearchPanel from './SearchPanel';
 import FavoritePanel from './FavoritePanel';
 import RecentPanel from './RecentPanel';
@@ -60,10 +39,11 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 		setActiveTab(activeKey as TabKey);
 	};
 
-	// 处理分类Tab切换
-	const handleCategoryChange = (activeKey: string) => {
-		setActiveCategory(activeKey as ComponentCategory);
+	// 处理分类切换
+	const handleCategoryChange = (category: ComponentCategory) => {
+		setActiveCategory(category);
 	};
+
 	const [searchKeyword, setSearchKeyword] = useState('');
 	const [selectedComponent, setSelectedComponent] =
 		useState<ComponentTypeOption | null>(null);
@@ -175,7 +155,7 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 					/>
 				</div>
 
-				{/* 左右布局 */}
+				{/* 左右布局：组件选择和预览 */}
 				<div className="modal-layout">
 					{/* 左侧：组件选择 */}
 					<div className="left-panel">
@@ -186,33 +166,14 @@ const AddComponentModal: FC<AddComponentModalProps> = ({
 							className="component-tabs"
 						>
 							<TabPane tab="分类浏览" key={TAB_KEYS.CATEGORIES}>
-								<Tabs
-									activeKey={activeCategory}
-									onChange={handleCategoryChange}
-									className="category-tabs"
-								>
-									{COMPONENT_CATEGORIES.map((category) => (
-										<TabPane
-											tab={
-												<span>
-													<span style={{ marginRight: 4 }}>
-														{category.icon}
-													</span>
-													{category.name}
-												</span>
-											}
-											key={category.id}
-										>
-											<CategoryPanel
-												category={category.id}
-												onComponentSelect={handleComponentSelect}
-												selectedComponent={selectedComponent}
-												favorites={favorites}
-												onToggleFavorite={toggleFavorite}
-											/>
-										</TabPane>
-									))}
-								</Tabs>
+								<CategoryBrowser
+									activeCategory={activeCategory}
+									onCategoryChange={handleCategoryChange}
+									onComponentSelect={handleComponentSelect}
+									selectedComponent={selectedComponent}
+									favorites={favorites}
+									onToggleFavorite={toggleFavorite}
+								/>
 							</TabPane>
 							<TabPane tab="搜索" key={TAB_KEYS.SEARCH}>
 								<SearchPanel

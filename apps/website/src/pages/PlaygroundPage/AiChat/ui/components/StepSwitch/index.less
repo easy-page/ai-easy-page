@@ -1,0 +1,250 @@
+// 使用CSS变量引用theme中定义的颜色
+@primary-color: hsl(var(--foreground-brand));
+// @secondary-color: hsl(var(--foreground-brand-secondary));
+@secondary-color: hsl(var(--foreground-brand));
+@disabled-color: hsl(var(--foreground-disabled));
+@bg-white: hsl(var(--background));
+@text-dark: hsl(var(--foreground));
+@neon-glow: 0 0 10px hsla(var(--foreground-brand), 0.5),
+    0 0 15px hsla(var(--foreground-brand-secondary), 0.3);
+
+.tabsContainer {
+    display: flex;
+    background: hsl(var(--background));
+    flex-wrap: nowrap;
+    gap: 0.25rem; // 4px -> 0.25rem
+    margin-bottom: 0.75rem; // 12px -> 0.75rem
+    position: relative;
+    padding: 0.5rem 0.8rem; // 8px -> 0.5rem
+    border-radius: 0.625rem; // 10px -> 0.625rem
+    border: 1px solid hsla(var(--border-brand), 0.1);
+    overflow: hidden;
+    overflow-x: scroll;
+}
+
+// 选项卡样式
+.step-card {
+    flex-shrink: 0;
+    // padding: 0.5rem 1rem; // 8px 16px -> 0.5rem 1rem
+    // border-radius: 0.5rem; // 8px -> 0.5rem
+    // width: 12.5rem; // 200px -> 12.5rem
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    height: 94%;
+
+    // border: 1px solid hsl(var(--border));
+    min-width: 11.25rem; // 180px -> 11.25rem
+    overflow: hidden;
+    color: hsl(var(--foreground));
+
+    // 未选中态悬停效果
+    // &:not(.active):not(.disabled):hover {
+    //     background: hsl(var(--background-hover));
+    //     // transform: translateY(-2px);
+    //     // border-color: hsl(var(--background-brand-secondary) / 0.5);
+    // }
+
+    &.complated {
+        background: hsl(var(--background));
+        // border-left: 3px solid hsl(var(--background-positive));
+    }
+
+    &.failed {
+        background: hsl(var(--background));
+        height: 94%;
+        // border-left: 3px solid hsl(var(--destructive));
+    }
+
+    // 选中态样式
+    &.active {
+        height: 94%;
+        background: hsl(var(--background));
+        // border-left: 3px solid hsl(var(--background-brand));
+    }
+
+    // 禁用态样式
+    &.disabled {
+        background: linear-gradient(to right,
+                hsla(var(--background-disabled), 0.9),
+                hsla(var(--background-disabled), 0.95));
+        color: hsl(var(--foreground-disabled));
+        cursor: not-allowed;
+        // border: 1px solid hsl(var(--border-active));
+        // border-left: 3px solid hsl(var(--foreground-disabled));
+        position: relative;
+        transition: all 0.3s ease;
+    }
+}
+
+// 选项卡标题样式
+.step-title {
+    // font-size: var(--font-size-small);
+    // margin-bottom: 0.25rem; // 4px -> 0.25rem
+    display: flex;
+    align-items: center;
+    color: #666666;
+    padding: 8px 22px;
+    border: 1px solid #EEEEEE;
+    border-radius: 2px;
+
+    &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 6px;
+        background-image: url('https://s3plus.meituan.net/zspt-fe/jarvis/%E8%BF%9B%E5%BA%A6gif.gif');
+        background-size: cover;
+        background-repeat: no-repeat;
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+    }
+
+    .active &::after {
+        opacity: 1;
+    }
+
+    .active & {
+        // color: hsl(var(--foreground-brand));
+        color: hsl(var(--foreground));
+        font-weight: 600;
+    }
+
+    .complated & {
+        color: hsl(var(--foreground));
+        font-weight: 600;
+    }
+
+    .failed & {
+        color: hsl(var(--foreground));
+        font-weight: 600;
+    }
+
+    .disabled & {
+        color: hsl(var(--foreground-disabled));
+        text-shadow: 0 1px 0 hsla(var(--background), 0.5);
+        font-weight: 500;
+    }
+}
+
+// 选项卡描述样式
+.step-description {
+    font-size: 0.75rem;
+    color: hsl(var(--foreground-tertiary));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .active & {
+        color: hsl(var(--foreground-secondary));
+    }
+
+    .disabled & {
+        color: hsl(var(--foreground-disabled));
+        text-shadow: 0 1px 0 hsla(var(--background), 0.5);
+        font-weight: 500;
+    }
+}
+
+// 状态指示器样式
+.active-indicator {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    display: inline-block;
+    background: hsl(var(--border-active));
+
+    .active & {
+        // background: hsl(var(--background-brand));
+        box-shadow: 0 0 8px hsl(var(--background-brand));
+        animation: pulse 2s infinite;
+    }
+
+    .disabled & {
+        background: hsl(var(--foreground-disabled));
+        opacity: 0.5;
+        box-shadow: none;
+    }
+}
+
+.failed-indicator {
+    width: 1rem; // 16px -> 1rem
+    height: 1rem; // 16px -> 1rem
+    border-radius: 50%;
+    background-color: hsl(var(--destructive));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    &::before,
+    &::after {
+        content: '';
+        position: absolute;
+        width: 0.125rem; // 2px -> 0.125rem
+        height: 0.625rem; // 10px -> 0.625rem
+        background-color: hsl(var(--background));
+        border-radius: 0.0625rem; // 1px -> 0.0625rem
+    }
+
+    &::before {
+        transform: rotate(45deg);
+    }
+
+    &::after {
+        transform: rotate(-45deg);
+    }
+}
+
+// 用一个绿色的勾号来代表完成状态
+.complate-indicator {
+    width: 1rem; // 16px -> 1rem
+    height: 1rem; // 16px -> 1rem
+    border-radius: 50%;
+    background-color: hsl(var(--background-positive));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &::after {
+        content: '';
+        width: 0.375rem; // 6px -> 0.375rem
+        height: 0.625rem; // 10px -> 0.625rem
+        border: 0.125rem solid hsl(var(--background)); // 2px -> 0.125rem
+        border-top: 0;
+        border-left: 0;
+        transform: rotate(45deg) translate(-0.0625rem, -0.0625rem); // 1px -> 0.0625rem
+    }
+}
+
+// 动画定义
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 hsl(var(--foreground-brand) / 0.8);
+    }
+
+    70% {
+        box-shadow: 0 0 0 6px hsl(var(--foreground-brand) / 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 hsl(var(--foreground-brand) / 0);
+    }
+}

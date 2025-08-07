@@ -40,6 +40,33 @@
 	}
 }
 
+// 分类浏览菜单深色主题样式 - 覆盖默认的浅色主题
+.category-browser {
+	.category-sidebar {
+		.category-menu {
+			.ant-menu-item {
+				color: rgba(255, 255, 255, 0.7) !important;
+				background: transparent !important;
+				border: none !important;
+
+				&:hover {
+					background-color: rgba(0, 255, 255, 0.1) !important;
+					color: rgba(0, 255, 255, 0.9) !important;
+				}
+
+				&.ant-menu-item-selected {
+					background-color: rgba(0, 255, 255, 0.2) !important;
+					color: rgba(0, 255, 255, 0.9) !important;
+				}
+
+				.anticon {
+					color: inherit !important;
+				}
+			}
+		}
+	}
+}
+
 // Switch 组件深色主题样式
 .ant-switch {
 	background: rgba(255, 255, 255, 0.2) !important;
@@ -187,6 +214,29 @@
 
 	.ant-card-body {
 		background: transparent !important;
+	}
+
+	// 组件卡片特殊样式 - 移除默认padding防止内容被挤压
+	&.component-card .ant-card-body {
+		padding: 0 !important;
+	}
+}
+
+// 组件网格中的卡片样式覆盖 - 移除padding
+.component-grid {
+	.ant-card {
+		.ant-card-body {
+			padding: 0 !important;
+		}
+	}
+}
+
+// 组件预览区域的卡片保持正常padding
+.component-preview {
+	.ant-card {
+		.ant-card-body {
+			padding: 16px !important; // 保持正常的padding
+		}
 	}
 }
 
@@ -392,6 +442,25 @@
 		border-radius: 6px !important;
 		padding: 16px !important;
 	}
+
+	// 滚动条样式
+	&::-webkit-scrollbar {
+		width: 6px !important;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: rgba(255, 255, 255, 0.05) !important;
+		border-radius: 3px !important;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background: rgba(0, 255, 255, 0.3) !important;
+		border-radius: 3px !important;
+
+		&:hover {
+			background: rgba(0, 255, 255, 0.5) !important;
+		}
+	}
 }
 
 // 组件预览卡片样式
@@ -399,6 +468,7 @@
 	.ant-card-head {
 		background: rgba(0, 255, 255, 0.05) !important;
 		border-bottom: 1px solid rgba(0, 255, 255, 0.2) !important;
+		flex-shrink: 0 !important;
 
 		.ant-card-head-title {
 			color: rgba(0, 255, 255, 0.9) !important;
@@ -409,6 +479,10 @@
 	.ant-card-body {
 		background: transparent !important;
 		padding: 16px !important;
+		flex: 1 !important;
+		min-height: 0 !important;
+		display: flex !important;
+		flex-direction: column !important;
 	}
 }
 
@@ -520,5 +594,13 @@
 		background: rgba(255, 255, 255, 0.02) !important;
 		border-radius: 6px !important;
 		padding: 16px !important;
+		max-width: 100% !important;
+		box-sizing: border-box !important;
+	}
+
+	// 确保内容不会超出容器
+	* {
+		max-width: 100% !important;
+		box-sizing: border-box !important;
 	}
 }

@@ -1,0 +1,44 @@
+.semi-table-thead > .semi-table-row > .semi-table-row-head {
+    border-bottom: 1px solid rgba(28, 31, 35, 0.08);
+}
+
+.semi-table-tbody {
+    .semi-form-field {
+        overflow: unset !important;
+    }
+
+    .semi-form-field-main {
+        position: relative;
+    }
+
+    .semi-form-field-error-message {
+        position: absolute;
+    }
+}
+
+.pagination-container {
+    display: flex;
+    // justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+}
+
+.pagination-button {
+    padding: 2px 8px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.pagination-button:hover {
+    background-color: #f2f2f2;
+}
+
+.pagination-button.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
