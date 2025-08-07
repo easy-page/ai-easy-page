@@ -604,3 +604,259 @@
 		box-sizing: border-box !important;
 	}
 }
+
+// ==================== 对话组件黑色主题样式覆盖 ====================
+
+// 对话组件整体容器样式
+.ai-builder-container {
+	// 确保整个容器使用黑色主题
+	background: #0a0a0a !important;
+	color: #fff !important;
+
+	// 覆盖所有可能的白色背景
+	* {
+		&[style*='background: white'],
+		&[style*='background-color: white'],
+		&[style*='background: #fff'],
+		&[style*='background-color: #fff'],
+		&[style*='background: rgb(255, 255, 255)'],
+		&[style*='background-color: rgb(255, 255, 255)'] {
+			background: rgba(15, 15, 15, 0.9) !important;
+		}
+	}
+
+	// 覆盖所有可能的黑色文字
+	* {
+		&[style*='color: black'],
+		&[style*='color: #000'],
+		&[style*='color: rgb(0, 0, 0)'] {
+			color: #fff !important;
+		}
+	}
+}
+
+// 新建对话按钮样式修复
+.ai-builder-container {
+	// 新建对话按钮 - 修复白色背景问题
+	button[class*='new-chat'],
+	button[class*='新建对话'],
+	div[class*='new-chat'],
+	div[class*='新建对话'] {
+		background: rgba(0, 255, 255, 0.1) !important;
+		border: 1px solid rgba(0, 255, 255, 0.3) !important;
+		color: rgba(0, 255, 255, 0.9) !important;
+
+		&:hover {
+			background: rgba(0, 255, 255, 0.2) !important;
+			border-color: rgba(0, 255, 255, 0.5) !important;
+			color: #fff !important;
+		}
+
+		// 修复加号图标颜色
+		svg,
+		img,
+		i {
+			color: rgba(0, 255, 255, 0.9) !important;
+			filter: none !important;
+		}
+	}
+}
+
+// 历史对话文字颜色修复
+.ai-builder-container {
+	// 历史对话标题 - 修复深色文字问题
+	div[class*='历史对话'],
+	span[class*='历史对话'],
+	.text[class*='历史对话'] {
+		color: rgba(255, 255, 255, 0.7) !important;
+	}
+
+	// 对话列表项样式
+	.chat-history-item,
+	.history-item {
+		color: rgba(255, 255, 255, 0.8) !important;
+		background: transparent !important;
+
+		&:hover {
+			background: rgba(0, 255, 255, 0.1) !important;
+			color: #fff !important;
+		}
+
+		&.selected {
+			background: rgba(0, 255, 255, 0.2) !important;
+			color: #fff !important;
+		}
+	}
+}
+
+// 输入框容器样式修复
+.ai-builder-container {
+	// 输入框容器 - 修复白色背景问题
+	.w-full.flex.flex-col.border,
+	div[class*='input-container'],
+	div[class*='chat-input'] {
+		background: rgba(15, 15, 15, 0.9) !important;
+		border: 1px solid rgba(0, 255, 255, 0.3) !important;
+		color: #fff !important;
+
+		&:hover {
+			border-color: rgba(0, 255, 255, 0.5) !important;
+		}
+
+		&:focus-within {
+			border-color: rgba(0, 255, 255, 0.8) !important;
+			box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2) !important;
+		}
+	}
+
+	// 输入框内部样式
+	.slate-editor,
+	[data-slate-editor],
+	div[contenteditable='true'] {
+		background: transparent !important;
+		color: #fff !important;
+
+		&::placeholder {
+			color: rgba(255, 255, 255, 0.5) !important;
+		}
+	}
+
+	// 占位符样式
+	[data-slate-placeholder='true'] {
+		color: rgba(255, 255, 255, 0.5) !important;
+	}
+}
+
+// 工具栏样式修复
+.ai-builder-container {
+	// 工具栏按钮
+	.flex.items-center.justify-between button,
+	.toolbar button,
+	.chat-toolbar button {
+		background: rgba(0, 255, 255, 0.1) !important;
+		border: 1px solid rgba(0, 255, 255, 0.3) !important;
+		color: rgba(0, 255, 255, 0.9) !important;
+
+		&:hover {
+			background: rgba(0, 255, 255, 0.2) !important;
+			border-color: rgba(0, 255, 255, 0.5) !important;
+			color: #fff !important;
+		}
+
+		&:disabled {
+			background: rgba(255, 255, 255, 0.05) !important;
+			border-color: rgba(255, 255, 255, 0.1) !important;
+			color: rgba(255, 255, 255, 0.3) !important;
+		}
+	}
+
+	// 工具栏图标
+	svg,
+	img,
+	i {
+		color: rgba(0, 255, 255, 0.9) !important;
+		filter: none !important;
+	}
+}
+
+// 消息气泡样式修复
+.ai-builder-container {
+	// 消息气泡
+	.message-bubble,
+	.chat-message {
+		background: rgba(15, 15, 15, 0.9) !important;
+		border: 1px solid rgba(0, 255, 255, 0.2) !important;
+		color: #fff !important;
+	}
+
+	// 用户消息
+	.user-message .message-bubble,
+	.chat-message.user {
+		background: rgba(0, 255, 255, 0.1) !important;
+		border-color: rgba(0, 255, 255, 0.3) !important;
+	}
+}
+
+// 顶部导航栏样式修复
+.ai-builder-container {
+	// 顶部导航栏
+	.flex.h-14,
+	.top-nav,
+	.header-nav {
+		background: rgba(10, 10, 10, 0.95) !important;
+		border-bottom: 1px solid rgba(0, 255, 255, 0.3) !important;
+		color: #fff !important;
+	}
+
+	// 导航按钮
+	.nav-button,
+	.nav-item {
+		color: rgba(255, 255, 255, 0.8) !important;
+
+		&:hover {
+			color: rgba(0, 255, 255, 0.9) !important;
+			background: rgba(0, 255, 255, 0.1) !important;
+		}
+
+		&.active {
+			color: rgba(0, 255, 255, 0.9) !important;
+			background: rgba(0, 255, 255, 0.2) !important;
+		}
+	}
+}
+
+// 场景面板样式修复
+.ai-builder-container {
+	// 场景面板
+	.flex.flex-row.px-2.py-2.items-center.rounded-t-2xl.bg-background-tertiary-light.justify-between,
+	.scene-panel,
+	.sence-panel {
+		background: rgba(15, 15, 15, 0.9) !important;
+		border-bottom: 1px solid rgba(0, 255, 255, 0.2) !important;
+		color: #fff !important;
+	}
+}
+
+// 滚动条样式修复
+.ai-builder-container {
+	::-webkit-scrollbar {
+		width: 6px !important;
+	}
+
+	::-webkit-scrollbar-track {
+		background: rgba(15, 15, 15, 0.5) !important;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: rgba(0, 255, 255, 0.3) !important;
+
+		&:hover {
+			background: rgba(0, 255, 255, 0.5) !important;
+		}
+	}
+}
+
+// 强制覆盖所有可能的白色背景和黑色文字
+.ai-builder-container {
+	* {
+		// 覆盖所有白色背景
+		&[style*='background: white'],
+		&[style*='background-color: white'],
+		&[style*='background: #fff'],
+		&[style*='background-color: #fff'],
+		&[style*='background: rgb(255, 255, 255)'],
+		&[style*='background-color: rgb(255, 255, 255)'],
+		&[style*='background: #ffffff'],
+		&[style*='background-color: #ffffff'] {
+			background: rgba(15, 15, 15, 0.9) !important;
+		}
+
+		// 覆盖所有黑色文字
+		&[style*='color: black'],
+		&[style*='color: #000'],
+		&[style*='color: rgb(0, 0, 0)'],
+		&[style*='color: #000000'] {
+			color: #fff !important;
+		}
+	}
+}

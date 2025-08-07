@@ -7,6 +7,7 @@ import {
 	SettingOutlined,
 } from '@ant-design/icons';
 import { VenueChatPanel } from './chat';
+import './index.less';
 
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -37,7 +38,7 @@ const AIBuilder: FC = () => {
 	};
 
 	return (
-		<div className="ai-builder">
+		<div className="ai-builder-container">
 			<VenueChatPanel venueId={0} />
 		</div>
 	);

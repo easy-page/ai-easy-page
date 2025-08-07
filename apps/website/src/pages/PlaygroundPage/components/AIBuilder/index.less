@@ -1,0 +1,396 @@
+.ai-builder-container {
+	width: 100%;
+	height: 100vh;
+	background: #0a0a0a;
+	position: relative;
+	overflow: hidden;
+
+	// 科技感背景效果
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: radial-gradient(
+				circle at 20% 80%,
+				rgba(0, 255, 255, 0.05) 0%,
+				transparent 50%
+			),
+			radial-gradient(
+				circle at 80% 20%,
+				rgba(0, 255, 255, 0.03) 0%,
+				transparent 50%
+			),
+			radial-gradient(
+				circle at 40% 40%,
+				rgba(0, 255, 255, 0.02) 0%,
+				transparent 50%
+			);
+		z-index: 0;
+	}
+
+	// 网格背景效果
+	&::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-image: linear-gradient(
+				90deg,
+				transparent 98%,
+				rgba(0, 255, 255, 0.1) 100%
+			),
+			linear-gradient(0deg, transparent 98%, rgba(0, 255, 255, 0.1) 100%);
+		background-size: 50px 50px;
+		opacity: 0.2;
+		z-index: 0;
+	}
+
+	// 确保内容在背景之上
+	> * {
+		position: relative;
+		z-index: 1;
+	}
+}
+
+// 覆盖AiChat组件的样式，使其符合黑色主题
+.ai-builder-container {
+	// 顶部导航栏样式
+	.flex.h-14 {
+		background: rgba(10, 10, 10, 0.95);
+		border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+		backdrop-filter: blur(20px);
+		box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+
+		// 导航按钮样式
+		.text-title3 {
+			color: rgba(255, 255, 255, 0.8);
+			transition: all 0.3s ease;
+
+			&:hover {
+				color: rgba(0, 255, 255, 0.9);
+				background: rgba(0, 255, 255, 0.1);
+				box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
+			}
+		}
+
+		// 分隔线样式
+		.bg-border {
+			background: rgba(0, 255, 255, 0.3);
+		}
+
+		// 对话名称样式
+		.text-foreground-primary {
+			color: #fff;
+		}
+
+		// 按钮样式
+		.group {
+			&:hover {
+				background: rgba(0, 255, 255, 0.1);
+				border-color: rgba(0, 255, 255, 0.3);
+			}
+		}
+
+		// 图标样式
+		img {
+			filter: brightness(0) invert(1);
+			opacity: 0.8;
+			transition: all 0.3s ease;
+
+			&:hover {
+				opacity: 1;
+				filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(180deg);
+			}
+		}
+	}
+
+	// 主内容区域样式 - NewChatPanel
+	.flex.h-\[calc\(100vh-200px\)\] {
+		background: transparent;
+
+		// 问候语容器样式
+		.title-container {
+			.text-container {
+				.text {
+					color: #fff;
+					font-weight: 600;
+					text-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+				}
+
+				.user-name-text {
+					color: rgba(0, 255, 255, 0.9);
+					font-weight: 700;
+					text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+				}
+			}
+		}
+	}
+
+	// ConversationPanel样式
+	.flex.h-\[calc\(100vh-200px\)\].flex-col.items-center.justify-center {
+		background: transparent;
+
+		// MessageList样式
+		.flex-1 {
+			background: transparent;
+		}
+	}
+
+	// TopSencePanel样式
+	.flex.flex-row.px-2.py-2.items-center.rounded-t-2xl.bg-background-tertiary-light.justify-between {
+		background: rgba(15, 15, 15, 0.9) !important;
+		border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+
+		// 场景名称样式
+		.text-regularPlus {
+			color: #fff;
+		}
+
+		// 图标样式
+		svg {
+			color: rgba(255, 255, 255, 0.8);
+		}
+	}
+
+	// 输入框容器样式
+	.w-full.flex.flex-col.border {
+		background: rgba(15, 15, 15, 0.9);
+		border: 1px solid rgba(0, 255, 255, 0.3);
+		border-radius: 16px;
+		backdrop-filter: blur(10px);
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+		transition: all 0.3s ease;
+
+		&:hover {
+			border-color: rgba(0, 255, 255, 0.5);
+			box-shadow: 0 12px 40px rgba(0, 255, 255, 0.2);
+		}
+
+		&:focus-within {
+			border-color: rgba(0, 255, 255, 0.8);
+			box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2);
+		}
+	}
+
+	// 输入框内部样式
+	.max-h-\[250px\] {
+		background: transparent;
+
+		// Slate编辑器样式
+		[data-slate-editor] {
+			color: #fff;
+			background: transparent;
+
+			&::placeholder {
+				color: rgba(255, 255, 255, 0.5);
+			}
+		}
+	}
+
+	// 工具栏样式
+	.flex.items-center.justify-between {
+		background: rgba(20, 20, 20, 0.8);
+		border-top: 1px solid rgba(0, 255, 255, 0.2);
+		border-radius: 0 0 16px 16px;
+		padding: 8px 16px;
+
+		// 工具栏按钮样式
+		button {
+			color: rgba(255, 255, 255, 0.8);
+			background: rgba(0, 255, 255, 0.1);
+			border: 1px solid rgba(0, 255, 255, 0.2);
+			border-radius: 8px;
+			transition: all 0.3s ease;
+
+			&:hover {
+				color: rgba(0, 255, 255, 0.9);
+				background: rgba(0, 255, 255, 0.2);
+				border-color: rgba(0, 255, 255, 0.4);
+				box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
+			}
+		}
+
+		// 工具栏图标样式
+		svg {
+			color: rgba(255, 255, 255, 0.8);
+			transition: all 0.3s ease;
+
+			&:hover {
+				color: rgba(0, 255, 255, 0.9);
+			}
+		}
+
+		// 工具栏分隔线样式
+		.h-4.w-px {
+			background: rgba(0, 255, 255, 0.3);
+		}
+	}
+
+	// ChatInputToolbar样式覆盖
+	.flex.flex-row.items-center.justify-between {
+		// 左侧工具栏按钮
+		.flex.flex-row.gap-2 {
+			button {
+				color: rgba(255, 255, 255, 0.8);
+				background: rgba(0, 255, 255, 0.1);
+				border: 1px solid rgba(0, 255, 255, 0.2);
+				border-radius: 8px;
+				transition: all 0.3s ease;
+
+				&:hover {
+					color: rgba(0, 255, 255, 0.9);
+					background: rgba(0, 255, 255, 0.2);
+					border-color: rgba(0, 255, 255, 0.4);
+					box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
+				}
+
+				&:disabled {
+					color: rgba(255, 255, 255, 0.3);
+					background: rgba(255, 255, 255, 0.05);
+					border-color: rgba(255, 255, 255, 0.1);
+					opacity: 0.5;
+				}
+			}
+		}
+
+		// 右侧工具栏按钮
+		.flex.flex-row.gap-2.items-center {
+			button {
+				color: rgba(255, 255, 255, 0.8);
+				background: rgba(0, 255, 255, 0.1);
+				border: 1px solid rgba(0, 255, 255, 0.2);
+				border-radius: 8px;
+				transition: all 0.3s ease;
+
+				&:hover {
+					color: rgba(0, 255, 255, 0.9);
+					background: rgba(0, 255, 255, 0.2);
+					border-color: rgba(0, 255, 255, 0.4);
+					box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
+				}
+
+				&:disabled {
+					color: rgba(255, 255, 255, 0.3);
+					background: rgba(255, 255, 255, 0.05);
+					border-color: rgba(255, 255, 255, 0.1);
+					opacity: 0.5;
+				}
+			}
+		}
+	}
+
+	// SlateEditor样式覆盖
+	.slate-editor {
+		background: transparent !important;
+		border: none !important;
+		padding: 16px !important;
+		min-height: 120px !important;
+		color: #fff !important;
+		font-size: 14px !important;
+		line-height: 1.6 !important;
+
+		// 占位符样式
+		[data-slate-placeholder='true'] {
+			color: rgba(255, 255, 255, 0.5) !important;
+			opacity: 0.6 !important;
+		}
+
+		// 段落样式
+		p {
+			margin: 0 !important;
+			padding: 0 !important;
+			color: #fff !important;
+		}
+
+		// 文本样式
+		span {
+			color: #fff !important;
+		}
+
+		// 焦点状态
+		&:focus {
+			outline: none !important;
+			background: transparent !important;
+		}
+	}
+
+	// 覆盖styled-components的EditorContainer样式
+	div[style*='border: 1px solid'] {
+		background: transparent !important;
+		border: none !important;
+		padding: 0 !important;
+	}
+
+	// MessageList样式覆盖
+	.flex-1 {
+		background: transparent !important;
+
+		// 消息容器样式
+		.messages-container {
+			background: transparent !important;
+		}
+
+		// 消息气泡样式
+		.message-bubble {
+			background: rgba(15, 15, 15, 0.9) !important;
+			border: 1px solid rgba(0, 255, 255, 0.2) !important;
+			color: #fff !important;
+		}
+
+		// 用户消息样式
+		.user-message .message-bubble {
+			background: rgba(0, 255, 255, 0.1) !important;
+			border-color: rgba(0, 255, 255, 0.3) !important;
+		}
+	}
+}
+
+// 动画效果
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes glow {
+	0%,
+	100% {
+		box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+	}
+	50% {
+		box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+	}
+}
+
+// 应用动画
+.ai-builder-container {
+	.title-container {
+		animation: fadeInUp 0.8s ease-out;
+	}
+
+	.w-full.flex.flex-col.border {
+		animation: fadeInUp 1s ease-out 0.2s both;
+	}
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+	.ai-builder-container {
+		height: 100vh;
+		overflow: hidden;
+
+		.flex.h-\[calc\(100vh-200px\)\] {
+			height: calc(100vh - 120px);
+		}
+	}
+}

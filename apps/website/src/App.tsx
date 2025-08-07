@@ -24,7 +24,7 @@ const App: React.FC = () => {
 		<Suspense>
 			<FrameworkRoot framework={frameworkProvider}>
 				<JarvisThemeProvider
-					defaultTheme={Theme.Yellow}
+					defaultTheme={Theme.Dark}
 					storageKey="jarvis-ui-theme"
 				>
 					<Routes>
