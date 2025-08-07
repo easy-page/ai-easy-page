@@ -849,3 +849,13 @@ export const FullFormDemo: React.FC = () => {
 3. 底部输入框样式修复，整体结构参考如图结构，不要调整我的结构和增加边框，就修改主题风格适配我的项目即可。
 
 所有样式的覆盖都放到：apps/website/src/pages/PlaygroundPage/components/AIBuilder/index.less
+
+# 风格修改
+
+对话组件主题管理：
+
+- apps/website/src/pages/PlaygroundPage/theme/ThemeProvider.tsx
+- apps/website/src/index.css
+- apps/website/tailwind.config.js
+
+结合上面主题管理，通过 tailwind.config.js 和 index.css 主题变量的定义，帮我把这个 apps/website/src/pages/PlaygroundPage/AiChat/ui/components/ChatInput/index.tsx 输入框背景色适配我的主题。注意只改背景色就行

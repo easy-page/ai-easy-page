@@ -27,6 +27,7 @@ import { RouterNames } from '../../../routers/constant';
 import { InputToolsConfig } from '../../../common/interfaces/senceConfig/senceInput';
 import { Contexts } from './contexts';
 import { ReactEditor } from 'slate-react';
+import { useTheme } from '../../../../theme';
 import './index.less';
 
 export type ChatInputProps = {
@@ -38,6 +39,7 @@ export const ChatInput = ({ chatMode, extraTools }: ChatInputProps) => {
 	const [messages, setMessages] = useState<string[]>(['a', 'b']);
 	const isNew = chatMode === ChatMode.NewChat;
 	const chatService = useService(ChatService);
+	const { theme } = useTheme();
 	const curConversation = useObservable(
 		chatService.globalState.curConversation$,
 		null
@@ -145,8 +147,23 @@ export const ChatInput = ({ chatMode, extraTools }: ChatInputProps) => {
 		return <></>;
 	}
 
+	// 根据主题动态选择边框颜色
+	const getBorderClasses = () => {
+		switch (theme) {
+			case 'dark':
+				return 'border-border/60 hover:border-border-hover focus-within:border-border-active focus-within:border-brand/80 shadow-sm hover:shadow-md';
+			case 'blue':
+				return 'border-border/70 hover:border-border-hover focus-within:border-border-active focus-within:border-brand shadow-sm hover:shadow-md';
+			case 'yellow':
+				return 'border-border/60 hover:border-border-hover focus-within:border-border-active focus-within:border-brand/90 shadow-sm hover:shadow-md';
+			case 'light':
+			default:
+				return 'border-border/80 hover:border-border-hover focus-within:border-border-active focus-within:border-brand shadow-sm hover:shadow-md';
+		}
+	};
+
 	return (
-		<div className="w-full flex flex-col border border-border rounded-2xl bg-white">
+		<div className={`w-full flex flex-col border rounded-2xl transition-colors duration-200 ${getBorderClasses()}`}>
 			{isNew ? (
 				<></>
 			) : (
