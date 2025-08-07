@@ -103,6 +103,12 @@ body {
 		--border-active: 0 0% 67%; /* medium gray */
 		--border-hover: 0 0% 57%; /* gray */
 		--border-brand: 171 100% 67%;
+		--border-button: 0 0% 90%; /* 超高对比度按钮边框 */
+		--border-button-hover: 0 0% 70%; /* 按钮悬停时的边框 */
+		--border-button-active: 0 0% 60%; /* 按钮激活时的边框 */
+		--border-high-contrast: 171 100% 60%; /* 亮青色边框 - 高对比度 */
+		--border-input: 0 0% 100%; /* 输入框专用边框 */
+		--border-input-hover: 0 0% 85%; /* 输入框悬停边框 */
 
 		--muted: 0 0% 95%; /* very light gray */
 		--muted-foreground: 0 0% 20%; /* dark gray */
@@ -161,7 +167,7 @@ body {
 		--foreground-positive: 147 100% 44%; /* green[200] */
 		--foreground-hover: 0 0% 78%; /* gray[100] */
 		--foreground-active: 0 0% 100%; /* gray[50] */
-		--foreground-disabled: 0 0% 10%; /* gray[900] */
+		--foreground-disabled: 100% 100% 100%; /* 提高对比度，从10%改为45% */
 		--foreground-hover-contrast: 0 0% 100%; /* white */
 
 		--primary: 60 9.1% 97.8%; /* shadcn */
@@ -188,6 +194,12 @@ body {
 		--border-active: 0 0% 47%; /* gray[400] */
 		--border-hover: 0 0% 38%; /* gray[500] */
 		--border-brand: 171 100% 17%; /* 与 dark 主题的 background-brand 相同色调 */
+		--border-button: 0 0% 60%; /* 超高对比度按钮边框 */
+		--border-button-hover: 0 0% 75%; /* 按钮悬停时的边框 */
+		--border-button-active: 0 0% 85%; /* 按钮激活时的边框 */
+		--border-high-contrast: 171 100% 70%; /* 亮青色边框 - 高对比度 */
+		--border-input: 0 0% 90%; /* 输入框专用边框 */
+		--border-input-hover: 0 0% 75%; /* 输入框悬停边框 */
 
 		--muted: 12 6.5% 15.1%; /* shadcn */
 		--muted-foreground: 24 5.4% 63.9%; /* shadcn */
@@ -284,6 +296,12 @@ body {
 		--border-active: 223 30% 67%;
 		--border-hover: 223 30% 57%;
 		--border-brand: 223 100% 61%; /* 与蓝色主题的主色 #386BFF 相同 */
+		--border-button: 223 70% 90%; /* 超高对比度按钮边框 */
+		--border-button-hover: 223 70% 70%; /* 按钮悬停时的边框 */
+		--border-button-active: 223 70% 60%; /* 按钮激活时的边框 */
+		--border-high-contrast: 171 100% 60%; /* 亮青色边框 - 高对比度 */
+		--border-input: 223 100% 100%; /* 输入框专用边框 */
+		--border-input-hover: 223 100% 85%; /* 输入框悬停边框 */
 
 		/* 静音相关变量 */
 		--muted: 223 20% 95%;
@@ -370,6 +388,10 @@ body {
 		--border-active: 0 0% 67%; /* 中灰色边框 */
 		--border-hover: 0 0% 57%; /* 较深灰色边框 */
 		--border-brand: 24 100% 50%; /* #FF6A00 */
+		--border-button: 24 50% 90%; /* 超高对比度按钮边框 */
+		--border-button-hover: 24 50% 70%; /* 按钮悬停时的边框 */
+		--border-button-active: 24 50% 60%; /* 按钮激活时的边框 */
+		--border-high-contrast: 171 100% 60%; /* 亮青色边框 - 高对比度 */
 
 		/* 图标相关变量 */
 		--icon: 0 0% 33%; /* 中灰色 */

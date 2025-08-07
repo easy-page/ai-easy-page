@@ -858,6 +858,11 @@ export const FullFormDemo: React.FC = () => {
 - apps/website/src/index.css
 - apps/website/tailwind.config.js
 
-结合上面主题管理，通过 tailwind.config.js 和 index.css 主题变量的定义，
+结合上面主题管理，通过 tailwind.config.js 和 index.css 主题变量的定义，优化
+apps/website/src/pages/PlaygroundPage/AiChat/ui/components/ChatInput/toolbar/operations/SendBtn/index.tsx 这里的 className ，对比度太差了
 
-帮我把这个 apps/website/src/pages/PlaygroundPage/AiChat/ui/components/ChatInput/index.tsx 输入框背景色适配我的主题。注意只改背景色就行
+然后你可以选择在
+
+- apps/website/src/index.css
+- apps/website/tailwind.config.js
+  增加相关的颜色变量

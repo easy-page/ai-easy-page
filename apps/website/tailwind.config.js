@@ -84,6 +84,10 @@ export default {
 					active: 'hsl(var(--border-active))',
 					hover: 'hsl(var(--border-hover))',
 					brand: 'hsl(var(--border-brand))',
+					button: 'hsl(var(--border-button))',
+					'button-hover': 'hsl(var(--border-button-hover))',
+					'button-active': 'hsl(var(--border-button-active))',
+					'high-contrast': 'var(--border-high-contrast)',
 				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',

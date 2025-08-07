@@ -146,7 +146,7 @@ export const ChatInput = ({ chatMode, extraTools }: ChatInputProps) => {
 	}
 
 	return (
-		<div className="w-full flex flex-col border border-border rounded-2xl">
+		<div className="w-full flex flex-col border border-teal-800 rounded-2xl transition-all duration-200 hover:border-teal-200 shadow-sm">
 			{isNew ? (
 				<></>
 			) : (

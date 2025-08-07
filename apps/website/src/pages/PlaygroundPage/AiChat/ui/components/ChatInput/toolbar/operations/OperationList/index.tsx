@@ -112,7 +112,7 @@ export const OperationList = ({ chatMode, operations }: OperationListProps) => {
 					}
 				}}
 				className={classNames(
-					'rounded-[10px] hover:bg-background-secondary  p-2 border border-md border-[#EBEBEB]',
+					'rounded-[10px] hover:bg-background-secondary border p-2 border-md border-teal-800',
 					{
 						'opacity-50 cursor-not-allowed': isDisabled,
 						'cursor-pointer ': !isDisabled,

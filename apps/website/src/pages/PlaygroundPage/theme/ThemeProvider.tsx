@@ -62,7 +62,7 @@ export function JarvisThemeProvider({
 		const next: Theme = (() => {
 			switch (theme) {
 				case Theme.Dark:
-					return Theme.Blue;
+					return Theme.Dark;
 				case Theme.Light:
 					return Theme.Blue;
 				case Theme.Blue:

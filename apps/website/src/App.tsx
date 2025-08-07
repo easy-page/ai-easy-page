@@ -10,7 +10,6 @@ import { FrameworkRoot } from './pages/PlaygroundPage/AiChat/infra';
 import { JarvisThemeProvider, Theme } from './pages/PlaygroundPage/theme';
 import { useFrameworkProvider } from './pages/PlaygroundPage/AiChat/hooks/useFrameworkProvider';
 import { AgnoServer } from './pages/PlaygroundPage/AiChat/providers/agno';
-
 const App: React.FC = () => {
 	const frameworkProvider = useFrameworkProvider(new AgnoServer());
 
