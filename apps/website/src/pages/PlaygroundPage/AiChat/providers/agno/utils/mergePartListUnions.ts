@@ -1,4 +1,4 @@
-import { PartListUnion } from '@shared/message';
+import { PartListUnion } from '../../../common/interfaces/message';
 
 export function mergePartListUnions(list: PartListUnion[]): PartListUnion {
 	const resultParts: PartListUnion = [];

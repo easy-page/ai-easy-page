@@ -1,12 +1,6 @@
-import { renderApi } from '@/renderApis';
-import {
-	ChatMessageRole,
-	ClientMessageFrom,
-	ServerMsgType,
-} from '@/common/constants/message';
-import { ServerMessageChunk } from '@/common/interfaces/messages/stream';
+import { renderApi } from '../../../renderApis';
 import { unRegisterHandlers } from './unRegisterHandlers';
-import { PartListUnion } from '@shared/message';
+import { PartListUnion } from '../../../common/interfaces/message';
 
 export const sendMessageStreamWithHandlers = ({
 	savedConversationId,
@@ -18,11 +12,15 @@ export const sendMessageStreamWithHandlers = ({
 }: {
 	savedAssistantMsgId: string;
 	savedConversationId: string;
-	queryToSend: PartListUnion;
+	queryToSend?: PartListUnion | null;
 	onComplete: () => void;
 	onError: (error: Error) => void;
 	venueId: number;
 }) => {
+	if (!queryToSend) {
+		onComplete();
+		return;
+	}
 	return renderApi
 		.sendMessageStream({
 			message: queryToSend,

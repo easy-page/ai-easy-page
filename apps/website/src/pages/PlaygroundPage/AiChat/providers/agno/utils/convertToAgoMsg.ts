@@ -1,14 +1,14 @@
 import {
 	AssistantClientMessage,
 	UserClientMessage,
-} from '@/common/interfaces/messages/chatMessages/client';
+} from '../../../common/interfaces/messages/chatMessages/client';
 import {
 	ChatMessageContext,
 	ChatMessageContextType,
 	FileMessageContext,
 	ImageMessageContext,
-} from '@/common/interfaces/messages/chatMessages/context';
-import { Part, PartListUnion } from '@shared/message';
+} from '../../../common/interfaces/messages/chatMessages/context';
+import { Part, PartListUnion } from '../../../common/interfaces/message';
 import { handleUploadFile } from './handleUploadFile';
 
 export const convertToAgoMsg = async (
@@ -16,7 +16,7 @@ export const convertToAgoMsg = async (
 	conversationId: string | undefined
 ): Promise<{ parts: PartListUnion; context: ChatMessageContext[] }> => {
 	// 处理文件上传
-	const processedContext = await handleUploadFile(curMessage.context);
+	const processedContext = await handleUploadFile(curMessage.context!);
 
 	// 构建基础消息部分
 	const parts: Part[] = [];

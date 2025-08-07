@@ -5,6 +5,7 @@ import { ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import App from './App';
 import './styles/index.less';
+import './index.css';
 
 // 黑色主题配置
 const darkTheme = {

@@ -632,6 +632,7 @@ export class AgnoServer extends ApiProvider {
 					isComplete = complated;
 				},
 				performMemoryRefresh: doPerformMemoryRefresh({
+					venueId,
 					savedConversationId,
 					saveMessageToState,
 					saveProgressMsg: async (msg: ConversationMessageType) => {

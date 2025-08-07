@@ -1,5 +1,5 @@
-import { renderApi } from '@/renderApis';
-import { EVENT_NAME } from '@shared/constant';
+import { renderApi } from '../../../renderApis';
+import { EVENT_NAME } from '../../../common/constants/constant';
 
 export const unRegisterHandlers = () => {
 	renderApi.unregisterMessageHandler(EVENT_NAME.AiStreamMsg);

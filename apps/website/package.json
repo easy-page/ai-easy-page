@@ -23,6 +23,7 @@
 		"@radix-ui/react-tooltip": "^1.2.7",
 		"@radix-ui/react-use-callback-ref": "^1.1.1",
 		"antd": "^5.4.0",
+		"autoprefixer": "^10.4.21",
 		"axios": "^1.11.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
@@ -49,7 +50,10 @@
 		"slate": "^0.118.0",
 		"slate-react": "^0.117.4",
 		"styled-components": "^6.1.19",
-		"tailwind-merge": "^3.3.1"
+		"tailwind-merge": "^3.2.0",
+		"tailwind-styled-components": "^2.2.0",
+		"tailwindcss": "^4.1.11",
+		"tailwindcss-animate": "^1.0.7"
 	},
 	"devDependencies": {
 		"@types/lodash-es": "^4.17.12",

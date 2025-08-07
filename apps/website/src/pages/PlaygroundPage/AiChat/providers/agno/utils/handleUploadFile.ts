@@ -3,7 +3,7 @@ import {
 	ChatMessageContextType,
 	FileMessageContext,
 	ImageMessageContext,
-} from '@/common/interfaces/messages/chatMessages/context';
+} from '../../../common/interfaces/messages/chatMessages/context';
 import { uploadMbdFile } from './util';
 
 export const handleUploadFile = async (

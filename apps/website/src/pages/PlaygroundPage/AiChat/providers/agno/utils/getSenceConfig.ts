@@ -1,6 +1,6 @@
-import { SenceConfig } from '@/common/interfaces/senceConfig';
-import { EnvEnum, getEnv } from '@/common/utils/env';
-import { RequestResult } from '@/infra';
+import { RequestResult } from '../../../apis/axios';
+import { SenceConfig } from '../../../common/interfaces/senceConfig';
+import { EnvEnum, getEnv } from '../../../common/utils/env';
 import { DefaultSenceData } from '../senceData';
 
 export const getSenceConfig = async (

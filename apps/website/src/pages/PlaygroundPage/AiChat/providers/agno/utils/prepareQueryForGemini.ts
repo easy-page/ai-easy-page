@@ -1,4 +1,4 @@
-import { PartListUnion } from '@shared/message';
+import { PartListUnion } from '../../../common/interfaces/message';
 
 export const prepareQueryForGemini = async (
 	query: PartListUnion,

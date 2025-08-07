@@ -1,4 +1,4 @@
-import { getEnv } from '@/common/utils/env';
+import { getEnv } from '../../../common/utils/env';
 
 export type UploadFileResult = {
 	fileUrl: string;
