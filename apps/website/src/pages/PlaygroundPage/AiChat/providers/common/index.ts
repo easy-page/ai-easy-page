@@ -77,9 +77,6 @@ export abstract class ApiProvider {
 	public abortController: AbortController | null = null;
 	public isAborted: boolean = false;
 
-	abstract shouldSaveMessageToServer(): boolean;
-	abstract saveMessage(message: ServerMessage): Promise<string>;
-
 	abstract baseUrl: string;
 	abstract getFeedback(task_id: number): Promise<RequestResult<any>>;
 
@@ -106,30 +103,24 @@ export abstract class ApiProvider {
 	abstract getConversation(
 		conversationId: string
 	): Promise<RequestResult<ConversationInfo>>;
-	abstract getTaskDetail(options: {
-		taskId: number;
-	}): Promise<RequestResult<FullTaskInfo>>;
 
-	abstract createConversation(options: {
+	abstract createConversation(options?: {
 		title?: string;
-		venueId: number;
 	}): Promise<RequestResult<ConversationInfo>>;
 	abstract deleteConversation(
 		conversationId: string
 	): Promise<RequestResult<any>>;
-	abstract getConversations(options: {
+	abstract getConversations(options?: {
 		limit?: number;
 		before?: any;
 		after?: any;
-		venueId: number;
 	}): Promise<RequestResult<ConversationsPageInfo>>;
 	abstract getConversationMessages(
 		conversationId: string,
-		options: {
+		options?: {
 			limit?: number;
 			before?: any;
 			after?: any;
-			venueId: number;
 		}
 	): Promise<RequestResult<ConversationInfo>>;
 	public abortStream(): boolean {

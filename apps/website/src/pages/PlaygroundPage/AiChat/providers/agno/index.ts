@@ -44,34 +44,10 @@ import {
 	ImageMessageContext,
 } from '../../common/interfaces/messages/chatMessages/context';
 import { uploadMbdFile } from './utils/util';
-import { PartListUnion, Part } from '../../common/interfaces/message';
 
-import {
-	FrontCompletedToolCall,
-	FrontToolCall,
-	ServerStreamEvent,
-	TrackedCancelledToolCall,
-	TrackedCompletedToolCall,
-	TrackedToolCall,
-	TurnEventType,
-} from '../../common/interfaces/serverChunk';
-import { ConversationMessageType } from '../../common/interfaces/messages/chatMessages/interface';
-import { SlashCommandProcessorResult } from './interface';
-import { mergePartListUnions } from './utils/mergePartListUnions';
-import { getErrorMessage } from './utils/getErrorMsg';
-import { getSenceConfig } from './utils/getSenceConfig';
-import { convertToAgoMsg } from './utils/convertToAgoMsg';
-import { getServerMessageFromChunk } from './utils/getServerMessageFromChunk';
-import { convertServerMsgToFrontChunk } from './utils/convertServerMsgToFrontChunk';
-import { prepareQueryForGemini } from './utils/prepareQueryForGemini';
-import { doHandleStreamMsg } from './utils/handleStreamMsg';
-import { doHandleComplateTools } from './utils/handleComplateTools';
-import { doPerformMemoryRefresh } from './utils/performMemoryRefresh';
-import { unRegisterHandlers } from './utils/unRegisterHandlers';
-import { sendMessageStreamWithHandlers } from './utils/sendMessageStream';
-import { registerEventHandlers } from './utils/registerEventHandlers';
-import { createToolCallHandlers } from './utils/createToolCallHandlers';
 import { RequestResult } from '../../apis/axios';
+import { TaskStatus } from '../../common/constants/task';
+import { FullTaskInfo } from '../../common/interfaces/task';
 
 export const generateCardId = (cardPrefix: string) => {
 	return `${cardPrefix}_${Math.random().toString(36).substring(2, 15)}`;
@@ -122,7 +98,10 @@ export class AgnoServer extends ApiProvider {
 	async getSenceConfigs(
 		userMis: string
 	): Promise<RequestResult<SenceConfig[]>> {
-		return getSenceConfig(userMis);
+		return Promise.resolve({
+			success: true,
+			data: DefaultSenceData,
+		});
 	}
 	baseUrl: string = '/zspt-agent-api/v1';
 
@@ -217,16 +196,14 @@ export class AgnoServer extends ApiProvider {
 		return res;
 	}
 
-	async createConversation(options: {
+	async createConversation(options?: {
 		title?: string;
-		venueId: number;
 	}): Promise<RequestResult<ConversationInfo>> {
 		const res = await this.fetchReq({
 			method: 'POST',
 			url: '/conversations/cv',
 			body: {
 				name: options?.title || '新对话',
-				venueId: options?.venueId,
 			},
 		});
 
@@ -253,7 +230,6 @@ export class AgnoServer extends ApiProvider {
 		limit?: number;
 		before?: string;
 		after?: string;
-		venueId: number;
 	}): Promise<RequestResult<ConversationsPageInfo>> {
 		const res = await this.fetchReq({
 			method: 'GET',
@@ -262,7 +238,6 @@ export class AgnoServer extends ApiProvider {
 				limit: options?.limit,
 				before: options?.before,
 				after: options?.after,
-				venueId: options?.venueId,
 			},
 		});
 
@@ -292,33 +267,9 @@ export class AgnoServer extends ApiProvider {
 		};
 	}
 
-	async getTaskDetail(options: {
-		taskId: number;
-	}): Promise<RequestResult<any>> {
-		const res = await this.fetchReq({
-			method: 'GET',
-			url: `/tasks/tsk/${options.taskId}`,
-			body: {
-				taskId: options.taskId,
-			},
-		});
-
-		if (!res) {
-			return {
-				success: false,
-				message: '获取任务详情失败',
-			};
-		}
-
-		return {
-			success: true,
-			data: res,
-		};
-	}
-
 	async getConversationMessages(
 		conversationId: string,
-		options: { limit?: number; before?: any; after?: any }
+		options?: { limit?: number; before?: any; after?: any }
 	): Promise<RequestResult<CurConversation>> {
 		let url = `/messages/conversation/${conversationId}`;
 		const queryParams = [];
@@ -356,7 +307,7 @@ export class AgnoServer extends ApiProvider {
 					Object.keys(oriCards).forEach((key) => {
 						const card = {
 							...oriCards[key],
-							detail: oriCards[key].detail || {},
+							detail: oriCards[key].taskInfo || {},
 						};
 						newCards[key] = card;
 					});
@@ -397,103 +348,212 @@ export class AgnoServer extends ApiProvider {
 		};
 	}
 
+	async handleUploadFile(
+		context?: ChatMessageContext[]
+	): Promise<ChatMessageContext[]> {
+		if (!context) {
+			return [];
+		}
+		const newContext: ChatMessageContext[] = [];
+		for (const item of context) {
+			if (
+				[ChatMessageContextType.FILE, ChatMessageContextType.IMAGE].includes(
+					item.type
+				)
+			) {
+				const curItem = item as FileMessageContext | ImageMessageContext;
+				const uploadResult = await uploadMbdFile({
+					mimeType: curItem.mimeType || '',
+					displayName: curItem.fileName || '',
+					file: curItem.file || new File([], ''),
+				});
+				newContext.push({
+					...curItem,
+					fileUrl: uploadResult.fileUrl || '',
+					base64Url: undefined,
+					file: undefined,
+				});
+			} else {
+				newContext.push(item);
+			}
+		}
+		return newContext;
+	}
+
 	async convertToAgoMsg(
 		curMessage: UserClientMessage | AssistantClientMessage,
+		venueId: number,
 		conversationId: string | undefined
-	): Promise<{ parts: PartListUnion; context: ChatMessageContext[] }> {
-		return convertToAgoMsg(curMessage, conversationId);
+	): Promise<AgnoClientMessage> {
+		// const context: ChatMessageContext[] = [];
+		// if (curMessage.context) {
+		//     for (const item of curMessage.context) {
+		//         if (item.type === ChatMessageContextType.FILE) {
+		//             context.push({
+		//                 type: ChatMessageContextType.FILE,
+		//                 path: item.fileUrl,
+		//                 displayName: item.fileName,
+		//                 mimeType: item.mimeType,
+		//                 id: item.id,
+		//             } as FileMessageContext);
+		//         }
+		//     }
+		// }
+		const curContexts = await this.handleUploadFile(curMessage.context || []);
+		console.log('curCont12321321exts:', this.csrfToken);
+		return {
+			conversation_id: `${conversationId || ''}`,
+			content: curMessage.content,
+			role: ChatMessageRole.USER,
+			msg_from: ClientMessageFrom.CLIENT,
+			context: curContexts,
+			csrf_token: this.csrfToken || '',
+			venue_id: venueId,
+			business_info: {
+				bizLine: 0,
+				env: getEnv(),
+			},
+		};
 	}
 
-	shouldSaveMessageToServer(): boolean {
-		return true;
+	getTaskCardComponentPrefix(chunkId: string): string {
+		// id 最好是驼峰的字符串，不要数字开头
+		return `<CustomCard id="${chunkId}"`;
 	}
 
-	async saveMessage(message: ServerMessage): Promise<string> {
-		console.log('saveMessage 到服务端', message);
-		const res = await this.saveMsg({
-			...message,
-			role: ChatMessageRole.ASSISTANT,
-			msg_from: ClientMessageFrom.SERVER,
-		} as AssistantClientMessageToServer);
-		if (!res.success || !res.data?.id) {
-			throw new Error('保存服务端消息失败');
+	getTaskCardComponent(chunkId: string, isStart: boolean): string {
+		if (!isStart) {
+			return '';
 		}
-		return `${res.data?.id || ''}`;
+		// id 最好是驼峰的字符串，不要数字开头
+		return `${this.getTaskCardComponentPrefix(chunkId)} />`;
 	}
 
-	// 保存用户发送的消息，获取消息id、会话 Id
-	async saveMsg(msg: ConversationMessageType) {
-		const res = await this.fetchReq({
-			method: 'POST',
-			url: '/messages/save-msg',
-			body: msg,
-		});
-		return res;
+	getServerMessageFromChunk(
+		chunk: ApiStreamChunk,
+		venueId: number
+	): ServerMessage {
+		if (chunk.type === ServerMessageType.CARD) {
+			const component = this.getTaskCardComponent(
+				chunk.id,
+				chunk.cardMsgType === ServerCardMessageType.START
+			);
+			return {
+				conversation_id: chunk.conversationId || '',
+				id: chunk.messageId || '',
+				role: ChatMessageRole.ASSISTANT,
+				content: component,
+				type: ServerMsgType.NORMAL,
+				msg_from: ClientMessageFrom.SERVER,
+				/** 这里都表示正在流式输出中 */
+				venue_id: venueId || 0,
+				isStreaming: true,
+				cards: {
+					[chunk.id]: {
+						type: chunk.cardType,
+						id: chunk.id,
+						detail: chunk.taskInfo,
+					},
+				},
+			};
+		}
+		if (chunk.text === '' || chunk.text === 'undefined' || !chunk.text) {
+			console.log(
+				'chunk.textchunk.textchunk.text:',
+				typeof chunk.text,
+				chunk.text
+			);
+		}
+
+		return {
+			id: chunk.messageId || '',
+			conversation_id: chunk.conversationId || '',
+			type: ServerMsgType.NORMAL,
+			role: ChatMessageRole.ASSISTANT,
+			content: chunk.text,
+			overrideContent: chunk.overrideContent,
+			msg_from: ClientMessageFrom.SERVER,
+			venue_id: venueId || 0,
+		};
 	}
-
-	// private async handleSlashCommand(
-	// 	rawQuery: PartListUnion
-	// ): Promise<SlashCommandProcessorResult | false> {
-	// 	// if (typeof rawQuery !== 'string') {
-	// 	// 	return false;
-	// 	// }
-	// 	// const trimmed = rawQuery.trim();
-	// 	// if (!trimmed.startsWith('/') && !trimmed.startsWith('?')) {
-	// 	// 	return false;
-	// 	// }
-	// 	// const parts = trimmed.substring(1).trim().split(/\s+/);
-	// 	// const commandPath = parts.filter((p) => p); // The parts of the command, e.g., ['memory', 'add']
-	//   //   let currentCommands = commands;
-	//   //   let commandToExecute: SlashCommand | undefined;
-	//   //   let pathIndex = 0;
-
-	// }
 
 	async *doCreateMessage({
 		curMessage,
 		messages,
 		conversationId,
 		venueId,
-		saveMessageToState,
 	}: CreateMessageOptions): ApiStream {
 		try {
-			const { parts: lastMessage, context } = await this.convertToAgoMsg(
+			const lastMessage = await this.convertToAgoMsg(
 				curMessage,
+				venueId,
 				conversationId
 			);
-
-			const saveRes = await this.saveMsg({
-				conversation_id: conversationId || '',
-				id: curMessage.id || '',
-				role: ChatMessageRole.USER,
-				content: curMessage.content || '',
-				venue_id: venueId,
-				msg_from: ClientMessageFrom.CLIENT,
-				context,
-				csrf_token: this.csrfToken || '',
-				business_info: {
-					env: getEnv(),
+			const response = await this.fetchReqOfStream({
+				body: {
+					...lastMessage,
 				},
+				abortController: this.abortController,
+				method: 'POST',
+				url: '/messages/msg',
 			});
-			console.log('saveRes:', saveRes);
-			if (!saveRes.success || !saveRes.data?.id) {
-				throw new Error('保存消息失败');
+			if (!response?.ok || !response?.body) {
+				if (!this.isAborted) {
+					yield this.generageErrorServerMessage({
+						content: '网络异常，请稍后重试',
+						curMessageId: curMessage.id || '',
+						conversationId: conversationId || '',
+						venueId,
+					});
+				}
+				return;
 			}
+			const reader = response.body.getReader();
+			const decoder = new TextDecoder();
+			let done = false;
+			while (!done && !this.isAborted) {
+				const { value, done: doneReading } = await reader.read();
+				done = doneReading;
 
-			const savedConversationId = saveRes.data.conversation_id;
+				if (value) {
+					const chunk = decoder.decode(value, { stream: !done });
+					const lines = chunk.split('data:');
+					for (const line of lines) {
+						// console.log('line123123123123: with data', line);
+						if (line === '[DONE]') {
+							done = true;
 
-			// 使用真正的流式迭代器
-			yield* this.createRealTimeStream({
-				message: lastMessage,
-				messageId: curMessage.id || '',
-				conversationId: conversationId || '',
-				lastMessage,
-				curMessage,
-				context,
-				saveMessageToState,
-				savedConversationId,
-				venueId,
-			});
+							continue;
+						}
+						try {
+							const res = JSON.parse(line);
+
+							const item: ApiStreamChunk = res.data;
+							if (!res.data) {
+								continue;
+							}
+
+							const messageId = `${item?.messageId || ''}`;
+							const oriMessageId = `${item?.originalMessageId || ''}`;
+							const originalConversationId = `${
+								item?.originalConversationId || ''
+							}`;
+							const newConversationId = `${item?.conversationId || ''}`;
+
+							yield {
+								serverMessage: this.getServerMessageFromChunk(item, venueId),
+								messageId: messageId,
+
+								originalMessageId: oriMessageId,
+								conversationId: newConversationId,
+								originalConversationId: originalConversationId,
+							};
+						} catch (error) {
+							console.warn('message what JSON 解析错误:', line, error);
+						}
+					}
+				}
+			}
 		} catch (error) {
 			console.error('发送请求失败:', error);
 			yield this.generageErrorServerMessage({
@@ -503,299 +563,5 @@ export class AgnoServer extends ApiProvider {
 				venueId,
 			});
 		}
-	}
-
-	private async *createRealTimeStream({
-		savedConversationId,
-		messageId,
-		conversationId,
-		lastMessage,
-		curMessage,
-		saveMessageToState,
-		venueId,
-	}: {
-		savedConversationId: string;
-		message: PartListUnion;
-		messageId: string;
-		conversationId: string;
-		lastMessage: PartListUnion;
-		context?: ChatMessageContext[];
-		curMessage: UserClientMessage | AssistantClientMessage;
-		venueId: number;
-		saveMessageToState: (msg: ConversationMessageType) => void;
-	}): AsyncGenerator<ServerMessageChunk, void, unknown> {
-		// 准备查询
-		const { queryToSend, shouldProceed } = await prepareQueryForGemini(
-			lastMessage,
-			new Date().getTime(),
-			this.abortController?.signal!,
-			curMessage.id || ''
-		);
-
-		if (!shouldProceed || queryToSend === null) {
-			return;
-		}
-
-		const savedAssistantMsgId = await this.saveMessage({
-			conversation_id: conversationId || '',
-			role: ChatMessageRole.ASSISTANT,
-			content: '',
-			venue_id: venueId,
-			msg_from: ClientMessageFrom.SERVER,
-			type: ServerMsgType.NORMAL,
-			isStreaming: true,
-		});
-
-		// 状态管理
-		const processedMemoryTools = new Set<string>();
-		const queue: ServerMessageChunk[] = [];
-		let isComplete = false;
-		let currentResolve: ((value: ServerMessageChunk) => void) | null = null;
-		let currentReject: ((error: any) => void) | null = null;
-		const pendingToolCalls: string[] = [];
-		let nextPartList: PartListUnion | undefined = undefined;
-
-		// 创建工具调用处理器
-		const { handleToolCallOutput, handleToolCallUpdate } =
-			createToolCallHandlers({
-				savedConversationId,
-				savedAssistantMsgId,
-				conversationId,
-				messageId,
-				venueId,
-				getCurrentResolve: () => currentResolve,
-				getCurrentReject: () => currentReject,
-				clearCurrentResolve: () => {
-					currentResolve = null;
-					currentReject = null;
-				},
-				addQueue: (chunk) => queue.push(chunk),
-				removePendingToolCall: (id) => {
-					const index = pendingToolCalls.indexOf(id);
-					if (index > -1) {
-						pendingToolCalls.splice(index, 1);
-					}
-				},
-			});
-
-		// 创建流消息处理器
-		const handleStreamMsg = doHandleStreamMsg({
-			savedConversationId,
-			savedAssistantMsgId,
-			updateComplated: () => {
-				isComplete = pendingToolCalls.length === 0;
-			},
-			addPendingToolCalls: (id) => pendingToolCalls.push(id),
-			addQueue: (chunk) => queue.push(chunk),
-			conversationId,
-			getCurrentResolve: () => currentResolve,
-			getCurrentReject: () => currentReject,
-			clearCurrentResolve: () => {
-				currentResolve = null;
-				currentReject = null;
-			},
-			messageId,
-			venueId,
-		});
-
-		// 创建工具完成处理器
-		const handleToolCallComplete = async (data: FrontCompletedToolCall[]) => {
-			console.log('【工具调用】收到工具调用完成:', data);
-
-			const chunk = convertServerMsgToFrontChunk({
-				chunk: {
-					type: TurnEventType.ToolCallComplete,
-					value: data,
-				},
-				venueId,
-				conversationId: savedConversationId,
-				messageId: savedAssistantMsgId,
-				originalConversationId: conversationId,
-				originalMessageId: messageId,
-			});
-
-			const currentResolveValue = currentResolve;
-			if (currentResolveValue) {
-				currentResolveValue(chunk);
-				currentResolve = null;
-				currentReject = null;
-			} else {
-				queue.push(chunk);
-			}
-
-			nextPartList = await doHandleComplateTools({
-				venueId,
-				addProcessedMemoryTools: (callId) => processedMemoryTools.add(callId),
-				hasPendingToolCalls: () => pendingToolCalls.length > 0,
-				hasProcessedMemoryTools: (callId) => processedMemoryTools.has(callId),
-				setComplated: (complated: boolean) => {
-					isComplete = complated;
-				},
-				performMemoryRefresh: doPerformMemoryRefresh({
-					venueId,
-					savedConversationId,
-					saveMessageToState,
-					saveProgressMsg: async (msg: ConversationMessageType) => {
-						const res = await this.saveMsg(msg);
-						if (res.success && res.data?.id) {
-							saveMessageToState({ ...msg, id: res.data.id });
-						}
-					},
-				}),
-			})(data);
-		};
-
-		// 注册事件处理器
-		registerEventHandlers({
-			messageId,
-			handleStreamMsg,
-			handleToolCallOutput,
-			handleToolCallUpdate,
-			handleToolCallComplete,
-		});
-
-		// 发送消息流
-		sendMessageStreamWithHandlers({
-			savedAssistantMsgId,
-			savedConversationId,
-			venueId,
-			queryToSend,
-			onComplete: () => {
-				if (pendingToolCalls.length === 0) {
-					const currentResolveValue = currentResolve;
-					if (currentResolveValue) {
-						const endChunk: ServerMessageChunk = {
-							conversationId: savedConversationId,
-							originalMessageId: messageId,
-							serverMessage: {
-								id: '',
-								venue_id: venueId,
-								role: ChatMessageRole.ASSISTANT,
-								content: '',
-								conversation_id: savedConversationId,
-								msg_from: ClientMessageFrom.SERVER,
-								type: ServerMsgType.NORMAL,
-								isStreaming: false,
-							},
-						};
-						currentResolveValue(endChunk);
-					}
-					currentResolve = null;
-					currentReject = null;
-					isComplete = true;
-					unRegisterHandlers();
-				}
-			},
-			onError: (error) => {
-				console.log('【工具调用】error:', error);
-				isComplete = true;
-				if (currentReject) {
-					currentReject(error);
-				}
-				currentResolve = null;
-				currentReject = null;
-			},
-		});
-
-		// 持续 yield 数据直到完成
-		while (!isComplete) {
-			console.log('221isComplete:', isComplete);
-			try {
-				// 等待下一个 chunk
-				const chunk = await new Promise<ServerMessageChunk>(
-					(resolve, reject) => {
-						if (queue.length > 0) {
-							const item = queue.shift()!;
-							resolve(item);
-						} else {
-							currentResolve = resolve;
-							currentReject = reject;
-						}
-					}
-				);
-
-				yield chunk;
-
-				// 检查是否有后续的 partList 需要处理
-				if (nextPartList) {
-					const nextPartListMsg = nextPartList;
-					nextPartList = undefined;
-					console.log('nextPartListMsg:', nextPartListMsg);
-
-					// 重置状态，准备处理下一个 partList
-					isComplete = false;
-					pendingToolCalls.length = 0;
-					processedMemoryTools.clear();
-
-					// 准备新的查询
-					const { queryToSend: nextQuery, shouldProceed: nextShouldProceed } =
-						await prepareQueryForGemini(
-							nextPartListMsg,
-							new Date().getTime(),
-							this.abortController?.signal!,
-							curMessage.id || ''
-						);
-
-					if (
-						(!nextShouldProceed || nextQuery === null) &&
-						pendingToolCalls.length === 0
-					) {
-						isComplete = true;
-						break;
-					}
-
-					// 发送新的消息流
-					sendMessageStreamWithHandlers({
-						savedAssistantMsgId,
-						savedConversationId,
-						venueId,
-						queryToSend: nextQuery,
-						onComplete: () => {
-							if (pendingToolCalls.length === 0) {
-								isComplete = true;
-								const currentResolveValue = currentResolve;
-								if (currentResolveValue) {
-									const endChunk: ServerMessageChunk = {
-										conversationId: savedConversationId,
-										originalMessageId: messageId,
-										serverMessage: {
-											id: '',
-											venue_id: venueId,
-											role: ChatMessageRole.ASSISTANT,
-											content: '',
-											conversation_id: savedConversationId,
-											msg_from: ClientMessageFrom.SERVER,
-											type: ServerMsgType.NORMAL,
-											isStreaming: false,
-										},
-									};
-									currentResolveValue(endChunk);
-								}
-								currentResolve = null;
-								currentReject = null;
-							}
-						},
-						onError: (error) => {
-							console.log('【后续工具调用】error:', error);
-							isComplete = true;
-							if (currentReject) {
-								currentReject(error);
-							}
-							currentResolve = null;
-							currentReject = null;
-						},
-					});
-				}
-			} catch (error) {
-				unRegisterHandlers();
-				throw error;
-			}
-		}
-
-		console.log(
-			'消息流处理完成: 111isComplete:',
-			new Date().getTime(),
-			isComplete
-		);
 	}
 }

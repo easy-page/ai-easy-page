@@ -88,19 +88,7 @@ export class ChatService extends Service {
 		}
 	}
 
-	async getTaskDetail(taskId: number) {
-		const res = await this.apiProvider.getTaskDetail({ taskId });
-		console.log('getTaskDetail res:', res);
-		if (!res.success) {
-			Toast.error({
-				content: `${res.message || '获取任务详情失败'}`,
-				// description: `${res.message || '获取任务详情失败'}`,
-				// variant: 'destructive',
-			});
-			return;
-		}
-		this.globalState.setCurrentCardDetail(res.data || null);
-	}
+	async getTaskDetail(taskId: number) {}
 
 	setCurrentCardId(taskId: number | null) {
 		this.globalState.setCurrentCardId(taskId);
@@ -258,10 +246,6 @@ export class ChatService extends Service {
 					isStreaming: false,
 				});
 				// 存储消息到服务器
-
-				if (this.apiProvider.shouldSaveMessageToServer()) {
-					this.apiProvider.saveMessage({ ...finalMsg, venue_id: venueId });
-				}
 			}
 			this.globalState.clearCurrentStreamMsg();
 			this.globalState.setIsWaiting(false);
