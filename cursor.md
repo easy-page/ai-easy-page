@@ -858,4 +858,6 @@ export const FullFormDemo: React.FC = () => {
 - apps/website/src/index.css
 - apps/website/tailwind.config.js
 
-结合上面主题管理，通过 tailwind.config.js 和 index.css 主题变量的定义，帮我把这个 apps/website/src/pages/PlaygroundPage/AiChat/ui/components/ChatInput/index.tsx 输入框背景色适配我的主题。注意只改背景色就行
+结合上面主题管理，通过 tailwind.config.js 和 index.css 主题变量的定义，
+
+帮我把这个 apps/website/src/pages/PlaygroundPage/AiChat/ui/components/ChatInput/index.tsx 输入框背景色适配我的主题。注意只改背景色就行
