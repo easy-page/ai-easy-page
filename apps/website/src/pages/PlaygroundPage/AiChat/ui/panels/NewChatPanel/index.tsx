@@ -29,7 +29,7 @@ export const NewChatPanel = () => {
 	const chatService = useService(ChatService);
 	const userInfo = useObservable(chatService.globalState.userInfo$, null);
 	return (
-		<div className="flex h-[calc(100vh-290px)] flex-col relative overflow-auto items-center justify-center">
+		<div className="flex h-[calc(100vh-200px)] flex-col relative overflow-auto items-center justify-center">
 			<div className="flex-1 flex flex-col justify-center items-center mb-2">
 				<div className="title-container mb-6">
 					<div className="text-container relative pr-16 overflow-visible">

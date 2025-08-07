@@ -38,16 +38,7 @@ const AIBuilder: FC = () => {
 
 	return (
 		<div className="ai-builder">
-			<div className="ai-header">
-				<Title level={4}>
-					<RobotOutlined /> AI 智能搭建
-				</Title>
-				<Text type="secondary">通过自然语言描述生成表单配置</Text>
-			</div>
-
-			<div className="ai-content">
-				<VenueChatPanel venueId={0} />
-			</div>
+			<VenueChatPanel venueId={0} />
 		</div>
 	);
 };

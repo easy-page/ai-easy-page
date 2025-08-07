@@ -7,7 +7,7 @@ export type ConversationPanelProps = {};
 export const ConversationPanel = ({}: ConversationPanelProps) => {
 	console.log('1231212312312312');
 	return (
-		<div className="flex h-[calc(100vh-290px)] flex-col items-center justify-center">
+		<div className="flex h-[calc(100vh-200px)] flex-col items-center justify-center">
 			<MessageList />
 			<div className="flex flex-col w-full">
 				{/* <ChatSences chatMode={ChatMode.Conversation} /> */}
