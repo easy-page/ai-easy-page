@@ -5,7 +5,6 @@ import { ELEMENT_TYPES } from '../constants';
 // 导入各种组件
 import { ParagraphElement, ParagraphElementComponent } from './PragraphElement';
 import { SenceElement, SenceElementComponent } from './SenceElement';
-import { ChatService } from '@/services/chatGlobalState';
 import { CustomRenderElementProps } from '../interface';
 import { InputElement, InputElementComponent } from './InputElement';
 import { UploadElement, UploadElementComponent } from './UploadElement';

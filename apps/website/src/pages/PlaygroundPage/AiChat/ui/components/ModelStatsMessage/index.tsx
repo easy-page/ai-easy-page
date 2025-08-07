@@ -1,4 +1,4 @@
-import { ModelStatsClientMessage } from '@/common/interfaces/messages/chatMessages/client';
+import { ModelStatsClientMessage } from '../../../common/interfaces/messages/chatMessages/client';
 
 interface ModelStatsMessageProps {
 	message: ModelStatsClientMessage;

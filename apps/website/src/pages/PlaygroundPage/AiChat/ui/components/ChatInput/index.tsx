@@ -6,25 +6,25 @@ import {
 	SenceInputComponentOperationEnum,
 	SenceOperationEnum,
 	SenceTemplateComponentEnum,
-} from '@/common/constants/scence';
-import { useService } from '@/infra';
-import { ChatService } from '@/services/chatGlobalState';
+} from '../../../common/constants/scence';
+import { useService } from '../../../infra';
+import { ChatService } from '../../../services/chatGlobalState';
 import { NewChatSenceBtn } from './sences/NewChatSenceBtn';
 import { isEmptyContent, SlateEditor } from '../SlateEditor';
 import { createEditor, Descendant } from 'slate';
 import { PARAGRAPH_ELEMENT, SENCE_ELEMENT } from '../SlateEditor/components';
-import { useObservable } from '@/hooks/useObservable';
+import { useObservable } from '../../../hooks/useObservable';
 import { TopSencePanel } from './sences/TopSencePanel';
-import { InputToolsEnum } from '@/common/constants/inputTools';
+import { InputToolsEnum } from '../../../common/constants/inputTools';
 import { INPUT_ELEMENT } from '../SlateEditor/components/InputElement';
 import { UPLOAD_FILE_ELEMENT } from '../SlateEditor/components/UploadElement';
 import { withReact } from 'slate-react';
 import { withCustomNodes } from '../SlateEditor/plugins/withCustomNodes';
 import { useNavigate } from 'react-router-dom';
-import { generateLocalId, getChatUrl } from '@/routers/toChat';
-import { NavItemEnum } from '@/services/chatGlobalState/constant';
-import { RouterNames } from '@/routers/constant';
-import { InputToolsConfig } from '@/common/interfaces/senceConfig/senceInput';
+import { generateLocalId, getChatUrl } from '../../../routers/toChat';
+import { NavItemEnum } from '../../../services/chatGlobalState/constant';
+import { RouterNames } from '../../../routers/constant';
+import { InputToolsConfig } from '../../../common/interfaces/senceConfig/senceInput';
 import { Contexts } from './contexts';
 import { ReactEditor } from 'slate-react';
 

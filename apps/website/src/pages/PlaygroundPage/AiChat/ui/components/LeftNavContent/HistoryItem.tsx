@@ -1,5 +1,5 @@
-import { ConversationInfo } from '@/common/interfaces/conversation';
-import { getQueryString } from '@/common/utils/url';
+import { ConversationInfo } from '../../../common/interfaces/conversation';
+import { getQueryString } from '../../../common/utils/url';
 import { Dropdown } from '@douyinfe/semi-ui';
 import classNames from 'classnames';
 import { DotIcon } from '../Icons';

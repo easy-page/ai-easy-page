@@ -1,13 +1,13 @@
 import { TemplateBtn } from '../TemplateBtn';
 import { useEffect, useState } from 'react';
 import { CloseBtn } from '../CloseBtn';
-import { ChatService } from '@/services/chatGlobalState';
-import { SenceConfig } from '@/common/interfaces/senceConfig';
+import { ChatService } from '../../../../../services/chatGlobalState';
+import { SenceConfig } from '../../../../../common/interfaces/senceConfig';
 import {
 	CloseIcon,
 	TemplateCloseIcon,
 	TemplateExpandIcon,
-} from '@/views/aiChat/components/Icons';
+} from '../../../Icons';
 
 export type TopSencePanelProps = {
 	curSenceConfig: SenceConfig | null;

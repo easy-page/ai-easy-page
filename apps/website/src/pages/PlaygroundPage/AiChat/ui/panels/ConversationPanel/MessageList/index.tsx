@@ -2,7 +2,7 @@ import {
 	ClientMessageFrom,
 	ServerMsgType,
 	ChatMessageRole,
-} from '@/common/constants/message';
+} from '../../../../common/constants/message';
 import {
 	AssistantClientMessage,
 	UserClientMessage,
@@ -16,39 +16,38 @@ import {
 	ErrorClientMessage,
 	InfoClientMessage,
 	ModelContentClientMessage,
-} from '@/common/interfaces/messages/chatMessages/client';
-import { ConversationMessageType } from '@/common/interfaces/messages/chatMessages/interface';
+} from '../../../../common/interfaces/messages/chatMessages/client';
+import { ConversationMessageType } from '../../../../common/interfaces/messages/chatMessages/interface';
 import {
 	ServerMessage,
 	ServerRecommandMessage,
-} from '@/common/interfaces/messages/chatMessages/server';
-import { getQueryString } from '@/common/utils/url';
-import { useObservable } from '@/hooks/useObservable';
-import { useService } from '@/infra';
-import { isLocalId } from '@/routers/toChat';
-import { ChatService } from '@/services/chatGlobalState';
-import { NavItemEnum } from '@/services/chatGlobalState/constant';
-import { Spinner } from '@/views/aiChat/baseUi/components/spinner';
-import { AssistantMessage } from '@/views/aiChat/components/AssistantMessage';
-import { ChatClientMessage } from '@/views/aiChat/components/ChatMessage';
-import { StreamingMessage } from '@/views/aiChat/components/StreamMessage';
-import { UserShellMessage } from '@/views/aiChat/components/UserShellMessage';
-import { ToolGroupMessage } from '@/views/aiChat/components/ToolGroupMessage';
-import { StatsMessage } from '@/views/aiChat/components/StatsMessage';
-import { ModelStatsMessage } from '@/views/aiChat/components/ModelStatsMessage';
-import { ToolStatsMessage } from '@/views/aiChat/components/ToolStatsMessage';
-import { QuitMessage } from '@/views/aiChat/components/QuitMessage';
-import { AboutMessage } from '@/views/aiChat/components/AboutMessage';
-import { ErrorMessage } from '@/views/aiChat/components/ErrorMessage';
-import { InfoMessage } from '@/views/aiChat/components/InfoMessage';
-import { ModelContentMessage } from '@/views/aiChat/components/ModelContentMessage';
-import { RecommendMessage } from '@/views/aiChat/components/RecommendMessage';
+} from '../../../../common/interfaces/messages/chatMessages/server';
+import { getQueryString } from '../../../../common/utils/url';
+import { useObservable } from '../../../../hooks/useObservable';
+import { useService } from '../../../../infra';
+import { isLocalId } from '../../../../routers/toChat';
+import { ChatService } from '../../../../services/chatGlobalState';
 import { Toast } from '@douyinfe/semi-ui';
 import classNames from 'classnames';
 import { debounce } from 'lodash-es';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ThinkingLoading } from '@/views/aiChat/components/ThinkingLoading';
+import { Spinner } from '../../../baseUi/components/spinner';
+import { AboutMessage } from '../../../components/AboutMessage';
+import { AssistantMessage } from '../../../components/AssistantMessage';
+import { ChatClientMessage } from '../../../components/ChatMessage';
+import { ErrorMessage } from '../../../components/ErrorMessage';
+import { InfoMessage } from '../../../components/InfoMessage';
+import { ModelContentMessage } from '../../../components/ModelContentMessage';
+import { ModelStatsMessage } from '../../../components/ModelStatsMessage';
+import { QuitMessage } from '../../../components/QuitMessage';
+import { RecommendMessage } from '../../../components/RecommendMessage';
+import { StatsMessage } from '../../../components/StatsMessage';
+import { StreamingMessage } from '../../../components/StreamMessage';
+import { ThinkingLoading } from '../../../components/ThinkingLoading';
+import { ToolGroupMessage } from '../../../components/ToolGroupMessage';
+import { ToolStatsMessage } from '../../../components/ToolStatsMessage';
+import { UserShellMessage } from '../../../components/UserShellMessage';
 const PAGE_SIZE = 10;
 export const MessageList = () => {
 	const chatService = useService(ChatService);

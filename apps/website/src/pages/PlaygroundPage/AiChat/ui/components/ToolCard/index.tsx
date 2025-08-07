@@ -1,22 +1,23 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {
-	FrontCompletedToolCall,
-	ToolCallRequestInfo,
-	ToolCallResponseInfo,
-	ToolConfirmationOutcome,
-	ToolConfirmationPayload,
-	ToolCallConfirmationDetails,
-	FrontWaitingToolCall,
-} from '@shared/serverChunk';
-import { FrontToolCall } from '@shared/serverChunk';
-import { EVENT_NAME } from '@shared/constant';
-import { renderApi } from '@/renderApis';
+
 import {
 	ConfirmationComponent,
 	ToolHeader,
 	ToolDetails,
 	getStatusDisplay,
 } from './components';
+import {
+	FrontCompletedToolCall,
+	FrontToolCall,
+	FrontWaitingToolCall,
+	ToolCallConfirmationDetails,
+	ToolCallRequestInfo,
+	ToolCallResponseInfo,
+	ToolConfirmationOutcome,
+	ToolConfirmationPayload,
+} from '../../../common/interfaces/serverChunk';
+import { renderApi } from '../../../renderApis';
+import { EVENT_NAME } from '../../../common/constants/constant';
 
 // 确认状态类型
 interface ConfirmationState {
@@ -176,7 +177,7 @@ export const ToolCard: React.FC<ToolCardProps> = ({ id, detail }) => {
 	};
 
 	const duration = getDuration();
-	const statusDisplay = getStatusDisplay(status);
+	const statusDisplay = getStatusDisplay(status || '');
 
 	const toggleExpand = () => {
 		setExpanded(!expanded);
@@ -218,7 +219,7 @@ export const ToolCard: React.FC<ToolCardProps> = ({ id, detail }) => {
 					{/* 工具详情 */}
 					<ToolDetails
 						toolInfo={toolInfo}
-						status={status}
+						status={status || ''}
 						hasOutput={hasOutput}
 						hasUpdate={hasUpdate}
 						detail={detail}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tag, Spin } from '@douyinfe/semi-ui';
-import { Icons } from '@/views/aiChat/baseUi/components/icons';
+import { Icons } from '../../../baseUi/components/icons';
 
 export interface StatusDisplayConfig {
 	tag: React.ReactNode;

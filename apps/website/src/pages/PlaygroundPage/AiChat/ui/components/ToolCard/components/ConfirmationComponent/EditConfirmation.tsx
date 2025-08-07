@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from '@douyinfe/semi-ui';
-import { ToolEditConfirmationDetails } from '@shared/serverChunk';
+import { ToolEditConfirmationDetails } from '../../../../../common/interfaces/serverChunk';
 
 const { Text } = Typography;
 

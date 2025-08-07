@@ -1,4 +1,4 @@
-import { Icons } from '@/views/aiChat/baseUi/components/icons';
+import { Icons } from '../../../../baseUi/components/icons';
 
 interface NodeIconProps {
 	iconClass: string;

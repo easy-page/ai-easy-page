@@ -1,6 +1,5 @@
 export * from './array';
 export * from './async-lock';
-export * from '../../../shared/apis/axios';
 export * from './castToError';
 export * from './context-mentions';
 export * from './format';

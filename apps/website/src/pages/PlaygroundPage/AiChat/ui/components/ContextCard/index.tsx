@@ -3,7 +3,7 @@ import React from 'react';
 import {
 	ChatMessageContext,
 	ChatMessageContextType,
-} from '@/common/interfaces/messages/chatMessages/context';
+} from '../../../common/interfaces/messages/chatMessages/context';
 import { FileContext } from './components/FileContext';
 import { ImageContext } from './components/ImageContext';
 

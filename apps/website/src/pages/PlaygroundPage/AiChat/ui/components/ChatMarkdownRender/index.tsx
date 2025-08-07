@@ -2,18 +2,18 @@ import { MarkdownRenderer } from '../MarkdownRender';
 import * as react from 'react';
 import React from 'react';
 
-import { toNumber } from 'lodash-es';
 import {
 	ServerMessage,
 	ServerMsgCard,
-} from '@/common/interfaces/messages/chatMessages/server';
-import { ServerMessageCardType } from '@/common/constants/message';
+} from '../../../common/interfaces/messages/chatMessages/server';
+import { ServerMessageCardType } from '../../../common/constants/message';
 
 import { ToolsExecInfo } from '../AssistantMessage/ToolsExecInfo';
 import { ThoughtCard } from '../ThoughtCard';
 import { ToolCard } from '../ToolCard';
 import { ConfirmCard } from '../ConfirmCard';
 import { ErrorCard } from '../ErrorCard';
+import { toNumber } from '../../../common/utils/number';
 
 export interface ChatUIHocChildrenProps {
 	react: typeof react;

@@ -1,4 +1,4 @@
-import { Memento, createIdentifier, wrapMemento } from '@/infra';
+import { Memento, createIdentifier, wrapMemento } from '../../infra';
 import { GlobalState } from './globalState';
 
 export interface ChatGlobalState extends Memento {}

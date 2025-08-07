@@ -2,8 +2,8 @@ import { Tag, Spin } from '@douyinfe/semi-ui';
 import {
 	ServerMsgCard,
 	ServerMsgToolDetail,
-} from '@/common/interfaces/messages/chatMessages/server';
-import { Icons } from '@/views/aiChat/baseUi/components/icons';
+} from '../../../../common/interfaces/messages/chatMessages/server';
+import { Icons } from '../../../baseUi/components/icons';
 export type ToolsExecInfoProps = {
 	toolInfo?: ServerMsgCard<ServerMsgToolDetail>;
 };

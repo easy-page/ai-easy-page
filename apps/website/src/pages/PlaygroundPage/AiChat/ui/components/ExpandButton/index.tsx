@@ -1,6 +1,6 @@
-import { useObservable } from '@/hooks/useObservable';
-import { useService } from '@/infra';
-import { ChatService } from '@/services/chatGlobalState';
+import { useObservable } from '../../../hooks/useObservable';
+import { useService } from '../../../infra';
+import { ChatService } from '../../../services/chatGlobalState';
 import { Tooltip } from '@douyinfe/semi-ui';
 import { useMemo, useState } from 'react';
 import { LeftNavContent, LeftNavContentProps } from '../LeftNavContent';

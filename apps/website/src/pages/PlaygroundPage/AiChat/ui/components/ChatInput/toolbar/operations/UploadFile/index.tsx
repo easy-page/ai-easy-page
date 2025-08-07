@@ -1,12 +1,12 @@
-import { UploadAcceptType } from '@/common/constants/upload';
+import { UploadAcceptType } from '../../../common/constants/upload';
 import {
 	ChatMessageContextType,
 	FileMessageContext,
-} from '@/common/interfaces/messages/chatMessages/context';
-import { useService } from '@/infra';
+} from '../../../common/interfaces/messages/chatMessages/context';
+import { useService } from '../../../infra';
 import { generateContextId } from '@/routers/toChat';
-import { ChatService } from '@/services/chatGlobalState';
-import { FileIcon, IconButton } from '@/views/aiChat/components/Icons';
+import { ChatService } from '../../../services/chatGlobalState';
+import { FileIcon, IconButton } from '../..//components/Icons';
 export type UploadFileBtnProps = {
 	disabled?: boolean;
 };

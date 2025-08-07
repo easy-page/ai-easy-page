@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import { Button, Input, Modal, Tooltip } from '@douyinfe/semi-ui';
-import { useObservable } from '@/hooks/useObservable';
-import { useService } from '@/infra';
-import { ChatService } from '@/services/chatGlobalState';
-import { NavItemEnum } from '@/services/chatGlobalState/constant';
+import { useObservable } from '../../../hooks/useObservable';
+import { useService } from '../../../infra';
+import { ChatService } from '../../../services/chatGlobalState';
+import { NavItemEnum } from '../../../services/chatGlobalState/constant';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LeftNavContentProps } from '../LeftNavContent';

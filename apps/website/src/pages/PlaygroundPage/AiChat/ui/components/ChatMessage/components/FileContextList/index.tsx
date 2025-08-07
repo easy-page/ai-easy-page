@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChatMessageContext } from '@/common/interfaces/messages/chatMessages/context';
+import { ChatMessageContext } from '../../../../../common/interfaces/messages/chatMessages/context';
 import { ContextCard } from '../../../ContextCard';
 
 interface FileContextListProps {

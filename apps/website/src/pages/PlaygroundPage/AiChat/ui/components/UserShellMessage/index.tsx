@@ -1,4 +1,4 @@
-import { UserShellClientMessage } from '@/common/interfaces/messages/chatMessages/client';
+import { UserShellClientMessage } from '../../../common/interfaces/messages/chatMessages/client';
 import { ChatMarkdownRender } from '../ChatMarkdownRender';
 
 interface UserShellMessageProps {

@@ -3,8 +3,8 @@ import NodeIcon from './NodeIcon';
 import {
 	ChatMessageContext,
 	ChatMessageContextType,
-} from '@/common/interfaces/messages/chatMessages/context';
-import { Icons } from '@/views/aiChat/baseUi/components/icons';
+} from '../../../../../common/interfaces/messages/chatMessages/context';
+import { Icons } from '../../../../baseUi/components/icons';
 
 function isWindows() {
 	const userAgent = navigator.userAgent;

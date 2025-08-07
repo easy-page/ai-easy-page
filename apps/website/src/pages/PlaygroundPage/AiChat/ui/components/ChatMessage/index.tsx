@@ -1,22 +1,22 @@
 import {
 	UserClientMessage,
 	AssistantClientMessage,
-} from '@/common/interfaces/messages/chatMessages/client';
+} from '../../../common/interfaces/messages/chatMessages/client';
 import {
 	ChatMessageContext,
 	ChatMessageContextType,
-} from '@/common/interfaces/messages/chatMessages/context';
-import { useService } from '@/infra';
-import { ChatService } from '@/services/chatGlobalState';
-import { Button } from '@/views/aiChat/baseUi/components/button';
-import { Icons } from '@/views/aiChat/baseUi/components/icons';
-import { Textarea } from '@/views/aiChat/baseUi/components/textarea';
+} from '../../../common/interfaces/messages/chatMessages/context';
+import { useService } from '../../../infra';
+import { ChatService } from '../../../services/chatGlobalState';
+import { Button } from '../../baseUi/components/button';
+import { Icons } from '../../baseUi/components/icons';
+import { Textarea } from '../../baseUi/components/textarea';
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from '@/views/aiChat/baseUi/components/tooltip';
+} from '../../baseUi/components/tooltip';
 import { useEffect, useRef, useState } from 'react';
 import { FileContextList } from './components/FileContextList';
 

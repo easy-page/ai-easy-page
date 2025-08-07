@@ -1,8 +1,7 @@
-import { useObservable } from '@/hooks/useObservable';
-import { useService } from '@/infra';
-import { RouterNames } from '@/routers/constant';
-import { ChatService } from '@/services/chatGlobalState';
-import { NavItemEnum } from '@/services/chatGlobalState/constant';
+import { useObservable } from '../../../hooks/useObservable';
+import { useService } from '../../../infra';
+import { ChatService } from '../../../services/chatGlobalState';
+import { NavItemEnum } from '../../../services/chatGlobalState/constant';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { CoreNavItems } from './constants';
 import { NavItem } from './NavItem';

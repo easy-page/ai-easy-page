@@ -1,12 +1,9 @@
-import { getUserInfo } from '@/apis';
 import { useEffect, useState } from 'react';
 import { useObservable } from './useObservable';
-import { ChatService } from '@/services/chatGlobalState';
-import { useService } from '@/infra';
-import { queryTeams, TeamInfo } from '@shared/apis';
+import { ChatService } from '../services/chatGlobalState';
+import { useService } from '../infra';
 
 export const useGlobalInfo = () => {
-	const [allTeams, setAllTeams] = useState<TeamInfo[]>([]);
 	const [searchQuery, setSearchQuery] = useState('');
 	const chatService = useService(ChatService);
 	const userInfo = useObservable(chatService.globalState.userInfo$, null);

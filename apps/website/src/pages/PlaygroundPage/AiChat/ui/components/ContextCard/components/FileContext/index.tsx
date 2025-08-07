@@ -1,9 +1,9 @@
 import React from 'react';
-import { FileOutlined, CloseOutlined } from '@ant-design/icons';
-import { FileMessageContext } from '@/common/interfaces/messages/chatMessages/context';
+import { CloseOutlined } from '@ant-design/icons';
 import './index.less';
-import { DotText } from '@/views/aiChat/baseUi/components/TextDot';
-import { FileColorfullIcon } from '@/views/aiChat/components/Icons';
+import { FileMessageContext } from '../../../../../common/interfaces/messages/chatMessages/context';
+import { FileColorfullIcon } from '../../../Icons';
+import { DotText } from '../../../../baseUi/components/TextDot';
 
 interface FileContextProps {
 	context: FileMessageContext;

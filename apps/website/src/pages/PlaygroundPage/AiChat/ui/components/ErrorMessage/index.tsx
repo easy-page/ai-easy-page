@@ -1,4 +1,4 @@
-import { ErrorClientMessage } from '@/common/interfaces/messages/chatMessages/client';
+import { ErrorClientMessage } from '../../../common/interfaces/messages/chatMessages/client';
 
 interface ErrorMessageProps {
 	message: ErrorClientMessage;

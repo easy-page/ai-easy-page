@@ -1,4 +1,4 @@
-import { SenceOperationDialogInputConfig } from '@/common/interfaces';
+import { SenceOperationDialogInputConfig } from '../../../../../../common/interfaces';
 import { Modal, Input, Button } from '@douyinfe/semi-ui';
 import { useState } from 'react';
 import classNames from 'classnames';

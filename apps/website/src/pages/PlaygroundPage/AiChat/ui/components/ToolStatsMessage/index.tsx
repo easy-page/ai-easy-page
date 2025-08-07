@@ -1,4 +1,4 @@
-import { ToolStatsClientMessage } from '@/common/interfaces/messages/chatMessages/client';
+import { ToolStatsClientMessage } from '../../../common/interfaces/messages/chatMessages/client';
 
 interface ToolStatsMessageProps {
 	message: ToolStatsClientMessage;

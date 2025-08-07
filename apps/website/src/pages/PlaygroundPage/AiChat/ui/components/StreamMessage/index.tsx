@@ -1,9 +1,7 @@
-import { observer } from 'mobx-react-lite';
-import { ChatService } from '@/services/chatGlobalState';
+import { ChatService } from '../../../services/chatGlobalState';
 import './index.less';
-import { useObservable } from '@/hooks/useObservable';
-import { useService } from '@/infra';
-import { Icons } from '@/views/aiChat/baseUi/components/icons';
+import { useObservable } from '../../../hooks/useObservable';
+import { useService } from '../../../infra';
 import { AssistantMessage } from '../AssistantMessage';
 
 export const StreamingMessage = () => {

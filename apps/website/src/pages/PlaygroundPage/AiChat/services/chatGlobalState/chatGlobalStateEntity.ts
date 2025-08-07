@@ -1,36 +1,34 @@
 import { ChatGlobalState } from './chatGlobalState';
 import { nanoid } from 'nanoid/non-secure';
-import { Entity } from '@/infra';
+import { Entity } from '../../infra';
 import { NavItemEnum } from './constant';
-import { LiveData } from '@/infra/liveData';
-import { ApiProvider, FinishTaskStepParams } from '@/providers/common';
+import { LiveData } from '../../infra/liveData';
+import { ApiProvider, FinishTaskStepParams } from '../../providers/common';
 import {
 	ChatMessageContext,
 	ChatMessageContextType,
-} from '@/common/interfaces/messages/chatMessages/context';
+} from '../../common/interfaces/messages/chatMessages/context';
 import {
 	ConversationInfo,
 	ConversationsPageInfo,
-} from '@/common/interfaces/conversation';
+} from '../../common/interfaces/conversation';
 import {
 	AssistantClientMessage,
 	UserClientMessage,
-} from '@/common/interfaces/messages/chatMessages/client';
-import { ChatMessageRole, ClientMessageFrom } from '@/common/constants/message';
-import { ServerMessage } from '@/common/interfaces/messages/chatMessages/server';
-import { isLocalId } from '@/routers/toChat';
-import { FullTaskInfo } from '@/common/interfaces/task';
-import { SenceConfig } from '@/common/interfaces/senceConfig';
-import { NavItemBaseInfo, UserInfo } from './interface';
-import { getQueryString } from '@/common/utils/url';
-import { TeamInfo, VenueInfo } from '@shared/apis';
-import { ApiDetailData } from '@/apis/marketingApi';
+} from '../../common/interfaces/messages/chatMessages/client';
 import {
-	MarketingResourceListResponse,
-	MarketingResourceInfo,
-} from '@/apis/marketingResource';
-import { ConversationMessageType } from '@/common/interfaces/messages/chatMessages/interface';
-import { mockConversations, mockCurrentConversation } from './mockData';
+	ChatMessageRole,
+	ClientMessageFrom,
+} from '../../common/constants/message';
+import { ServerMessage } from '../../common/interfaces/messages/chatMessages/server';
+import { isLocalId } from '../../routers/toChat';
+import { FullTaskInfo } from '../../common/interfaces/task';
+import { SenceConfig } from '../../common/interfaces/senceConfig';
+import { NavItemBaseInfo, UserInfo } from './interface';
+import { getQueryString } from '../../common/utils/url';
+import { ConversationMessageType } from '../../common/interfaces/messages/chatMessages/interface';
+import { VenueInfo } from '../../apis/venue';
+import { TeamInfo } from '../../apis/team';
 
 export const MAX_NAME_LENGTH = 10;
 const MAX_CONVERSATION_COUNT = 8;
@@ -77,13 +75,6 @@ export type VenueListInfo = {
 	pageNo: number;
 };
 
-// API 相关类型
-export type ApiListInfo = {
-	data: ApiDetailData[];
-	total: number;
-	venueId: number;
-};
-
 export class ChatGlobalStateEntity extends Entity {
 	/** 当前是否在输入中 */
 	isWaiting$: LiveData<boolean> = new LiveData<boolean>(false);
@@ -102,20 +93,6 @@ export class ChatGlobalStateEntity extends Entity {
 	venues$: LiveData<VenueListInfo | null> = new LiveData<VenueListInfo | null>(
 		null
 	);
-	marketingResources$: LiveData<MarketingResourceListResponse | null> =
-		new LiveData<MarketingResourceListResponse | null>(null);
-
-	// API 管理相关数据
-	venueApis$: LiveData<ApiListInfo | null> = new LiveData<ApiListInfo | null>(
-		null
-	);
-
-	venueResources$: LiveData<{
-		[venueId: number]: {
-			resources: MarketingResourceInfo[];
-			total: number;
-		};
-	}> = new LiveData({});
 
 	csrfToken$: LiveData<string> = new LiveData<string>('');
 
@@ -190,39 +167,6 @@ export class ChatGlobalStateEntity extends Entity {
 
 	setVenues(venues: VenueListInfo | null) {
 		this.venues$.next(venues);
-	}
-
-	setMarketingResources(resources: MarketingResourceListResponse | null) {
-		this.marketingResources$.next(resources);
-	}
-
-	// API 管理相关方法
-	setVenueApis(venueId: number, apis: ApiDetailData[], total: number = 0) {
-		const apiListInfo: ApiListInfo = {
-			data: apis,
-			total,
-			venueId,
-		};
-		this.venueApis$.next(apiListInfo);
-	}
-
-	clearVenueApis() {
-		this.venueApis$.next(null);
-	}
-
-	setVenueResources(
-		venueId: number,
-		resources: MarketingResourceInfo[],
-		total: number
-	) {
-		const currentResources = this.venueResources$.value || {};
-		this.venueResources$.next({
-			...currentResources,
-			[venueId]: {
-				resources,
-				total,
-			},
-		});
 	}
 
 	setUserTeams(teams: TeamInfo[]) {
@@ -446,11 +390,13 @@ export class ChatGlobalStateEntity extends Entity {
 		context,
 		overrideConversationName,
 		conversationIdInUrl,
+		venueId,
 	}: {
 		message: string;
 		context: ChatMessageContext[];
 		overrideConversationName?: boolean;
 		conversationIdInUrl?: string;
+		venueId: number;
 	}): {
 		curConversationId: string;
 		userMessage: UserClientMessage;
@@ -473,6 +419,7 @@ export class ChatGlobalStateEntity extends Entity {
 			context,
 			conversation_id: conversation.conversationId,
 			msg_from: ClientMessageFrom.CLIENT,
+			venue_id: venueId,
 		};
 		console.log(
 			'conversation.displayName:',

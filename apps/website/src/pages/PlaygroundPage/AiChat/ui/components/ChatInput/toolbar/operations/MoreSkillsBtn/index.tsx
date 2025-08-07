@@ -1,16 +1,16 @@
-import { useObservable } from '@/hooks/useObservable';
-import { useService } from '@/infra';
-import { IconButton, MoreSkillsIcon } from '@/views/aiChat/components/Icons';
-import { Icons } from '@/views/aiChat/baseUi/components/icons';
+import { useObservable } from '../../../../../../hooks/useObservable';
+import { useService } from '../../../../../../infra';
+import { MoreSkillsIcon } from '../../../../Icons';
 import { useState, useEffect } from 'react';
 import { Dropdown } from '@douyinfe/semi-ui';
 import classNames from 'classnames';
+import { ChatService } from '../../../../../../services/chatGlobalState';
 import {
 	SenceConfig,
 	SenceCategoryEnum,
 	SCENE_CATEGORIES,
-} from '@/common/interfaces/senceConfig';
-import { ChatService } from '@/services/chatGlobalState';
+} from '../../../../../../common/interfaces/senceConfig';
+import { Icons } from '../../../../../baseUi/components/icons';
 
 // 常量定义
 const RECENTLY_USED_SKILLS_KEY = 'recentlyUsedSkills';

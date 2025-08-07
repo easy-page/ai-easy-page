@@ -1,6 +1,6 @@
-import { ChatMode } from '@/common/constants/scence';
+import { ChatMode } from '../../../common/constants/scence';
 import { MessageList } from './MessageList';
-import { InputToolsEnum } from '@/common/constants/inputTools';
+import { InputToolsEnum } from '../../../common/constants/inputTools';
 import { ChatInput } from '../../components/ChatInput';
 
 export type ConversationPanelProps = {};

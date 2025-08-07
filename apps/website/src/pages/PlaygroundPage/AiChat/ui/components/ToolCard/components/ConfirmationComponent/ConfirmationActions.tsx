@@ -1,11 +1,11 @@
 import React from 'react';
 import { Button } from '@douyinfe/semi-ui';
-import { Icons } from '@/views/aiChat/baseUi/components/icons';
 import {
 	ToolCallConfirmationDetails,
 	ToolConfirmationOutcome,
 	ToolConfirmationPayload,
-} from '@shared/serverChunk';
+} from '../../../../../common/interfaces/serverChunk';
+import { Icons } from '../../../../baseUi/components/icons';
 
 interface ConfirmationActionsProps {
 	confirmationDetails: ToolCallConfirmationDetails;

@@ -1,8 +1,8 @@
 import './index.less';
-import { ChatMode } from '@/common/constants/scence';
-import { useService } from '@/infra';
-import { useObservable } from '@/hooks/useObservable';
-import { ChatService } from '@/services/chatGlobalState';
+import { ChatMode } from '../../../common/constants/scence';
+import { useService } from '../../../infra';
+import { useObservable } from '../../../hooks/useObservable';
+import { ChatService } from '../../../services/chatGlobalState';
 import { ChatInput } from '../../components/ChatInput';
 /**
  * 就是没有消息的页面，没有会话 ID, 发送消息之后会进入会话 ID

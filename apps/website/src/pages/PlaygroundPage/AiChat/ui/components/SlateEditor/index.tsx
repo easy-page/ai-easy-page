@@ -23,8 +23,8 @@ import styled from 'styled-components';
 import { PARAGRAPH_ELEMENT, renderElement } from './components';
 import { withCustomNodes } from './plugins/withCustomNodes';
 import { SENCE_ELEMENT } from './components/SenceElement';
-import { ChatService } from '@/services/chatGlobalState';
-import { useObservable } from '@/hooks/useObservable';
+import { ChatService } from '../../../services/chatGlobalState';
+import { useObservable } from '../../../hooks/useObservable';
 
 // 样式组件
 const EditorContainer = styled.div`

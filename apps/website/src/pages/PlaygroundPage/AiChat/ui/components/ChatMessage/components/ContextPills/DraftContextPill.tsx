@@ -1,8 +1,8 @@
 import { motion } from 'motion/react';
 import React from 'react';
 import { getContextIcon, getTruncatedName } from './helpers';
-import { ChatMessageContext } from '@/common/interfaces/messages/chatMessages/context';
-import { Icons } from '@/views/aiChat/baseUi/components/icons';
+import { Icons } from '../../../../baseUi/components/icons';
+import { ChatMessageContext } from '../../../../../common/interfaces/messages/chatMessages/context';
 
 export const DraftContextPill = React.forwardRef<
 	HTMLDivElement,

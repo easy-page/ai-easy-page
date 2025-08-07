@@ -1,4 +1,4 @@
-import { InfoClientMessage } from '@/common/interfaces/messages/chatMessages/client';
+import { InfoClientMessage } from '../../../common/interfaces/messages/chatMessages/client';
 
 interface InfoMessageProps {
 	message: InfoClientMessage;

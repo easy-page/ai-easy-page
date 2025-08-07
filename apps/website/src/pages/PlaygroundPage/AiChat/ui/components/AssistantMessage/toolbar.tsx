@@ -1,18 +1,18 @@
-import { ServerMessageReactionType } from '@/common/constants/message';
-import { ServerMessage } from '@/common/interfaces/messages/chatMessages/server';
-import { getQueryString } from '@/common/utils/url';
-import { useObservable } from '@/hooks/useObservable';
-import { useService } from '@/infra';
-import { ChatService } from '@/services/chatGlobalState';
-import { Button } from '@/views/aiChat/baseUi/components/button';
-import { Icons } from '@/views/aiChat/baseUi/components/icons';
+import { ServerMessageReactionType } from '../../../common/constants/message';
+import { ServerMessage } from '../../../common/interfaces/messages/chatMessages/server';
+import { getQueryString } from '../../../common/utils/url';
+import { useObservable } from '../../../hooks/useObservable';
+import { useService } from '../../../infra';
+import { ChatService } from '../../../services/chatGlobalState';
+import { Button } from '../../baseUi/components/button';
+import { Icons } from '../../baseUi/components/icons';
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from '@/views/aiChat/baseUi/components/tooltip';
-import { cn } from '@/views/aiChat/baseUi/utils';
+} from '../../baseUi/components/tooltip';
+import { cn } from '../../baseUi/utils';
 import { useMemo, useState } from 'react';
 
 export type AssistantMessageToolbarProps = {
@@ -81,8 +81,8 @@ export const AssistantMessageToolbar = ({
 						<TooltipTrigger asChild>
 							<Button
 								onClick={handleCopyClick}
-								size="icon"
-								variant="ghost"
+								// size="icon"
+								// variant="ghost"
 								className="h-6 w-6 p-1 hover:bg-muted/60 "
 							>
 								{isCopied ? (

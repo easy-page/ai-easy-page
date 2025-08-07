@@ -1,4 +1,4 @@
-import { ModelContentClientMessage } from '@/common/interfaces/messages/chatMessages/client';
+import { ModelContentClientMessage } from '../../../common/interfaces/messages/chatMessages/client';
 import { ChatMarkdownRender } from '../ChatMarkdownRender';
 
 interface ModelContentMessageProps {

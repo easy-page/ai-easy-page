@@ -1,15 +1,18 @@
-import { ChatMode, SenceOperationEnum } from '@/common/constants/scence';
-import { SenceInputComponentOperation } from '@/common/interfaces';
+import {
+	ChatMode,
+	SenceOperationEnum,
+} from '../../../../../../common/constants/scence';
+import { SenceInputComponentOperation } from '../../../../../../common/interfaces';
 import { DialogInput } from '../../../sences/operations/DialogInput';
 import { DownloadFileOperation } from '../../../sences/operations/DownloadFile';
 import { UploadFileOperation } from '../../../sences/operations/UploadFile';
 import { useMemo } from 'react';
 import { Dropdown } from '@douyinfe/semi-ui';
-import { useObservable } from '@/hooks/useObservable';
-import { useService } from '@/infra';
+import { useObservable } from '../../../../../../hooks/useObservable';
+import { useService } from '../../../../../../infra';
 import classNames from 'classnames';
-import { MoreSkillsIcon } from '@/views/aiChat/components/Icons';
-import { ChatService } from '@/services/chatGlobalState';
+import { MoreSkillsIcon } from '../../../../Icons';
+import { ChatService } from '../../../../../../services/chatGlobalState';
 
 export type OperationListProps = {
 	chatMode: ChatMode;

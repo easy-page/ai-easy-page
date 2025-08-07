@@ -1,4 +1,4 @@
-import { ServerRecommandMessage } from '@/common/interfaces/messages/chatMessages/server';
+import { ServerRecommandMessage } from '../../../common/interfaces/messages/chatMessages/server';
 
 interface RecommendMessageProps {
 	message: ServerRecommandMessage;

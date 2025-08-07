@@ -3,7 +3,7 @@ import {
 	ChatGlobalStateEntityOptions,
 } from './chatGlobalStateEntity';
 import { ChatGlobalState, ChatGlobalStateImpl } from './chatGlobalState';
-import { Framework, Service } from '@/infra';
+import { Framework, Service } from '../../infra';
 import { CommonDbService, DBService } from '../db/BaseDbService';
 import { GlobalState } from './globalState';
 import {
@@ -11,14 +11,14 @@ import {
 	FeedbackInfo,
 	FeedBackType,
 	FinishTaskStepParams,
-} from '@/providers/common';
-import { UserClientMessage } from '@/common/interfaces/messages/chatMessages/client';
-import { ServerMessageChunk } from '@/common/interfaces/messages/stream';
-import { FullTaskInfo } from '@/common/interfaces/task';
-import { ServerMessage } from '@/common/interfaces/messages/chatMessages/server';
-import { ServerMessageCardType } from '@/common/constants/message';
+} from '../../providers/common';
+import { UserClientMessage } from '../../common/interfaces/messages/chatMessages/client';
+import { ServerMessageChunk } from '../../common/interfaces/messages/stream';
+import { FullTaskInfo } from '../../common/interfaces/task';
+import { ServerMessage } from '../../common/interfaces/messages/chatMessages/server';
+import { ServerMessageCardType } from '../../common/constants/message';
 import { Toast } from '@douyinfe/semi-ui';
-import { ConversationMessageType } from '@/common/interfaces/messages/chatMessages/interface';
+import { ConversationMessageType } from '../../common/interfaces/messages/chatMessages/interface';
 
 export class ChatService extends Service {
 	globalState = this.framework.createEntity(ChatGlobalStateEntity, [
@@ -224,6 +224,7 @@ export class ChatService extends Service {
 			context: [...curMsgContexts],
 			conversationIdInUrl,
 			overrideConversationName: true,
+			venueId,
 		});
 
 		console.log('sendNewMessage 0001111:', new Date().getTime() - start);
@@ -330,7 +331,7 @@ export class ChatService extends Service {
 		);
 		if (message) {
 			this.globalState.updateUserMessageIdAndConversationId({
-				originalMessageId: userMessage.id,
+				originalMessageId: userMessage.id || '',
 				// 后端返回的originalMessageId 才是之前对应的 local 哪一个的 id
 				newMessageId: message.originalMessageId || '', // 服务端返回的消息 ID
 				originalConversationId: originalConversationId,

@@ -1,19 +1,18 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import classNames from 'classnames';
 import { IconClock, PlusIcon } from '../../components/Icons';
-import { NavItemEnum } from '@/services/chatGlobalState/constant';
-import { useService } from '@/infra';
-import { ChatService } from '@/services/chatGlobalState';
+import { NavItemEnum } from '../../../services/chatGlobalState/constant';
+import { useService } from '../../../infra';
+import { ChatService } from '../../../services/chatGlobalState';
 import { Modal, Tooltip } from '@douyinfe/semi-ui';
 import { HistoryItem, HistoryItemOp, HistoryItemProps } from './HistoryItem';
 import {
 	ConversationInfo,
 	ConversationsPageInfo,
-} from '@/common/interfaces/conversation';
-import { useObservable } from '@/hooks/useObservable';
+} from '../../../common/interfaces/conversation';
+import { useObservable } from '../../../hooks/useObservable';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
-import { RouterNames } from '@/routers/constant';
-import { getChatUrl, toChat } from '@/routers/toChat';
+
 import { useIntersectionObserver } from './hooks/useIntersectionObserver';
 
 const historyStyles = {
@@ -48,7 +47,7 @@ export const HistoryList = ({ onHistoryItemClick }: HistoryListProps) => {
 	const loadingStateRef = useRef(false);
 
 	const loadMoreHistory = useCallback(
-		async (venueId) => {
+		async (venueId: number) => {
 			const hasMore = conversationsPageInfo.hasMore;
 
 			// 使用ref来跟踪加载状态，避免多次调用

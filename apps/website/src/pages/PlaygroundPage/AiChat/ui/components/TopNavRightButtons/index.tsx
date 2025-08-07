@@ -1,6 +1,6 @@
-import { useObservable } from '@/hooks/useObservable';
-import { useService } from '@/infra';
-import { ChatService } from '@/services/chatGlobalState';
+import { useObservable } from '../../../hooks/useObservable';
+import { useService } from '../../../infra';
+import { ChatService } from '../../../services/chatGlobalState';
 import {
 	BellIcon,
 	DotIcon,
@@ -11,9 +11,9 @@ import {
 } from '../Icons';
 import { useState, useRef, useEffect } from 'react';
 import { Dropdown } from '@douyinfe/semi-ui';
-import { FullTaskInfo } from '@/common/interfaces/task';
-import { getQueryString } from '@/common/utils/url';
-import { isInIframe } from '@/common/utils/env';
+import { FullTaskInfo } from '../../../common/interfaces/task';
+import { getQueryString } from '../../../common/utils/url';
+import { isInIframe } from '../../../common/utils/env';
 
 const RedDot = () => {
 	return (

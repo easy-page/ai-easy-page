@@ -1,7 +1,7 @@
 import {
 	ToolGroupClientMessage,
 	ToolCallStatus,
-} from '@/common/interfaces/messages/chatMessages/client';
+} from '../../../common/interfaces/messages/chatMessages/client';
 import { ChatMarkdownRender } from '../ChatMarkdownRender';
 
 interface ToolGroupMessageProps {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Typography } from '@douyinfe/semi-ui';
-import { Icons } from '@/views/aiChat/baseUi/components/icons';
+import { Icons } from '../../baseUi/components/icons';
 
 const { Text } = Typography;
 

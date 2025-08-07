@@ -1,4 +1,4 @@
-import { IconButton, ImageIcon } from '@/views/aiChat/components/Icons';
+import { IconButton, ImageIcon } from '../../../../Icons';
 export type UploadImageBtnProps = {
 	disabled?: boolean;
 };

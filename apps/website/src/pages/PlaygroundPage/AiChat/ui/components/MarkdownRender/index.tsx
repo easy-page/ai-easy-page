@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { MarkdownRender } from '@douyinfe/semi-ui';
 
 import React from 'react';
-import { cn } from '@/views/aiChat/baseUi/utils';
+import { cn } from '../../baseUi/utils';
 
 // MDX 转义预处理函数
 const preprocessMDXContent = (content: string): string => {

@@ -1,11 +1,11 @@
-import { Button } from '@/views/aiChat/baseUi/components/button';
-import { Icons } from '@/views/aiChat/baseUi/components/icons';
+import { Button } from '../../baseUi/components/button';
+import { Icons } from '../../baseUi/components/icons';
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from '@/views/aiChat/baseUi/components/tooltip';
+} from '../../baseUi/components/tooltip';
 import { FC, useState } from 'react';
 
 export type CodeHeaderProps = {

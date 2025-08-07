@@ -1,8 +1,8 @@
 import { ReactEditor, RenderElementProps, useSlate } from 'slate-react';
 import './index.less';
-import { LeftArrowIcon } from '@/views/aiChat/components/Icons';
 import { Descendant, Node } from 'slate';
 import { CustomRenderElementProps } from '../../interface';
+import { LeftArrowIcon } from '../../../Icons';
 
 export const SENCE_ELEMENT = 'sence-element';
 

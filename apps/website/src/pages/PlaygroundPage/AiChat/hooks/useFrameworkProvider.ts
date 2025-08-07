@@ -1,13 +1,12 @@
-import { FrameworkProvider } from '@/infra';
-import { initIoc } from '@/infra/initIoc';
-import { AgnoServer } from '@/providers/agno';
-import { ApiProvider } from '@/providers/common';
-import { configureChatGlobalStateModule } from '@/services/chatGlobalState';
-import { GlobalState } from '@/services/chatGlobalState/globalState';
-import { CommonDbService } from '@/services/db/BaseDbService';
-import { GlobalFileNames } from '@/services/db/constant';
-import { IndexedDBService } from '@/services/db/IndexDbService';
-import { LocalStorageGlobalState } from '@/services/storage';
+import { FrameworkProvider } from '../infra';
+import { initIoc } from '../infra/initIoc';
+import { ApiProvider } from '../providers/common';
+import { configureChatGlobalStateModule } from '../services/chatGlobalState';
+import { GlobalState } from '../services/chatGlobalState/globalState';
+import { CommonDbService } from '../services/db/BaseDbService';
+import { GlobalFileNames } from '../services/db/constant';
+import { IndexedDBService } from '../services/db/IndexDbService';
+import { LocalStorageGlobalState } from '../services/storage';
 import { useState, useEffect } from 'react';
 
 export const useFrameworkProvider = (provider: ApiProvider) => {

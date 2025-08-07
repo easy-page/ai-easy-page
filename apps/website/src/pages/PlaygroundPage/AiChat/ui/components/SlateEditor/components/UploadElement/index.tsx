@@ -1,4 +1,4 @@
-import { SenceInputComponentFileConfig } from '@/common/interfaces';
+import { SenceInputComponentFileConfig } from '../../../../../common/interfaces';
 import { Descendant } from 'slate';
 import { CustomRenderElementProps } from '../../interface';
 

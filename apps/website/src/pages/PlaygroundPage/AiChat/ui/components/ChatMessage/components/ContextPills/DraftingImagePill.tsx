@@ -4,8 +4,8 @@ import { getTruncatedName } from './helpers';
 import {
 	ChatMessageContext,
 	ChatMessageContextType,
-} from '@/common/interfaces/messages/chatMessages/context';
-import { Icons } from '@/views/aiChat/baseUi/components/icons';
+} from '../../../../../common/interfaces/messages/chatMessages/context';
+import { Icons } from '../../../../baseUi/components/icons';
 
 export const DraftImagePill = React.forwardRef<
 	HTMLDivElement,

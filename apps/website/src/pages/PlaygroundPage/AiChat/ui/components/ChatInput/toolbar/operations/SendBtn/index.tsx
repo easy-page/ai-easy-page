@@ -1,16 +1,12 @@
-import { useObservable } from '@/hooks/useObservable';
-import { useService } from '@/infra';
-import { ChatService } from '@/services/chatGlobalState';
+import { useObservable } from '../../../../../../hooks/useObservable';
+import { useService } from '../../../../../../infra';
+import { ChatService } from '../../../../../../services/chatGlobalState';
 import { Editor, Node } from 'slate';
-import {
-	IconButton,
-	SendIcon,
-	StopIcon,
-} from '@/views/aiChat/components/Icons';
+import { IconButton, SendIcon, StopIcon } from '../../../../Icons';
 import classNames from 'classnames';
 import { ReactEditor } from 'slate-react';
 import { useNavigate } from 'react-router-dom';
-import { ChatMode } from '@/common/constants/scence';
+import { ChatMode } from '../../../../../../common/constants/scence';
 import { useMemo } from 'react';
 export type SendBtnProps = {
 	disabledSend: boolean;

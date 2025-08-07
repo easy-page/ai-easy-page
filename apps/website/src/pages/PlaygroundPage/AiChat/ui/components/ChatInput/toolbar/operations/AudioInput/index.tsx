@@ -1,5 +1,5 @@
-import { MoreSkillsIcon } from '@/views/aiChat/components/Icons';
 import { IconButton } from '@douyinfe/semi-ui';
+import { MoreSkillsIcon } from '../../../../Icons';
 
 export type AudioInputBtnProps = {
 	disabled?: boolean;

@@ -1,0 +1,107 @@
+.chat-panel {
+	display: flex;
+	flex-direction: column;
+	height: calc(100% - 86px); // 减去VenueInfoCard的高度和margin
+	position: relative;
+	z-index: 1; // 确保z-index低于VenueInfoCard
+
+	.ant-tabs {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+
+		.ant-tabs-content {
+			flex: 1;
+			height: 100%;
+
+			.ant-tabs-tabpane {
+				height: 100%;
+				display: flex;
+				flex-direction: column;
+			}
+		}
+	}
+
+	.messages-container {
+		flex: 1;
+		overflow-y: auto;
+		padding: 16px;
+		background-color: #f5f5f5;
+
+		.messages-list {
+			.message-item {
+				padding: 8px 0;
+
+				.message-content {
+					display: flex;
+					max-width: 80%;
+
+					.message-avatar {
+						margin-right: 8px;
+					}
+
+					.message-bubble {
+						background-color: #fff;
+						border-radius: 8px;
+						padding: 8px 12px;
+						box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+						.message-text {
+							word-break: break-word;
+						}
+
+						.message-time {
+							font-size: 12px;
+							color: #999;
+							text-align: right;
+							margin-top: 4px;
+						}
+					}
+				}
+
+				&.user-message {
+					.message-content {
+						margin-left: auto;
+						flex-direction: row-reverse;
+
+						.message-avatar {
+							margin-right: 0;
+							margin-left: 8px;
+						}
+
+						.message-bubble {
+							background-color: #e6f7ff;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.input-container {
+		display: flex;
+		padding: 12px;
+		border-top: 1px solid #e8e8e8;
+		background-color: #fff;
+
+		.ant-input {
+			margin-right: 8px;
+			resize: none;
+		}
+	}
+
+	.chat-history-list {
+		height: 100%;
+		overflow-y: auto;
+
+		.history-item {
+			cursor: pointer;
+			padding: 12px 16px;
+			transition: background-color 0.3s;
+
+			&:hover {
+				background-color: #f0f0f0;
+			}
+		}
+	}
+}

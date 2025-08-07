@@ -1,4 +1,4 @@
-import { NavItemEnum } from '@/services/chatGlobalState/constant';
+import { NavItemEnum } from '../../../services/chatGlobalState/constant';
 import {
 	CommandK,
 	More,
@@ -11,7 +11,7 @@ import {
 	// ImageIcon,
 	// MoreIcon,
 } from '../Icons';
-import { NavItemBaseInfo } from '@/services/chatGlobalState/interface';
+import { NavItemBaseInfo } from '../../../services/chatGlobalState/interface';
 
 export type NavItemInfoContext = {
 	setCurNavItem: (curNavItem: NavItemEnum) => void;

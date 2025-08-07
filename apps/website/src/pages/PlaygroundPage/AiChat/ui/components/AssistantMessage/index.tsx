@@ -1,12 +1,12 @@
 import {
 	ServerMessage,
 	ServerMsgCard,
-} from '@/common/interfaces/messages/chatMessages/server';
-import { useService } from '@/infra';
-import { ChatService } from '@/services/chatGlobalState';
+} from '../../../common/interfaces/messages/chatMessages/server';
 import { useState, useMemo, useEffect } from 'react';
 import { ChatMarkdownRender } from '../ChatMarkdownRender';
 import { AssistantMessageToolbar } from './toolbar';
+import { useService } from '../../../infra';
+import { ChatService } from '../../../services/chatGlobalState';
 
 export type AssistantMessageProps = {
 	message: ServerMessage;
@@ -42,7 +42,7 @@ export const AssistantMessage = ({
 			>
 				<ChatMarkdownRender
 					content={currentContent}
-					cards={message.cards}
+					cards={message.cards || {}}
 					isStreaming={message.isStreaming}
 				/>
 			</div>

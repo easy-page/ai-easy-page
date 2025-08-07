@@ -1,10 +1,10 @@
 import React from 'react';
 import { Typography } from '@douyinfe/semi-ui';
-import { ToolCallConfirmationDetails } from '@shared/serverChunk';
 import { EditConfirmation } from './EditConfirmation';
 import { ExecConfirmation } from './ExecConfirmation';
 import { McpConfirmation } from './McpConfirmation';
 import { InfoConfirmation } from './InfoConfirmation';
+import { ToolCallConfirmationDetails } from '../../../../../common/interfaces/serverChunk';
 
 const { Text } = Typography;
 

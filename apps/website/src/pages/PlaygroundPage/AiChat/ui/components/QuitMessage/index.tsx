@@ -1,4 +1,4 @@
-import { QuitClientMessage } from '@/common/interfaces/messages/chatMessages/client';
+import { QuitClientMessage } from '../../../common/interfaces/messages/chatMessages/client';
 
 interface QuitMessageProps {
 	message: QuitClientMessage;

@@ -1,4 +1,4 @@
-import { ChatMessageContext } from '@/common/interfaces/messages/chatMessages/context';
+import { ChatMessageContext } from '../../../../../common/interfaces/messages/chatMessages/context';
 import { getContextIcon, getTruncatedName } from './helpers';
 
 export function SentContextPill({ context }: { context: ChatMessageContext }) {
