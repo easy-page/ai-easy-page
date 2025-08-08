@@ -19,16 +19,16 @@ import {
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import './index.less';
-import { ChatService } from '../../AiChat/services/chatGlobalState';
-import { useService } from '../../AiChat/infra';
+import { ChatService } from '@/services/chatGlobalState';
+import { useService } from '@/infra';
 import {
 	createVenue,
 	queryVenues,
 	VenueInfo,
 	VenuePageType,
-} from '../../AiChat/apis/venue';
-import { useObservable } from '../../AiChat/hooks/useObservable';
-import { appendParamsToUrl } from '../../AiChat/routers/utils';
+} from '@/apis/venue';
+import { useObservable } from '@/hooks/useObservable';
+import { appendParamsToUrl } from '@/routers/utils';
 
 const { Title, Text } = Typography;
 const { Search } = Input;

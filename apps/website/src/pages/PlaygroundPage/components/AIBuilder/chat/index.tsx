@@ -1,16 +1,16 @@
-import { useObservable } from '../../../AiChat/hooks/useObservable';
-import { useService } from '../../../AiChat/infra';
-import { ChatService } from '../../../AiChat/services/chatGlobalState';
-import { NavItemEnum } from '../../../AiChat/services/chatGlobalState/constant';
+import { useObservable } from '@/hooks/useObservable';
+import { useService } from '@/infra';
+import { ChatService } from '@/services/chatGlobalState';
+import { NavItemEnum } from '@/services/chatGlobalState/constant';
 import { useEffect, useMemo, useState } from 'react';
-import { ChatMode } from '../../../AiChat/common/constants/scence';
-import { getQueryString } from '../../../AiChat/common/utils/url';
-import { NewChatPanel } from '../../../AiChat/ui/panels/NewChatPanel';
-import { ConversationPanel } from '../../../AiChat/ui/panels/ConversationPanel';
-import { getChatUrl } from '../../../AiChat/routers/toChat';
+import { ChatMode } from '@/common/constants/scence';
+import { getQueryString } from '@/common/utils/url';
+import { NewChatPanel } from '@/ui/panels/NewChatPanel';
+import { ConversationPanel } from '@/ui/panels/ConversationPanel';
+import { getChatUrl } from '@/routers/toChat';
 import { useNavigate } from 'react-router-dom';
-import { RouterNames } from '../../../AiChat/routers/constant';
-import { TopNav } from '../../../AiChat/ui/components/TopNav';
+import { RouterNames } from '@/routers/constant';
+import { TopNav } from '@/ui/components/TopNav';
 
 export type VenueChatPanelProps = {
 	venueId: number;

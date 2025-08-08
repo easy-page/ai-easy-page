@@ -884,3 +884,33 @@ const curVenue = useObservable(chatService.globalState.curVenue$, null);
 创建成功后，将 venueId 放在路由上，并跳转到 playground 页面
 
 - 添加方式参考：apps/website/src/pages/PlaygroundPage/AiChat/routers/utils.ts#appendParamsToUrl
+
+# 集成登陆能力
+
+- 结合登陆接口：/Users/kp/Documents/ai-works/easy-page-v2-server/app/api/endpoints/user.py
+- 结合用户表：/Users/kp/Documents/ai-works/easy-page-v2-server/app/models/user.py
+- 结合授权方式：/Users/kp/Documents/ai-works/easy-page-v2-server/app/middleware/jwt_auth.py
+  帮我实现前端的：
+  1.  登陆注册功能
+  2.  实现用户信息修改、密码修改功能
+  3.  登陆后先简单实现一个空白页面留着，我们后续再完善
+
+现有能力：
+
+- 接口基类：apps/website/src/apis/axios.ts
+- 相关接口定义位置： apps/website/src/apis
+- 状态数据管理 Model:apps/website/src/services/chatGlobalState/chatGlobalStateEntity.ts
+- model 状态使用示例
+
+```ts
+const userInfo = useObservable(chatService.globalState.userInfo$, null);
+const userTeams = useObservable(chatService.globalState.userTeams$, []);
+```
+
+- ioc 机制和服务管理：apps/website/src/infra
+- 服务放这里：apps/website/src/services
+- ioc 初始化位置：apps/website/src/App.tsx#frameworkProvider
+- ioc 相关 hooks: apps/website/src/hooks
+- 权限相关状态管理方：apps/website/src/services/auth
+
+- 登陆注册页面放到：apps/website/src/pages 目录下

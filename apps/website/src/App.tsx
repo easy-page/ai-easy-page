@@ -1,4 +1,4 @@
-import '@/pages/PlaygroundPage/AiChat/ui/components/CodeOfSemi';
+import '@/ui/components/CodeOfSemi';
 import React, { Suspense, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
@@ -6,10 +6,10 @@ import HomePage from './pages/HomePage';
 import GuidePage from './pages/GuidePage';
 import ApiPage from './pages/ApiPage';
 import PlaygroundPage from './pages/PlaygroundPage';
-import { FrameworkRoot } from './pages/PlaygroundPage/AiChat/infra';
 import { JarvisThemeProvider, Theme } from './pages/PlaygroundPage/theme';
-import { useFrameworkProvider } from './pages/PlaygroundPage/AiChat/hooks/useFrameworkProvider';
-import { AgnoServer } from './pages/PlaygroundPage/AiChat/providers/agno';
+import { useFrameworkProvider } from './hooks/useFrameworkProvider';
+import { AgnoServer } from './providers/agno';
+import { FrameworkRoot } from './infra';
 const App: React.FC = () => {
 	const frameworkProvider = useFrameworkProvider(new AgnoServer());
 

@@ -2,11 +2,10 @@ import { useState, FC, useEffect, useCallback } from 'react';
 import { Layout, Tabs, Card, Row, Col } from 'antd';
 import { RobotOutlined, SettingOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
-import { useService } from './AiChat/infra/ioc/react';
-import { ChatService } from './AiChat/services/chatGlobalState';
-import { useObservable } from './AiChat/hooks/useObservable';
-import { getQueryString } from './AiChat/common/utils/url';
-import { getVenueDetail } from './AiChat/apis/venue';
+import { useService } from '@/infra/ioc/react';
+import { ChatService } from '@/services/chatGlobalState';
+import { useObservable } from '@/hooks/useObservable';
+import { getQueryString } from '@/common/utils/url';
 import ConfigBuilder from './components/ConfigBuilder';
 import AIBuilder from './components/AIBuilder';
 import PreviewPanel from './components/PreviewPanel';
@@ -14,6 +13,7 @@ import NodeConfigPanel from './components/NodeConfigPanel';
 import VenueSelectionModal from './components/VenueSelectionModal';
 import { FormSchema } from './Schema';
 import './index.less';
+import { getVenueDetail } from '@/apis/venue';
 
 const { Sider, Content } = Layout;
 
