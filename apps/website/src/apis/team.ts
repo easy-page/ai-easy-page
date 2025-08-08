@@ -130,3 +130,10 @@ export const updateMemberRole: RequestHandler<
 > = (params) => {
 	return postReq('/zspt-agent-api/v1/teams/update-member-role', params);
 };
+
+// 删除团队
+export const deleteTeam: RequestHandler<{ team_id: number }, ApiResponse> = (
+	params
+) => {
+	return postReq('/zspt-agent-api/v1/teams/delete', params);
+};

@@ -32,7 +32,7 @@ const LoginPage: React.FC = () => {
 			const result = await authService.login(values);
 			if (result.success) {
 				message.success('登录成功！');
-				navigate('/workspace');
+				navigate('/');
 			} else {
 				message.error(result.message || '登录失败');
 			}

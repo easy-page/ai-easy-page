@@ -917,3 +917,50 @@ const userTeams = useObservable(chatService.globalState.userTeams$, []);
 - 权限相关状态管理方：apps/website/src/services/auth
 
 - 登陆注册页面放到：apps/website/src/pages 目录下
+
+# 增加团队、项目管理相关功能
+
+目前整体管理链路是：用户 -> 团队（team） -> 项目(workspace) -> 页面(venue)
+
+现有能力：
+
+- 接口基类：apps/website/src/apis/axios.ts
+- 相关接口定义位置： apps/website/src/apis
+- 状态数据管理 Model:apps/website/src/services/chatGlobalState/chatGlobalStateEntity.ts
+- model 状态使用示例
+
+```ts
+const userInfo = useObservable(chatService.globalState.userInfo$, null);
+const userTeams = useObservable(chatService.globalState.userTeams$, []);
+```
+
+后端接口项目相关 API：/Users/kp/Documents/ai-works/easy-page-v2-server/app/api/endpoints/workspace.py
+
+- workspace 相关接口前缀都是：/zspt-agent-api/v1
+  因此，比如创建 workspace 结合上面的文档，路径为：/zspt-agent-api/v1/workspaces/create-wsp
+
+- ioc 机制和服务管理：apps/website/src/infra
+- 服务放这里：apps/website/src/services
+- ioc 初始化位置：apps/website/src/App.tsx#frameworkProvider
+- ioc 相关 hooks: apps/website/src/hooks
+
+不用新建 service，就在 apps/website/src/services/chatGlobalState/chatGlobalStateEntity.ts 里管理 workspace 相关的状态即可，参考：
+
+```ts
+curTeam$: LiveData<TeamInfo | null> = new LiveData<TeamInfo | null>(null);
+userTeams$: LiveData<TeamInfo[]> = new LiveData<TeamInfo[]>([]);
+
+curVenue$: LiveData<VenueInfo | null> = new LiveData<VenueInfo | null>(null);
+venues$: LiveData<VenueListInfo | null> = new LiveData<VenueListInfo | null>(
+	null
+);
+```
+
+# 优化登陆后的管理
+
+现在管理有点混乱，需要优化：
+
+- 首先我希望登陆前后顶栏菜单不一样，登陆有应该是有：工作台、个人空间、团队 三个菜单，登陆前就是之前的官网结构。
+  围绕这个结构帮我设计。
+
+登陆前，和登陆后的页面结构分开吧 mainLayout 分开，避免互相影响

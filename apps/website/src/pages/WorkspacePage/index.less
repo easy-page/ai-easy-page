@@ -2,6 +2,149 @@
 	padding: 24px;
 	max-width: 1200px;
 	margin: 0 auto;
+	position: relative;
+	z-index: 2;
+
+	// 科技感装饰元素
+	&::before {
+		content: '';
+		position: absolute;
+		top: -50px;
+		right: -50px;
+		width: 200px;
+		height: 200px;
+		background: radial-gradient(
+			circle,
+			rgba(102, 126, 234, 0.1) 0%,
+			transparent 70%
+		);
+		border-radius: 50%;
+		animation: float 6s ease-in-out infinite;
+		z-index: -1;
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		bottom: -30px;
+		left: -30px;
+		width: 150px;
+		height: 150px;
+		background: radial-gradient(
+			circle,
+			rgba(118, 75, 162, 0.1) 0%,
+			transparent 70%
+		);
+		border-radius: 50%;
+		animation: float 8s ease-in-out infinite reverse;
+		z-index: -1;
+	}
+
+	// 添加更多动态装饰
+	.tech-decoration {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		pointer-events: none;
+		z-index: -1;
+
+		.orbital-ring {
+			position: absolute;
+			width: 300px;
+			height: 300px;
+			border: 1px solid rgba(102, 126, 234, 0.2);
+			border-radius: 50%;
+			top: 50%;
+			right: -150px;
+			transform: translateY(-50%);
+			animation: rotate 20s linear infinite;
+
+			&::before {
+				content: '';
+				position: absolute;
+				width: 10px;
+				height: 10px;
+				background: rgba(102, 126, 234, 0.6);
+				border-radius: 50%;
+				top: -5px;
+				left: 50%;
+				transform: translateX(-50%);
+				animation: pulse 2s ease-in-out infinite;
+			}
+		}
+
+		.data-stream {
+			position: absolute;
+			width: 2px;
+			height: 100px;
+			background: linear-gradient(
+				to bottom,
+				transparent,
+				rgba(24, 144, 255, 0.5),
+				transparent
+			);
+			left: 10%;
+			top: 20%;
+			animation: dataFlow 3s ease-in-out infinite;
+
+			&::before {
+				content: '';
+				position: absolute;
+				width: 4px;
+				height: 4px;
+				background: rgba(24, 144, 255, 0.8);
+				border-radius: 50%;
+				top: 0;
+				left: -1px;
+				animation: dataPulse 1s ease-in-out infinite;
+			}
+		}
+
+		@keyframes rotate {
+			from {
+				transform: translateY(-50%) rotate(0deg);
+			}
+			to {
+				transform: translateY(-50%) rotate(360deg);
+			}
+		}
+
+		@keyframes dataFlow {
+			0%,
+			100% {
+				opacity: 0.3;
+				transform: translateY(0px);
+			}
+			50% {
+				opacity: 1;
+				transform: translateY(20px);
+			}
+		}
+
+		@keyframes dataPulse {
+			0%,
+			100% {
+				transform: scale(1);
+				opacity: 0.8;
+			}
+			50% {
+				transform: scale(1.5);
+				opacity: 1;
+			}
+		}
+	}
+
+	@keyframes float {
+		0%,
+		100% {
+			transform: translateY(0px) rotate(0deg);
+		}
+		50% {
+			transform: translateY(-20px) rotate(180deg);
+		}
+	}
 
 	.workspace-header {
 		margin-bottom: 32px;
@@ -18,12 +161,17 @@
 	}
 
 	.ant-card {
-		border-radius: 8px;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-		transition: all 0.3s;
+		border-radius: 12px;
+		background: rgba(255, 255, 255, 0.95);
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+		transition: all 0.3s ease;
 
 		&:hover {
-			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+			transform: translateY(-4px);
+			box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
+			border-color: rgba(102, 126, 234, 0.3);
 		}
 
 		.ant-card-head {
@@ -48,16 +196,59 @@
 	}
 
 	.ant-btn {
-		border-radius: 6px;
-		transition: all 0.3s;
+		border-radius: 8px;
+		transition: all 0.3s ease;
+		position: relative;
+		overflow: hidden;
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(
+				90deg,
+				transparent,
+				rgba(255, 255, 255, 0.2),
+				transparent
+			);
+			transition: left 0.5s;
+		}
 
 		&:hover {
-			transform: translateY(-1px);
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+
+			&::before {
+				left: 100%;
+			}
+		}
+
+		&.ant-btn-primary {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			border: none;
+			box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+
+			&:hover {
+				background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+				box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+			}
 		}
 	}
 
 	.ant-space {
 		width: 100%;
+	}
+
+	// 修复快速操作和个人信息之间的间距
+	.quick-actions-section {
+		margin-bottom: 24px;
+	}
+
+	.personal-info-section {
+		margin-top: 24px;
 	}
 }
 

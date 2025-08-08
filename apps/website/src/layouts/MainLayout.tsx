@@ -23,6 +23,7 @@ import {
 	UserOutlined,
 	LogoutOutlined,
 	SettingOutlined,
+	TeamOutlined,
 } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
@@ -32,7 +33,7 @@ const { Header, Sider, Content } = Layout;
 
 // 菜单配置 - 更具扩展性的设计
 const menuConfig = {
-	// 顶部导航菜单配置
+	// 顶部导航菜单配置 - 登录前显示
 	topNav: [
 		{
 			key: 'home',
@@ -180,6 +181,7 @@ const MainLayout: React.FC = () => {
 		if (currentPath === '/') return 'home';
 		if (currentPath.startsWith('/guide')) return 'guide';
 		if (currentPath.startsWith('/api')) return 'api';
+		if (currentPath.startsWith('/manage')) return 'manage';
 		return 'home';
 	};
 
@@ -208,6 +210,8 @@ const MainLayout: React.FC = () => {
 	// 判断是否需要显示侧边栏
 	const shouldShowSidebar = () => {
 		const pageType = getCurrentPageType();
+		// 管理中心页面不显示侧边栏
+		if (pageType === 'manage') return false;
 		return pageType !== 'home' && getSideMenuItems().length > 0;
 	};
 
@@ -223,21 +227,8 @@ const MainLayout: React.FC = () => {
 		window.location.href = '/';
 	};
 
-	// 用户菜单项
+	// 用户菜单项 - 登录前显示
 	const userMenuItems = [
-		{
-			key: 'workspace',
-			label: <Link to="/workspace">个人工作空间</Link>,
-			icon: <UserOutlined />,
-		},
-		{
-			key: 'profile',
-			label: <Link to="/profile">个人资料</Link>,
-			icon: <SettingOutlined />,
-		},
-		{
-			type: 'divider' as const,
-		},
 		{
 			key: 'logout',
 			label: '退出登录',
@@ -442,18 +433,28 @@ const MainLayout: React.FC = () => {
 									GitHub
 								</Button>
 								{isAuthenticated ? (
-									<Dropdown
-										menu={{ items: userMenuItems }}
-										placement="bottomRight"
-										arrow
-									>
-										<Avatar
-											src={user?.avatar_url}
-											icon={<UserOutlined />}
-											className="user-avatar"
-											style={{ cursor: 'pointer' }}
-										/>
-									</Dropdown>
+									<Space>
+										<Button
+											type="primary"
+											onClick={() =>
+												(window.location.href = '/dashboard/workspace')
+											}
+										>
+											进入工作台
+										</Button>
+										<Dropdown
+											menu={{ items: userMenuItems }}
+											placement="bottomRight"
+											arrow
+										>
+											<Avatar
+												src={user?.avatar_url}
+												icon={<UserOutlined />}
+												className="user-avatar"
+												style={{ cursor: 'pointer' }}
+											/>
+										</Dropdown>
+									</Space>
 								) : (
 									<Space>
 										<Button
@@ -475,7 +476,11 @@ const MainLayout: React.FC = () => {
 					</div>
 				</Header>
 
-				<Content className={`main-content ${isHome ? 'home-content' : ''}`}>
+				<Content
+					className={`main-content ${isHome ? 'home-content' : ''} ${
+						!shouldShowSidebar() ? 'no-sidebar' : ''
+					}`}
+				>
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}

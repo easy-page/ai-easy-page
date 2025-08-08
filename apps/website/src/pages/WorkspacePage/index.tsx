@@ -18,6 +18,11 @@ const WorkspacePage: React.FC = () => {
 
 	return (
 		<div className="workspace-page">
+			{/* 科技装饰元素 */}
+			<div className="tech-decoration">
+				<div className="orbital-ring"></div>
+				<div className="data-stream"></div>
+			</div>
 			<div className="workspace-header">
 				<Title level={2}>个人工作空间</Title>
 				<Text type="secondary">
@@ -71,8 +76,11 @@ const WorkspacePage: React.FC = () => {
 
 			<Row gutter={[24, 24]} style={{ marginTop: 24 }}>
 				{/* 快速操作 */}
-				<Col xs={24} lg={12}>
-					<Card title="快速操作" extra={<Link to="/profile">个人设置</Link>}>
+				<Col xs={24} lg={12} className="quick-actions-section">
+					<Card
+						title="快速操作"
+						extra={<Link to="/dashboard/profile">个人设置</Link>}
+					>
 						<Space direction="vertical" size="middle" style={{ width: '100%' }}>
 							<Button
 								type="primary"
@@ -128,7 +136,7 @@ const WorkspacePage: React.FC = () => {
 
 			{/* 用户信息卡片 */}
 			<Row gutter={[24, 24]} style={{ marginTop: 24 }}>
-				<Col xs={24} lg={12}>
+				<Col xs={24} lg={12} className="personal-info-section">
 					<Card title="个人信息">
 						<Space direction="vertical" size="middle" style={{ width: '100%' }}>
 							<div>
