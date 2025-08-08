@@ -1,9 +1,8 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { message } from 'antd';
 import { SCHEMA_TEMPLATES, FormSchema } from '../../Schema';
 import FormMode from './components/FormMode';
 import PageMode from './components/PageMode';
-import SelectMode from './components/SelectMode';
 import './index.less';
 
 interface ConfigBuilderProps {
@@ -22,28 +21,24 @@ const ConfigBuilder: FC<ConfigBuilderProps> = ({
 	onExpand,
 }) => {
 	const [currentSchema, setCurrentSchema] = useState<FormSchema | null>(null);
-	const [buildMode, setBuildMode] = useState<'select' | 'form' | 'page'>(
-		'select'
-	);
+	const [buildMode, setBuildMode] = useState<'form' | 'page'>('form');
 
-	const handleCreateForm = () => {
-		const formSchema = SCHEMA_TEMPLATES.EMPTY_FORM;
-		setCurrentSchema(formSchema);
-		setBuildMode('form');
-		onSchemaChange?.(formSchema);
-		message.success('已创建基础表单结构');
-	};
-
-	const handleCreatePage = () => {
-		// 暂时空着，后续实现
-		setBuildMode('page');
-		message.info('页面配置功能暂未实现，敬请期待...');
-	};
+	// 初始化时创建基础表单结构
+	useEffect(() => {
+		if (!currentSchema) {
+			const formSchema = SCHEMA_TEMPLATES.EMPTY_FORM;
+			setCurrentSchema(formSchema);
+			onSchemaChange?.(formSchema);
+		}
+	}, []);
 
 	const handleBackToSelect = () => {
-		setBuildMode('select');
-		setCurrentSchema(null);
-		onSchemaChange?.({} as FormSchema);
+		// 重置为表单模式
+		setBuildMode('form');
+		const formSchema = SCHEMA_TEMPLATES.EMPTY_FORM;
+		setCurrentSchema(formSchema);
+		onSchemaChange?.(formSchema);
+		message.success('已重置为基础表单结构');
 	};
 
 	const handleImportConfig = () => {
@@ -51,27 +46,26 @@ const ConfigBuilder: FC<ConfigBuilderProps> = ({
 		message.info('导入配置功能暂未实现');
 	};
 
+	const handleSwitchToPage = () => {
+		setBuildMode('page');
+		message.info('页面配置功能暂未实现，敬请期待...');
+	};
+
 	switch (buildMode) {
-		case 'form':
+		case 'page':
+			return <PageMode onBack={handleBackToSelect} />;
+		default:
 			return (
 				<FormMode
 					schema={currentSchema}
 					onBack={handleBackToSelect}
 					onImport={handleImportConfig}
+					onSwitchToPage={handleSwitchToPage}
 					selectedNode={selectedNode}
 					onNodeSelect={onNodeSelect}
 					onSchemaChange={onSchemaChange}
 					expandedKeys={expandedKeys}
 					onExpand={onExpand}
-				/>
-			);
-		case 'page':
-			return <PageMode onBack={handleBackToSelect} />;
-		default:
-			return (
-				<SelectMode
-					onCreateForm={handleCreateForm}
-					onCreatePage={handleCreatePage}
 				/>
 			);
 	}

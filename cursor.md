@@ -866,3 +866,21 @@ apps/website/src/pages/PlaygroundPage/AiChat/ui/components/ChatInput/toolbar/ope
 - apps/website/src/index.css
 - apps/website/tailwind.config.js
   增加相关的颜色变量
+
+# 进入 playground 先选择创建会场
+
+在 “apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/index.tsx” 里的创建页面和表单的选择，应该放在进入
+playground 的时候就选择，而不是在创建页面的时候选择。
+
+- 获取路由参数参考：apps/website/src/pages/PlaygroundPage/AiChat/common/utils/url.ts
+- 如果进入 playground 时候，路由上没有 venueId 参数，就弹出这个弹窗，让用户选择创建还是选择已有会场
+- 选择后，点击确定，则调用：apps/website/src/pages/PlaygroundPage/AiChat/apis/venue.ts 里的接口进行保存会场，并通过：apps/website/src/pages/PlaygroundPage/AiChat/services/chatGlobalState/chatGlobalStateEntity.ts 管理状态，并如下方式使用状态：
+
+```ts
+const chatService = useService(ChatService);
+const curVenue = useObservable(chatService.globalState.curVenue$, null);
+```
+
+创建成功后，将 venueId 放在路由上，并跳转到 playground 页面
+
+- 添加方式参考：apps/website/src/pages/PlaygroundPage/AiChat/routers/utils.ts#appendParamsToUrl

@@ -38,6 +38,7 @@ export const ChatInput = ({ chatMode, extraTools }: ChatInputProps) => {
 	const [messages, setMessages] = useState<string[]>(['a', 'b']);
 	const isNew = chatMode === ChatMode.NewChat;
 	const chatService = useService(ChatService);
+	const curVenue = useObservable(chatService.globalState.curVenue$, null);
 	const curConversation = useObservable(
 		chatService.globalState.curConversation$,
 		null
@@ -47,7 +48,7 @@ export const ChatInput = ({ chatMode, extraTools }: ChatInputProps) => {
 		null
 	);
 	const isReadOnly = useObservable(chatService.globalState.isReadOnly$, false);
-	const curVenue = useObservable(chatService.globalState.curVenue$, null);
+
 	const isWaiting = useObservable(chatService.globalState.isWaiting$, false);
 
 	console.log('curSenceConfig:', curSenceConfig);

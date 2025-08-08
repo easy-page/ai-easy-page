@@ -1,0 +1,57 @@
+.venue-selection-modal {
+	.ant-modal-body {
+		padding: 0;
+	}
+
+	.ant-tabs-content-holder {
+		padding: 0 24px 24px;
+	}
+
+	.option-card {
+		transition: all 0.3s ease;
+
+		&:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		}
+
+		&.ant-card-selected {
+			border-color: #1890ff;
+			background-color: #f0f8ff;
+		}
+	}
+
+	.option-content {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.option-icon {
+		font-size: 24px;
+		color: #1890ff;
+	}
+
+	.option-text {
+		flex: 1;
+	}
+
+	.venue-card {
+		transition: all 0.3s ease;
+
+		&:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		}
+	}
+
+	.search-container {
+		margin-bottom: 16px;
+	}
+
+	.empty-container {
+		padding: 40px 0;
+		text-align: center;
+	}
+}
+

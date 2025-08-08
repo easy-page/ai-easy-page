@@ -28,6 +28,7 @@ interface FormModeProps {
 	schema: FormSchema | null;
 	onBack: () => void;
 	onImport: () => void;
+	onSwitchToPage?: () => void;
 	selectedNode?: string | null;
 	onNodeSelect?: (nodeId: string) => void;
 	onSchemaChange?: (schema: FormSchema) => void;
@@ -39,6 +40,7 @@ const FormMode: FC<FormModeProps> = ({
 	schema,
 	onBack,
 	onImport,
+	onSwitchToPage,
 	selectedNode,
 	onNodeSelect,
 	onSchemaChange,
@@ -351,6 +353,11 @@ const FormMode: FC<FormModeProps> = ({
 					<Button onClick={onImport} type="primary">
 						导入配置
 					</Button>
+					{onSwitchToPage && (
+						<Button onClick={onSwitchToPage} type="default">
+							切换到页面模式
+						</Button>
+					)}
 				</div>
 			</div>
 

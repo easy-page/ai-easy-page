@@ -31,7 +31,7 @@ export interface VenueBase {
 	icon?: string;
 	pageType?: VenuePageType;
 	page_schema?: FormSchema;
-	workspace_id: number;
+	workspace_id?: number;
 	tags?: string;
 	venueId?: number;
 	members?: string;
@@ -39,7 +39,8 @@ export interface VenueBase {
 
 // 创建会场请求
 export interface VenueCreateParams extends VenueBase {
-	team_id: number;
+	// 游客模式下，不传team_id
+	team_id?: number;
 }
 
 // 修改会场请求
