@@ -17,6 +17,19 @@ export class AuthStateEntity extends Entity {
 		loading: false,
 	});
 
+	constructor() {
+		super();
+		// 初始化时，如果有token就设置认证状态
+		const token = localStorage.getItem('token');
+		if (token) {
+			this._authState$.next({
+				...this._authState$.value,
+				isAuthenticated: true,
+				token,
+			});
+		}
+	}
+
 	get authState$() {
 		return this._authState$;
 	}

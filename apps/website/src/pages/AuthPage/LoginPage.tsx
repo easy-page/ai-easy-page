@@ -134,7 +134,7 @@ const LoginPage: React.FC = () => {
 				{/* 右侧表单区域 */}
 				<div className="form-section">
 					<div className="auth-container">
-						<Card className="auth-card" title="登录 Easy Page">
+						<Card className="auth-card" title="登录">
 							<Form
 								name="login"
 								onFinish={onFinish}

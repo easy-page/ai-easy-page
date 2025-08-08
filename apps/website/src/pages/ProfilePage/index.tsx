@@ -32,6 +32,7 @@ const ProfilePage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [passwordLoading, setPasswordLoading] = useState(false);
 	const { user, authService } = useAuth();
+	console.log('useruseruser:', user);
 
 	const [profileForm] = Form.useForm();
 	const [passwordForm] = Form.useForm();
