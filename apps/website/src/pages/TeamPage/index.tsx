@@ -653,18 +653,14 @@ const TeamPage: React.FC<TeamPageProps> = ({ onTeamSelect }) => {
 											emptyText: (
 												<div className="empty-state">
 													<TeamOutlined
-														style={{ fontSize: 48, color: '#666' }}
+														style={{ fontSize: 24, color: '#666' }}
 													/>
-													<Text
-														type="secondary"
-														style={{ display: 'block', marginTop: 16 }}
-													>
+													<Text type="secondary" style={{ display: 'block' }}>
 														暂无团队，创建您的第一个团队开始协作吧！
 													</Text>
 													<Button
 														type="primary"
 														icon={<PlusOutlined />}
-														style={{ marginTop: 16 }}
 														onClick={showCreateModal}
 													>
 														创建团队
