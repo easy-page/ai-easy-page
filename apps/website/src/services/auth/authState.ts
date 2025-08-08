@@ -1,5 +1,6 @@
 import { LiveData } from '../../infra/liveData';
 import { UserInfo } from '@/apis/auth';
+import { Entity } from '@/infra';
 
 export interface AuthState {
 	isAuthenticated: boolean;
@@ -8,7 +9,7 @@ export interface AuthState {
 	loading: boolean;
 }
 
-export class AuthStateEntity {
+export class AuthStateEntity extends Entity {
 	private _authState$: LiveData<AuthState> = new LiveData<AuthState>({
 		isAuthenticated: false,
 		user: null,
@@ -70,6 +71,3 @@ export class AuthStateEntity {
 		});
 	}
 }
-
-// 创建全局认证状态实例
-export const authState = new AuthStateEntity();

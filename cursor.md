@@ -887,6 +887,8 @@ const curVenue = useObservable(chatService.globalState.curVenue$, null);
 
 # 集成登陆能力
 
+目前我是一个文档官网，登陆后可进入个人工作空间因此顶部导航右侧应该增加登陆按钮，提供登陆注册能力
+
 - 结合登陆接口：/Users/kp/Documents/ai-works/easy-page-v2-server/app/api/endpoints/user.py
 - 结合用户表：/Users/kp/Documents/ai-works/easy-page-v2-server/app/models/user.py
 - 结合授权方式：/Users/kp/Documents/ai-works/easy-page-v2-server/app/middleware/jwt_auth.py
@@ -894,6 +896,7 @@ const curVenue = useObservable(chatService.globalState.curVenue$, null);
   1.  登陆注册功能
   2.  实现用户信息修改、密码修改功能
   3.  登陆后先简单实现一个空白页面留着，我们后续再完善
+  4.  实现顶部导航右侧个人用户信息头像展示，点击头像可以进入个人工作空间或者修改资料
 
 现有能力：
 

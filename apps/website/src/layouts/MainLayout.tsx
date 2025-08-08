@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Layout, Menu, Button, Drawer, Space, Divider } from 'antd';
+import {
+	Layout,
+	Menu,
+	Button,
+	Drawer,
+	Space,
+	Divider,
+	Avatar,
+	Dropdown,
+} from 'antd';
 import {
 	MenuOutlined,
 	GithubOutlined,
@@ -11,8 +20,12 @@ import {
 	StarOutlined,
 	LeftOutlined,
 	RightOutlined,
+	UserOutlined,
+	LogoutOutlined,
+	SettingOutlined,
 } from '@ant-design/icons';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/hooks/useAuth';
 import './MainLayout.less';
 
 const { Header, Sider, Content } = Layout;
@@ -142,6 +155,7 @@ const MainLayout: React.FC = () => {
 	const [collapsed, setCollapsed] = useState(false);
 	const [mobileDrawerVisible, setMobileDrawerVisible] = useState(false);
 	const location = useLocation();
+	const { authService, isAuthenticated, user } = useAuth();
 
 	// 根据路径获取当前激活的顶级菜单
 	const getCurrentTopNavKey = () => {
@@ -202,6 +216,35 @@ const MainLayout: React.FC = () => {
 			setMobileDrawerVisible(false);
 		}
 	};
+
+	// 处理登出
+	const handleLogout = async () => {
+		await authService.logout();
+		window.location.href = '/';
+	};
+
+	// 用户菜单项
+	const userMenuItems = [
+		{
+			key: 'workspace',
+			label: <Link to="/workspace">个人工作空间</Link>,
+			icon: <UserOutlined />,
+		},
+		{
+			key: 'profile',
+			label: <Link to="/profile">个人资料</Link>,
+			icon: <SettingOutlined />,
+		},
+		{
+			type: 'divider' as const,
+		},
+		{
+			key: 'logout',
+			label: '退出登录',
+			icon: <LogoutOutlined />,
+			onClick: handleLogout,
+		},
+	];
 
 	const currentTopNavKey = getCurrentTopNavKey();
 	const currentPageType = getCurrentPageType();
@@ -398,6 +441,35 @@ const MainLayout: React.FC = () => {
 								>
 									GitHub
 								</Button>
+								{isAuthenticated ? (
+									<Dropdown
+										menu={{ items: userMenuItems }}
+										placement="bottomRight"
+										arrow
+									>
+										<Avatar
+											src={user?.avatar}
+											icon={<UserOutlined />}
+											className="user-avatar"
+											style={{ cursor: 'pointer' }}
+										/>
+									</Dropdown>
+								) : (
+									<Space>
+										<Button
+											type="text"
+											onClick={() => (window.location.href = '/login')}
+										>
+											登录
+										</Button>
+										<Button
+											type="primary"
+											onClick={() => (window.location.href = '/register')}
+										>
+											注册
+										</Button>
+									</Space>
+								)}
 							</Space>
 						</div>
 					</div>

@@ -3,6 +3,7 @@ import { ChatMode } from '../../../common/constants/scence';
 import { useService } from '@/infra';
 import { useObservable } from '../../../hooks/useObservable';
 import { ChatService } from '../../../services/chatGlobalState';
+import { useAuth } from '../../../hooks/useAuth';
 import { ChatInput } from '../../components/ChatInput';
 /**
  * 就是没有消息的页面，没有会话 ID, 发送消息之后会进入会话 ID
@@ -27,7 +28,7 @@ const getGreeting = () => {
 
 export const NewChatPanel = () => {
 	const chatService = useService(ChatService);
-	const userInfo = useObservable(chatService.globalState.userInfo$, null);
+	const { user } = useAuth();
 	return (
 		<div className="flex h-[calc(100vh-200px)] flex-col relative overflow-auto items-center justify-center">
 			<div className="flex-1 flex flex-col justify-center items-center mb-2">
@@ -36,7 +37,7 @@ export const NewChatPanel = () => {
 						<span className="text text-3xl ">
 							{`${getGreeting()}，`}
 							<span className="user-name-text z-[100] relative">
-								{userInfo?.userName || '用户'}
+								{user?.mis || '用户'}
 							</span>
 						</span>
 					</div>

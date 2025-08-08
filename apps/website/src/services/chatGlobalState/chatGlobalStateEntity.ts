@@ -101,8 +101,6 @@ export class ChatGlobalStateEntity extends Entity {
 		NavItemBaseInfo[]
 	>([]);
 
-	userInfo$: LiveData<UserInfo | null> = new LiveData<UserInfo | null>(null);
-
 	conversationsPageInfo$: LiveData<ConversationsPageInfo> =
 		new LiveData<ConversationsPageInfo>({
 			hasMore: true,
@@ -189,10 +187,6 @@ export class ChatGlobalStateEntity extends Entity {
 
 	setCustomNavItems(customNavItems: NavItemBaseInfo[]) {
 		this.customNavItems$.next(customNavItems);
-	}
-
-	setUserInfo(userInfo: UserInfo | null) {
-		this.userInfo$.next(userInfo);
 	}
 
 	/**

@@ -30,6 +30,20 @@ const baseConfig = {
 
 const instance = axios.create({ ...baseConfig, responseType: 'json' });
 
+// 请求拦截器 - 添加 token
+instance.interceptors.request.use(
+	(config) => {
+		const token = localStorage.getItem('access_token');
+		if (token) {
+			config.headers.Authorization = `Bearer ${token}`;
+		}
+		return config;
+	},
+	(error) => {
+		return Promise.reject(error);
+	}
+);
+
 instance.interceptors.response.use(
 	(response) => {
 		// 如果响应状态码为 200，则直接返回响应数据

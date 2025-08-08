@@ -1,0 +1,109 @@
+.profile-page {
+	padding: 24px;
+	max-width: 1200px;
+	margin: 0 auto;
+
+	.profile-header {
+		margin-bottom: 32px;
+		text-align: center;
+
+		.ant-typography {
+			margin-bottom: 8px;
+		}
+	}
+
+	.profile-content {
+		.ant-card {
+			border-radius: 8px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+			transition: all 0.3s;
+
+			&:hover {
+				box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+			}
+
+			.ant-card-head {
+				border-bottom: 1px solid #f0f0f0;
+
+				.ant-card-head-title {
+					font-weight: 600;
+				}
+			}
+		}
+
+		.avatar-section {
+			text-align: center;
+			margin-bottom: 16px;
+
+			.avatar-uploader {
+				.ant-upload {
+					width: auto;
+					height: auto;
+					border: none;
+					background: none;
+				}
+			}
+		}
+
+		.ant-tabs {
+			.ant-tabs-tab {
+				.anticon {
+					margin-right: 8px;
+				}
+			}
+
+			.ant-tabs-content {
+				padding: 24px 0;
+			}
+		}
+
+		.ant-form {
+			.ant-form-item {
+				margin-bottom: 20px;
+			}
+
+			.ant-input-affix-wrapper {
+				border-radius: 6px;
+				border: 1px solid #d9d9d9;
+				transition: all 0.3s;
+
+				&:hover,
+				&:focus,
+				&.ant-input-affix-wrapper-focused {
+					border-color: #667eea;
+					box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+				}
+			}
+
+			.ant-btn {
+				border-radius: 6px;
+				height: 40px;
+				font-weight: 500;
+				transition: all 0.3s;
+
+				&:hover {
+					transform: translateY(-1px);
+				}
+			}
+		}
+	}
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+	.profile-page {
+		padding: 16px;
+
+		.profile-header {
+			margin-bottom: 24px;
+		}
+
+		.profile-content {
+			.ant-tabs {
+				.ant-tabs-content {
+					padding: 16px 0;
+				}
+			}
+		}
+	}
+}

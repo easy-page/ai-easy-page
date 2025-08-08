@@ -1,0 +1,79 @@
+.workspace-page {
+	padding: 24px;
+	max-width: 1200px;
+	margin: 0 auto;
+
+	.workspace-header {
+		margin-bottom: 32px;
+		text-align: center;
+
+		.ant-typography {
+			margin-bottom: 8px;
+		}
+	}
+
+	.empty-projects {
+		text-align: center;
+		padding: 40px 20px;
+	}
+
+	.ant-card {
+		border-radius: 8px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+		transition: all 0.3s;
+
+		&:hover {
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+		}
+
+		.ant-card-head {
+			border-bottom: 1px solid #f0f0f0;
+
+			.ant-card-head-title {
+				font-weight: 600;
+			}
+		}
+	}
+
+	.ant-statistic {
+		.ant-statistic-title {
+			font-size: 14px;
+			color: #666;
+		}
+
+		.ant-statistic-content {
+			font-size: 24px;
+			font-weight: 600;
+		}
+	}
+
+	.ant-btn {
+		border-radius: 6px;
+		transition: all 0.3s;
+
+		&:hover {
+			transform: translateY(-1px);
+		}
+	}
+
+	.ant-space {
+		width: 100%;
+	}
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+	.workspace-page {
+		padding: 16px;
+
+		.workspace-header {
+			margin-bottom: 24px;
+		}
+
+		.ant-statistic {
+			.ant-statistic-content {
+				font-size: 20px;
+			}
+		}
+	}
+}

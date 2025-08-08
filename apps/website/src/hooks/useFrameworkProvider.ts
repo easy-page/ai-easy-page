@@ -8,6 +8,7 @@ import { IndexedDBService } from '../services/db/IndexDbService';
 import { LocalStorageGlobalState } from '../services/storage';
 import { useState, useEffect } from 'react';
 import { initIoc } from '@/infra/initIoc';
+import { configureAuthModule } from '../services/auth';
 
 export const useFrameworkProvider = (provider: ApiProvider) => {
 	const [frameworkProvider, setFrameworkProvider] =
@@ -31,6 +32,7 @@ export const useFrameworkProvider = (provider: ApiProvider) => {
 				configureChatGlobalStateModule(framework, {
 					provider: provider,
 				});
+				configureAuthModule(framework);
 			},
 		});
 		setFrameworkProvider(frameworkProvider);

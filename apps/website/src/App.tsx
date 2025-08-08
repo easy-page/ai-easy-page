@@ -6,6 +6,11 @@ import HomePage from './pages/HomePage';
 import GuidePage from './pages/GuidePage';
 import ApiPage from './pages/ApiPage';
 import PlaygroundPage from './pages/PlaygroundPage';
+import LoginPage from './pages/AuthPage/LoginPage';
+import RegisterPage from './pages/AuthPage/RegisterPage';
+import WorkspacePage from './pages/WorkspacePage';
+import ProfilePage from './pages/ProfilePage';
+import AuthGuard from './components/AuthGuard';
 import { JarvisThemeProvider, Theme } from './pages/PlaygroundPage/theme';
 import { useFrameworkProvider } from './hooks/useFrameworkProvider';
 import { AgnoServer } from './providers/agno';
@@ -32,7 +37,25 @@ const App: React.FC = () => {
 							<Route path="guide/*" element={<GuidePage />} />
 							<Route path="api/*" element={<ApiPage />} />
 							<Route path="playground" element={<PlaygroundPage />} />
+							<Route
+								path="workspace"
+								element={
+									<AuthGuard>
+										<WorkspacePage />
+									</AuthGuard>
+								}
+							/>
+							<Route
+								path="profile"
+								element={
+									<AuthGuard>
+										<ProfilePage />
+									</AuthGuard>
+								}
+							/>
 						</Route>
+						<Route path="/login" element={<LoginPage />} />
+						<Route path="/register" element={<RegisterPage />} />
 					</Routes>
 					{/* <SlateEditorExample /> */}
 				</JarvisThemeProvider>

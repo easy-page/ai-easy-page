@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { Dropdown } from '@douyinfe/semi-ui';
 import classNames from 'classnames';
 import { ChatService } from '../../../../../../services/chatGlobalState';
+import { useAuth } from '../../../../../../hooks/useAuth';
 import {
 	SenceConfig,
 	SenceCategoryEnum,
@@ -27,24 +28,24 @@ export type MoreSkillsBtnProps = {
 
 export const MoreSkillsBtn = ({ disabled }: MoreSkillsBtnProps) => {
 	const chatService = useService(ChatService);
+	const { user } = useAuth();
 	const senceConfigs = useObservable(chatService.globalState.senceConfigs$, []);
 	const isWaiting = useObservable(chatService.globalState.isWaiting$, false);
 	const [loading, setLoading] = useState(false);
 	const [recentlyUsed, setRecentlyUsed] = useState<SenceConfig[]>([]);
-	const userInfo = useObservable(chatService.globalState.userInfo$, null);
 
-	console.log('userInfo', userInfo);
+	console.log('user', user);
 
 	useEffect(() => {
 		const init = async () => {
 			setLoading(true);
-			await chatService.getSenceConfigs(userInfo?.userMis || '');
+			await chatService.getSenceConfigs(user?.mis || '');
 			setLoading(false);
 		};
-		if (userInfo) {
+		if (user) {
 			init();
 		}
-	}, [userInfo]);
+	}, [user, chatService]);
 
 	useEffect(() => {
 		// 从本地存储获取使用次数统计

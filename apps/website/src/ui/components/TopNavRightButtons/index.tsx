@@ -1,6 +1,7 @@
 import { useObservable } from '../../../hooks/useObservable';
 import { useService } from '@/infra';
 import { ChatService } from '../../../services/chatGlobalState';
+import { useAuth } from '../../../hooks/useAuth';
 import {
 	BellIcon,
 	DotIcon,
@@ -23,7 +24,7 @@ const RedDot = () => {
 
 export const TopNavRightButtons = () => {
 	const chatService = useService(ChatService);
-	const userInfo = useObservable(chatService.globalState.userInfo$, null);
+	const { user } = useAuth();
 	const isRightPanelOpen = useObservable(
 		chatService.globalState.isRightPanelOpen$,
 		false
@@ -114,10 +115,10 @@ export const TopNavRightButtons = () => {
 								<UserIcon className="w-5 h-5 mr-4 text-foreground-secondary" />
 								<div className="flex flex-col">
 									<div className="text-foreground-primary text-regularPlus">
-										{userInfo?.userName}
+										{user?.mis || '用户'}
 									</div>
 									<div className="text-foreground-secondary text-smallPlus">
-										{userInfo?.userMis}
+										{user?.email || ''}
 									</div>
 								</div>
 							</div>
