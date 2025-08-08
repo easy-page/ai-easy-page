@@ -1,3 +1,4 @@
+import { FormSchema } from '../../Schema';
 import { postReq, getReq, RequestHandler } from './axios';
 
 // 会场状态枚举
@@ -18,12 +19,19 @@ export const VENUE_STATUS_CONFIG = {
 	},
 } as const;
 
+export enum VenuePageType {
+	Form = 'form',
+	Page = 'page',
+}
+
 // 会场基础信息
 export interface VenueBase {
 	name: string;
 	description?: string;
 	icon?: string;
-	git_repo?: string;
+	pageType?: VenuePageType;
+	page_schema?: FormSchema;
+	workspace_id: number;
 	tags?: string;
 	venueId?: number;
 	members?: string;

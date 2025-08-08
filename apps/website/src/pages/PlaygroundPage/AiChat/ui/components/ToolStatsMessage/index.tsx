@@ -41,8 +41,8 @@ export const ToolStatsMessage: React.FC<ToolStatsMessageProps> = ({
 
 	return (
 		<div className="flex justify-start mb-4">
-			<div className="max-w-[80%] bg-green-50 border border-green-200 rounded-lg px-4 py-3 shadow-sm">
-				<div className="flex items-center gap-2 text-sm text-green-700 mb-3">
+			<div className="max-w-[80%] bg-green-900/50 border border-green-500/30 rounded-lg px-4 py-3 shadow-lg backdrop-blur-sm">
+				<div className="flex items-center gap-2 text-sm text-green-200 mb-3">
 					<span>🔧</span>
 					<span>工具统计</span>
 				</div>

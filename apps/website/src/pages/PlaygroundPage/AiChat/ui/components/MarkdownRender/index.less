@@ -1,44 +1,138 @@
 .semi-table-thead > .semi-table-row > .semi-table-row-head {
-    border-bottom: 1px solid rgba(28, 31, 35, 0.08);
+	border-bottom: 1px solid rgba(28, 31, 35, 0.08);
 }
 
 .semi-table-tbody {
-    .semi-form-field {
-        overflow: unset !important;
-    }
+	.semi-form-field {
+		overflow: unset !important;
+	}
 
-    .semi-form-field-main {
-        position: relative;
-    }
+	.semi-form-field-main {
+		position: relative;
+	}
 
-    .semi-form-field-error-message {
-        position: absolute;
-    }
+	.semi-form-field-error-message {
+		position: absolute;
+	}
 }
 
 .pagination-container {
-    display: flex;
-    // justify-content: center;
-    align-items: center;
-    padding: 10px;
-    gap: 10px;
+	display: flex;
+	// justify-content: center;
+	align-items: center;
+	padding: 10px;
+	gap: 10px;
 }
 
 .pagination-button {
-    padding: 2px 8px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+	padding: 2px 8px;
+	border: 1px solid #ddd;
+	background-color: #fff;
+	font-size: 12px;
+	cursor: pointer;
+	transition: background-color 0.3s;
 }
 
 .pagination-button:hover {
-    background-color: #f2f2f2;
+	background-color: #f2f2f2;
 }
 
 .pagination-button.active {
-    background-color: #007bff;
-    color: #fff;
-    border-color: #007bff;
+	background-color: #007bff;
+	color: #fff;
+	border-color: #007bff;
+}
+
+// Markdown 内容样式优化 - 针对整个应用的暗色主题
+// 使用高优先级选择器确保样式生效
+
+// 列表样式
+ul,
+ol {
+	li {
+		color: rgba(255, 255, 255, 0.85) !important;
+		margin-bottom: 0.5rem !important;
+
+		&::marker {
+			color: rgba(0, 255, 255, 0.7) !important;
+			font-weight: 500 !important;
+		}
+
+		&:last-child {
+			margin-bottom: 0 !important;
+		}
+	}
+}
+
+// 段落文本样式
+p {
+	color: rgba(255, 255, 255, 0.9) !important;
+	line-height: 1.6 !important;
+	margin-bottom: 0.75rem !important;
+
+	&:last-child {
+		margin-bottom: 0 !important;
+	}
+}
+
+// 标题样式
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: #ffffff !important;
+	font-weight: 600 !important;
+}
+
+// 分割线样式
+hr {
+	border-color: rgba(0, 255, 255, 0.3) !important;
+	margin: 1rem 0 !important;
+}
+
+// 如果需要在特定容器内应用暗色主题
+.dark {
+	ul,
+	ol {
+		li {
+			color: rgba(255, 255, 255, 0.85) !important;
+			margin-bottom: 0.5rem !important;
+
+			&::marker {
+				color: rgba(0, 255, 255, 0.7) !important;
+				font-weight: 500 !important;
+			}
+
+			&:last-child {
+				margin-bottom: 0 !important;
+			}
+		}
+	}
+
+	p {
+		color: rgba(255, 255, 255, 0.9) !important;
+		line-height: 1.6 !important;
+		margin-bottom: 0.75rem !important;
+
+		&:last-child {
+			margin-bottom: 0 !important;
+		}
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		color: #ffffff !important;
+		font-weight: 600 !important;
+	}
+
+	hr {
+		border-color: rgba(0, 255, 255, 0.3) !important;
+		margin: 1rem 0 !important;
+	}
 }

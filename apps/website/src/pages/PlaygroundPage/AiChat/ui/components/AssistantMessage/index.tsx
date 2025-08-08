@@ -32,11 +32,12 @@ export const AssistantMessage = ({
 	const currentContent = curMessages[currentVersion];
 
 	return (
-		<div className="py-4 text-small content-start group ">
+		<div className="py-4 text-small content-start group">
 			<div
-				className="flex flex-col text-wrap gap-2 bg-white rounded-lg p-2 overflow-hidden"
+				className="flex flex-col text-wrap gap-2 bg-gray-900/90 border border-cyan-500/20 rounded-lg p-3 overflow-hidden backdrop-blur-sm shadow-lg"
 				style={{
 					width: 'fit-content',
+					maxWidth: '85%',
 					wordBreak: 'break-all',
 				}}
 			>

@@ -51,10 +51,10 @@ export const ToolGroupMessage: React.FC<ToolGroupMessageProps> = ({
 }) => {
 	return (
 		<div className="flex justify-start mb-4">
-			<div className="max-w-[80%] bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
+			<div className="max-w-[80%] bg-gray-800/50 border border-gray-600/30 rounded-lg px-4 py-3 shadow-lg backdrop-blur-sm">
 				<div className="flex items-center gap-2 mb-3">
-					<span className="text-sm font-medium text-gray-700">工具调用</span>
-					<span className="text-xs text-gray-500">
+					<span className="text-sm font-medium text-gray-200">工具调用</span>
+					<span className="text-xs text-gray-400">
 						({message.tools.length} 个工具)
 					</span>
 				</div>
@@ -63,10 +63,10 @@ export const ToolGroupMessage: React.FC<ToolGroupMessageProps> = ({
 					{message.tools.map((tool) => (
 						<div
 							key={tool.callId}
-							className="border border-gray-200 rounded p-3"
+							className="border border-gray-600/30 rounded p-3 bg-gray-700/30"
 						>
 							<div className="flex items-center justify-between mb-2">
-								<span className="text-sm font-medium text-gray-800">
+								<span className="text-sm font-medium text-gray-200">
 									{tool.name}
 								</span>
 								<span className={`text-xs ${getStatusColor(tool.status)}`}>
@@ -74,12 +74,12 @@ export const ToolGroupMessage: React.FC<ToolGroupMessageProps> = ({
 								</span>
 							</div>
 
-							<div className="text-xs text-gray-600 mb-2">
+							<div className="text-xs text-gray-300 mb-2">
 								{tool.description}
 							</div>
 
 							{tool.resultDisplay && (
-								<div className="bg-gray-50 rounded p-2 text-xs text-gray-700">
+								<div className="bg-gray-700/50 rounded p-2 text-xs text-gray-200">
 									{tool.renderOutputAsMarkdown ? (
 										<ChatMarkdownRender
 											content={
@@ -100,13 +100,13 @@ export const ToolGroupMessage: React.FC<ToolGroupMessageProps> = ({
 							)}
 
 							{tool.confirmationDetails && (
-								<div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs">
-									<div className="font-medium text-yellow-800 mb-1">
+								<div className="mt-2 p-2 bg-yellow-900/50 border border-yellow-500/30 rounded text-xs">
+									<div className="font-medium text-yellow-200 mb-1">
 										{tool.confirmationDetails.title}
 									</div>
 									{tool.confirmationDetails.type === 'exec' &&
 										'command' in tool.confirmationDetails && (
-											<div className="font-mono text-yellow-700">
+											<div className="font-mono text-yellow-100">
 												{tool.confirmationDetails.command}
 											</div>
 										)}

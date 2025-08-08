@@ -36,8 +36,8 @@ export const ModelStatsMessage: React.FC<ModelStatsMessageProps> = ({
 
 	return (
 		<div className="flex justify-start mb-4">
-			<div className="max-w-[80%] bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 shadow-sm">
-				<div className="flex items-center gap-2 text-sm text-blue-700 mb-3">
+			<div className="max-w-[80%] bg-blue-900/50 border border-blue-500/30 rounded-lg px-4 py-3 shadow-lg backdrop-blur-sm">
+				<div className="flex items-center gap-2 text-sm text-blue-200 mb-3">
 					<span>🤖</span>
 					<span>模型统计</span>
 				</div>
@@ -46,34 +46,34 @@ export const ModelStatsMessage: React.FC<ModelStatsMessageProps> = ({
 					<div className="space-y-3">
 						{statsData.modelName && (
 							<div className="flex items-center justify-between">
-								<span className="text-xs text-blue-600">模型名称:</span>
-								<span className="text-xs font-medium text-blue-800">
+								<span className="text-xs text-blue-300">模型名称:</span>
+								<span className="text-xs font-medium text-blue-100">
 									{statsData.modelName}
 								</span>
 							</div>
 						)}
 
 						{statsData.usage && (
-							<div className="bg-blue-100 rounded p-2">
-								<div className="text-xs font-medium text-blue-700 mb-2">
+							<div className="bg-blue-800/50 rounded p-2">
+								<div className="text-xs font-medium text-blue-200 mb-2">
 									Token 使用情况
 								</div>
 								<div className="grid grid-cols-3 gap-2 text-xs">
 									<div>
-										<span className="text-blue-600">Prompt:</span>
-										<span className="ml-1 font-medium">
+										<span className="text-blue-300">Prompt:</span>
+										<span className="ml-1 font-medium text-blue-100">
 											{statsData.usage.promptTokens || 0}
 										</span>
 									</div>
 									<div>
-										<span className="text-blue-600">Completion:</span>
-										<span className="ml-1 font-medium">
+										<span className="text-blue-300">Completion:</span>
+										<span className="ml-1 font-medium text-blue-100">
 											{statsData.usage.completionTokens || 0}
 										</span>
 									</div>
 									<div>
-										<span className="text-blue-600">Total:</span>
-										<span className="ml-1 font-medium">
+										<span className="text-blue-300">Total:</span>
+										<span className="ml-1 font-medium text-blue-100">
 											{statsData.usage.totalTokens || 0}
 										</span>
 									</div>
@@ -82,23 +82,23 @@ export const ModelStatsMessage: React.FC<ModelStatsMessageProps> = ({
 						)}
 
 						{statsData.performance && (
-							<div className="bg-blue-100 rounded p-2">
-								<div className="text-xs font-medium text-blue-700 mb-2">
+							<div className="bg-blue-800/50 rounded p-2">
+								<div className="text-xs font-medium text-blue-200 mb-2">
 									性能指标
 								</div>
 								<div className="grid grid-cols-2 gap-2 text-xs">
 									{statsData.performance.latency && (
 										<div>
-											<span className="text-blue-600">延迟:</span>
-											<span className="ml-1 font-medium">
+											<span className="text-blue-300">延迟:</span>
+											<span className="ml-1 font-medium text-blue-100">
 												{statsData.performance.latency}ms
 											</span>
 										</div>
 									)}
 									{statsData.performance.throughput && (
 										<div>
-											<span className="text-blue-600">吞吐量:</span>
-											<span className="ml-1 font-medium">
+											<span className="text-blue-300">吞吐量:</span>
+											<span className="ml-1 font-medium text-blue-100">
 												{statsData.performance.throughput} tokens/s
 											</span>
 										</div>
@@ -109,8 +109,8 @@ export const ModelStatsMessage: React.FC<ModelStatsMessageProps> = ({
 
 						{statsData.cost && (
 							<div className="flex items-center justify-between">
-								<span className="text-xs text-blue-600">预估成本:</span>
-								<span className="text-xs font-medium text-blue-800">
+								<span className="text-xs text-blue-300">预估成本:</span>
+								<span className="text-xs font-medium text-blue-100">
 									${statsData.cost.toFixed(4)}
 								</span>
 							</div>
@@ -118,15 +118,15 @@ export const ModelStatsMessage: React.FC<ModelStatsMessageProps> = ({
 
 						{statsData.responseTime && (
 							<div className="flex items-center justify-between">
-								<span className="text-xs text-blue-600">响应时间:</span>
-								<span className="text-xs font-medium text-blue-800">
+								<span className="text-xs text-blue-300">响应时间:</span>
+								<span className="text-xs font-medium text-blue-100">
 									{statsData.responseTime}ms
 								</span>
 							</div>
 						)}
 					</div>
 				) : (
-					<div className="text-xs text-blue-600">{message.content}</div>
+					<div className="text-xs text-blue-200">{message.content}</div>
 				)}
 			</div>
 		</div>

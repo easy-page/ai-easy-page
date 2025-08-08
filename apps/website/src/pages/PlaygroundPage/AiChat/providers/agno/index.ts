@@ -13,6 +13,7 @@ import {
 } from '../../common/interfaces/messages/chatMessages/server';
 import {
 	ApiStream,
+	ApiStreamCardChunk,
 	ApiStreamChunk,
 	ServerMessageChunk,
 } from '../../common/interfaces/messages/stream';
@@ -48,6 +49,7 @@ import { uploadMbdFile } from './utils/util';
 import { RequestResult } from '../../apis/axios';
 import { TaskStatus } from '../../common/constants/task';
 import { FullTaskInfo } from '../../common/interfaces/task';
+import { toJson } from '../../common/utils/json';
 
 export const generateCardId = (cardPrefix: string) => {
 	return `${cardPrefix}_${Math.random().toString(36).substring(2, 15)}`;
@@ -416,33 +418,16 @@ export class AgnoServer extends ApiProvider {
 		};
 	}
 
-	getTaskCardComponentPrefix(chunkId: string): string {
-		// id 最好是驼峰的字符串，不要数字开头
-		return `<CustomCard id="${chunkId}"`;
-	}
-
-	getTaskCardComponent(chunkId: string, isStart: boolean): string {
-		if (!isStart) {
-			return '';
-		}
-		// id 最好是驼峰的字符串，不要数字开头
-		return `${this.getTaskCardComponentPrefix(chunkId)} />`;
-	}
-
 	getServerMessageFromChunk(
 		chunk: ApiStreamChunk,
 		venueId: number
 	): ServerMessage {
 		if (chunk.type === ServerMessageType.CARD) {
-			const component = this.getTaskCardComponent(
-				chunk.id,
-				chunk.cardMsgType === ServerCardMessageType.START
-			);
 			return {
 				conversation_id: chunk.conversationId || '',
 				id: chunk.messageId || '',
 				role: ChatMessageRole.ASSISTANT,
-				content: component,
+				content: chunk.text || '',
 				type: ServerMsgType.NORMAL,
 				msg_from: ClientMessageFrom.SERVER,
 				/** 这里都表示正在流式输出中 */
@@ -452,7 +437,7 @@ export class AgnoServer extends ApiProvider {
 					[chunk.id]: {
 						type: chunk.cardType,
 						id: chunk.id,
-						detail: chunk.taskInfo,
+						content: chunk.cardContent || '',
 					},
 				},
 			};
@@ -543,7 +528,7 @@ export class AgnoServer extends ApiProvider {
 							yield {
 								serverMessage: this.getServerMessageFromChunk(item, venueId),
 								messageId: messageId,
-
+								text: item.text,
 								originalMessageId: oriMessageId,
 								conversationId: newConversationId,
 								originalConversationId: originalConversationId,

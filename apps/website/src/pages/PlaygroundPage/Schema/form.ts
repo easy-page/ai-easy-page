@@ -6,9 +6,7 @@ import { FunctionProperty, ReactNodeProperty } from './specialProperties';
 export interface StoreSchema {
 	type: 'store';
 	properties: {
-		initialValues?: Record<string, FieldValue>;
 		maxConcurrentRequests?: number;
-		mode?: FormMode;
 	};
 }
 
@@ -16,14 +14,22 @@ export interface StoreSchema {
 export interface FormSchema {
 	type: 'form';
 	properties: {
+		/** 表单初始值 */
 		initialValues?: Record<string, FieldValue>;
+		/** 表单模式 */
 		mode?: FormMode;
-		onSubmit?: FunctionProperty; // 函数名称
-		onValuesChange?: FunctionProperty; // 函数名称
+		/** 表单提交函数 */
+		onSubmit?: FunctionProperty;
+		/** 表单值变化函数 */
+		onValuesChange?: FunctionProperty;
+		/** 表单字段组件 */
 		children: ComponentSchema[];
+		/** 表单加载组件 */
 		loadingComponent?: ReactNodeProperty;
+		/** 表单存储 */
 		store?: StoreSchema;
-		initReqs?: Record<string, FormContextRequestConfigSchema>; // 初始化请求配置
+		/** 表单初始化请求配置 */
+		initReqs?: Record<string, FormContextRequestConfigSchema>;
 	};
 }
 

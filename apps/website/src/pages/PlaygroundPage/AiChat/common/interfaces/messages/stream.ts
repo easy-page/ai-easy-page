@@ -12,6 +12,7 @@ export type ApiStreamBaseChunk = {
 	conversationId?: string;
 	originalConversationId?: string;
 	overrideContent?: boolean;
+	text: string;
 };
 
 /**
@@ -26,7 +27,7 @@ export type ApiStream = AsyncGenerator<ServerMessageChunk>;
  * 下面是当前后端返回的 chunk，直接组装成 ServerMessage 即可
  * 后续扩展后端返回的 chunk 类型，在这里扩展
  */
-export type ApiStreamChunk = ApiStreamTaskCardChunk | ApiStreamTextChunk;
+export type ApiStreamChunk = ApiStreamCardChunk | ApiStreamTextChunk;
 
 export type ApiStreamCardChunk = ApiStreamBaseChunk & {
 	/**
@@ -37,15 +38,11 @@ export type ApiStreamCardChunk = ApiStreamBaseChunk & {
 	cardMsgType: ServerCardMessageType;
 	id: string; // 卡片唯一 ID
 	type: ServerMessageType.CARD;
+	cardType: ServerMessageCardType;
+	cardContent?: string;
 };
 
 // 后面丰富一下这个类型，支持：images、card 等类型
 export interface ApiStreamTextChunk extends ApiStreamBaseChunk {
 	type: ServerMessageType.TEXT;
-	text: string;
-}
-
-export interface ApiStreamTaskCardChunk extends ApiStreamCardChunk {
-	taskInfo: SimpleTaskInfo;
-	cardType: ServerMessageCardType.TaskCard;
 }

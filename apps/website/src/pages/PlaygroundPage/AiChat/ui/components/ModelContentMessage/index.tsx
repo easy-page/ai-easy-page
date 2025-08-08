@@ -10,12 +10,12 @@ export const ModelContentMessage: React.FC<ModelContentMessageProps> = ({
 }) => {
 	return (
 		<div className="flex justify-start mb-4">
-			<div className="max-w-[80%] bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 shadow-sm">
-				<div className="flex items-center gap-2 text-sm text-gray-700 mb-2">
+			<div className="max-w-[80%] bg-gray-800/50 border border-gray-600/30 rounded-lg px-4 py-3 shadow-lg backdrop-blur-sm">
+				<div className="flex items-center gap-2 text-sm text-gray-200 mb-2">
 					<span>📝</span>
 					<span>模型内容</span>
 				</div>
-				<div className="text-sm text-gray-800">
+				<div className="text-sm text-gray-200">
 					<ChatMarkdownRender content={message.content} cards={{}} />
 				</div>
 			</div>

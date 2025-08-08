@@ -178,7 +178,7 @@ export const ChatClientMessage = ({ message }: ChatClientMessageProps) => {
 			>
 				<div className="flex flex-col">
 					<FileContextList files={filesContexts} />
-					<div className="flex flex-col px-2 py-2 rounded-lg shadow-sm roundeded  bg-blue-500 text-white relative">
+					<div className="flex flex-col px-3 py-3 rounded-lg shadow-lg bg-cyan-500/20 border border-cyan-500/30 text-white relative backdrop-blur-sm">
 						{/* <div
                             className={classNames(
                                 'flex flex-row flex-wrap w-full gap-1.5 text-micro  text-foreground-secondary mb-',

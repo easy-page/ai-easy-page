@@ -270,6 +270,7 @@ export const MarkdownRenderer = ({
 			<h1
 				className={classNames(
 					'mb-4 scroll-m-20 text-3xl font-extrabold tracking-tight last:mb-0',
+					'text-gray-900 dark:text-white',
 					className
 				)}
 				{...props}
@@ -279,6 +280,7 @@ export const MarkdownRenderer = ({
 			<h2
 				className={classNames(
 					'mb-4 mt-4 scroll-m-20 text-2xl font-semibold tracking-tight first:mt-0 last:mb-0',
+					'text-gray-900 dark:text-white',
 					className
 				)}
 				{...props}
@@ -288,6 +290,7 @@ export const MarkdownRenderer = ({
 			<h3
 				className={classNames(
 					'my-4 scroll-m-20 text-xl font-semibold tracking-tight first:mt-0 last:mb-0',
+					'text-gray-900 dark:text-white',
 					className
 				)}
 				{...props}
@@ -297,6 +300,7 @@ export const MarkdownRenderer = ({
 			<h4
 				className={classNames(
 					'my-2 scroll-m-20 text-lg font-semibold tracking-tight first:mt-0 last:mb-0',
+					'text-gray-900 dark:text-white',
 					className
 				)}
 				{...props}
@@ -306,6 +310,7 @@ export const MarkdownRenderer = ({
 			<h5
 				className={classNames(
 					'my-2 text-base font-semibold first:mt-0 last:mb-0',
+					'text-gray-900 dark:text-white',
 					className
 				)}
 				{...props}
@@ -315,6 +320,7 @@ export const MarkdownRenderer = ({
 			<h6
 				className={classNames(
 					'my-2 font-semibold first:mt-0 last:mb-0',
+					'text-gray-900 dark:text-white',
 					className
 				)}
 				{...props}
@@ -324,7 +330,9 @@ export const MarkdownRenderer = ({
 		components['p'] = ({ className, ...props }: any) => (
 			<p
 				className={classNames(
-					'mb-1 mt-1 text-sm leading-7 break-words first:mt-0 last:mb-0',
+					'mb-2 mt-2 text-sm leading-7 break-words first:mt-0 last:mb-0',
+					'text-gray-700 dark:text-gray-200',
+					'dark:leading-8',
 					className
 				)}
 				{...props}
@@ -334,7 +342,10 @@ export const MarkdownRenderer = ({
 		components['ul'] = ({ className, ...props }: any) => (
 			<ul
 				className={classNames(
-					'my-2 ml-6 text-sm  list-disc [&>li]:mt-2',
+					'my-3 ml-6 text-sm list-disc [&>li]:mt-1 [&>li]:mb-2',
+					'[&>li]:text-gray-700 [&>li]:marker:text-gray-500',
+					'dark:[&>li]:text-gray-300 dark:[&>li]:marker:text-cyan-400',
+					'dark:[&>li]:marker:font-medium',
 					className
 				)}
 				{...props}
@@ -343,14 +354,23 @@ export const MarkdownRenderer = ({
 
 		components['hr'] = ({ className, ...props }: any) => {
 			return (
-				<hr className={classNames('my-2 border-b', className)} {...props} />
+				<hr
+					className={classNames(
+						'my-4 border-b border-gray-300 dark:border-cyan-400/30',
+						className
+					)}
+					{...props}
+				/>
 			);
 		};
 
 		components['ol'] = ({ className, ...props }: any) => (
 			<ol
 				className={classNames(
-					'my-2 ml-6 text-sm  list-decimal [&>li]:mt-2',
+					'my-3 ml-6 text-sm list-decimal [&>li]:mt-1 [&>li]:mb-2',
+					'[&>li]:text-gray-700 [&>li]:marker:text-gray-500',
+					'dark:[&>li]:text-gray-300 dark:[&>li]:marker:text-cyan-400',
+					'dark:[&>li]:marker:font-medium',
 					className
 				)}
 				{...props}

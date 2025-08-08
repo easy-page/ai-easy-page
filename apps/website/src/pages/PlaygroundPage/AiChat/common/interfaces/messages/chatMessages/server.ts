@@ -43,7 +43,9 @@ export type ServerMsgToolDetail = {
 /** 服务端返回的一些卡片消息，如文件卡片 */
 export type ServerMsgCard<T> = {
 	type: ServerMessageCardType;
-	detail: T;
+	detail?: T;
+	isStream?: boolean;
+	content?: string;
 	id: string;
 };
 

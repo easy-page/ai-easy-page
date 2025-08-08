@@ -52,12 +52,12 @@ export const StatsMessage: React.FC<StatsMessageProps> = ({ message }) => {
 
 	return (
 		<div className="flex justify-start mb-4">
-			<div className="max-w-[80%] bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
-				<div className="flex items-center gap-2 text-sm text-gray-700 mb-3">
+			<div className="max-w-[80%] bg-gray-800/50 border border-gray-600/30 rounded-lg px-4 py-3 shadow-lg backdrop-blur-sm">
+				<div className="flex items-center gap-2 text-sm text-gray-200 mb-3">
 					<span>📊</span>
 					<span>会话统计</span>
 					{message.duration && (
-						<span className="text-xs text-gray-500">
+						<span className="text-xs text-gray-400">
 							时长: {message.duration}
 						</span>
 					)}
@@ -69,31 +69,31 @@ export const StatsMessage: React.FC<StatsMessageProps> = ({ message }) => {
 						{(statsData.totalMessages !== undefined ||
 							statsData.userMessages !== undefined ||
 							statsData.assistantMessages !== undefined) && (
-							<div className="bg-gray-100 rounded p-2">
-								<div className="text-xs font-medium text-gray-700 mb-2">
+							<div className="bg-gray-700/50 rounded p-2">
+								<div className="text-xs font-medium text-gray-200 mb-2">
 									消息统计
 								</div>
 								<div className="grid grid-cols-3 gap-2 text-xs">
 									{statsData.totalMessages !== undefined && (
 										<div>
-											<span className="text-gray-600">总消息:</span>
-											<span className="ml-1 font-medium">
+											<span className="text-gray-400">总消息:</span>
+											<span className="ml-1 font-medium text-gray-200">
 												{statsData.totalMessages}
 											</span>
 										</div>
 									)}
 									{statsData.userMessages !== undefined && (
 										<div>
-											<span className="text-gray-600">用户消息:</span>
-											<span className="ml-1 font-medium">
+											<span className="text-gray-400">用户消息:</span>
+											<span className="ml-1 font-medium text-gray-200">
 												{statsData.userMessages}
 											</span>
 										</div>
 									)}
 									{statsData.assistantMessages !== undefined && (
 										<div>
-											<span className="text-gray-600">助手消息:</span>
-											<span className="ml-1 font-medium">
+											<span className="text-gray-400">助手消息:</span>
+											<span className="ml-1 font-medium text-gray-200">
 												{statsData.assistantMessages}
 											</span>
 										</div>
@@ -104,13 +104,13 @@ export const StatsMessage: React.FC<StatsMessageProps> = ({ message }) => {
 
 						{/* Token 统计 */}
 						{statsData.totalTokens && (
-							<div className="bg-gray-100 rounded p-2">
-								<div className="text-xs font-medium text-gray-700 mb-2">
+							<div className="bg-gray-700/50 rounded p-2">
+								<div className="text-xs font-medium text-gray-200 mb-2">
 									Token 统计
 								</div>
 								<div className="text-xs">
-									<span className="text-gray-600">总 Token 数:</span>
-									<span className="ml-1 font-medium">
+									<span className="text-gray-400">总 Token 数:</span>
+									<span className="ml-1 font-medium text-gray-200">
 										{statsData.totalTokens.toLocaleString()}
 									</span>
 								</div>
@@ -120,8 +120,8 @@ export const StatsMessage: React.FC<StatsMessageProps> = ({ message }) => {
 						{/* 模型使用统计 */}
 						{statsData.modelUsage &&
 							Object.keys(statsData.modelUsage).length > 0 && (
-								<div className="bg-gray-100 rounded p-2">
-									<div className="text-xs font-medium text-gray-700 mb-2">
+								<div className="bg-gray-700/50 rounded p-2">
+									<div className="text-xs font-medium text-gray-200 mb-2">
 										模型使用情况
 									</div>
 									<div className="space-y-1 text-xs">
@@ -131,12 +131,12 @@ export const StatsMessage: React.FC<StatsMessageProps> = ({ message }) => {
 													key={modelName}
 													className="flex justify-between items-center"
 												>
-													<span className="text-gray-600">{modelName}:</span>
+													<span className="text-gray-400">{modelName}:</span>
 													<div className="text-right">
-														<div className="font-medium">
+														<div className="font-medium text-gray-200">
 															{usage.tokens.toLocaleString()} tokens
 														</div>
-														<div className="text-gray-500">
+														<div className="text-gray-400">
 															${usage.cost.toFixed(4)} | {usage.usageCount} 次
 														</div>
 													</div>
@@ -149,26 +149,26 @@ export const StatsMessage: React.FC<StatsMessageProps> = ({ message }) => {
 
 						{/* 工具使用统计 */}
 						{statsData.toolUsage && (
-							<div className="bg-gray-100 rounded p-2">
-								<div className="text-xs font-medium text-gray-700 mb-2">
+							<div className="bg-gray-700/50 rounded p-2">
+								<div className="text-xs font-medium text-gray-200 mb-2">
 									工具使用情况
 								</div>
 								<div className="grid grid-cols-3 gap-2 text-xs mb-2">
 									<div>
-										<span className="text-gray-600">总调用:</span>
-										<span className="ml-1 font-medium">
+										<span className="text-gray-400">总调用:</span>
+										<span className="ml-1 font-medium text-gray-200">
 											{statsData.toolUsage.totalCalls}
 										</span>
 									</div>
 									<div>
-										<span className="text-gray-600">成功:</span>
-										<span className="ml-1 font-medium text-green-600">
+										<span className="text-gray-400">成功:</span>
+										<span className="ml-1 font-medium text-green-400">
 											{statsData.toolUsage.successfulCalls}
 										</span>
 									</div>
 									<div>
-										<span className="text-gray-600">失败:</span>
-										<span className="ml-1 font-medium text-red-600">
+										<span className="text-gray-400">失败:</span>
+										<span className="ml-1 font-medium text-red-400">
 											{statsData.toolUsage.failedCalls}
 										</span>
 									</div>
@@ -183,15 +183,15 @@ export const StatsMessage: React.FC<StatsMessageProps> = ({ message }) => {
 														key={index}
 														className="flex justify-between text-xs"
 													>
-														<span className="text-gray-600">{tool.name}:</span>
-														<span className="font-medium">
+														<span className="text-gray-400">{tool.name}:</span>
+														<span className="font-medium text-gray-200">
 															{tool.calls} 次 (
 															{(tool.successRate * 100).toFixed(0)}%)
 														</span>
 													</div>
 												))}
 											{statsData.toolUsage.tools.length > 3 && (
-												<div className="text-xs text-gray-500 text-center">
+												<div className="text-xs text-gray-400 text-center">
 													还有 {statsData.toolUsage.tools.length - 3} 个工具...
 												</div>
 											)}
@@ -202,31 +202,31 @@ export const StatsMessage: React.FC<StatsMessageProps> = ({ message }) => {
 
 						{/* 性能统计 */}
 						{statsData.performance && (
-							<div className="bg-gray-100 rounded p-2">
-								<div className="text-xs font-medium text-gray-700 mb-2">
+							<div className="bg-gray-700/50 rounded p-2">
+								<div className="text-xs font-medium text-gray-200 mb-2">
 									性能统计
 								</div>
 								<div className="space-y-1 text-xs">
 									{statsData.performance.avgResponseTime && (
 										<div className="flex justify-between">
-											<span className="text-gray-600">平均响应时间:</span>
-											<span className="font-medium">
+											<span className="text-gray-400">平均响应时间:</span>
+											<span className="font-medium text-gray-200">
 												{statsData.performance.avgResponseTime}ms
 											</span>
 										</div>
 									)}
 									{statsData.performance.totalSessionTime && (
 										<div className="flex justify-between">
-											<span className="text-gray-600">总会话时间:</span>
-											<span className="font-medium">
+											<span className="text-gray-400">总会话时间:</span>
+											<span className="font-medium text-gray-200">
 												{statsData.performance.totalSessionTime}ms
 											</span>
 										</div>
 									)}
 									{statsData.performance.peakConcurrency && (
 										<div className="flex justify-between">
-											<span className="text-gray-600">峰值并发:</span>
-											<span className="font-medium">
+											<span className="text-gray-400">峰值并发:</span>
+											<span className="font-medium text-gray-200">
 												{statsData.performance.peakConcurrency}
 											</span>
 										</div>
@@ -237,31 +237,31 @@ export const StatsMessage: React.FC<StatsMessageProps> = ({ message }) => {
 
 						{/* 参与度统计 */}
 						{statsData.engagement && (
-							<div className="bg-gray-100 rounded p-2">
-								<div className="text-xs font-medium text-gray-700 mb-2">
+							<div className="bg-gray-700/50 rounded p-2">
+								<div className="text-xs font-medium text-gray-200 mb-2">
 									参与度统计
 								</div>
 								<div className="space-y-1 text-xs">
 									{statsData.engagement.messageFrequency && (
 										<div className="flex justify-between">
-											<span className="text-gray-600">消息频率:</span>
-											<span className="font-medium">
+											<span className="text-gray-400">消息频率:</span>
+											<span className="font-medium text-gray-200">
 												{statsData.engagement.messageFrequency} 条/分钟
 											</span>
 										</div>
 									)}
 									{statsData.engagement.avgMessageLength && (
 										<div className="flex justify-between">
-											<span className="text-gray-600">平均消息长度:</span>
-											<span className="font-medium">
+											<span className="text-gray-400">平均消息长度:</span>
+											<span className="font-medium text-gray-200">
 												{statsData.engagement.avgMessageLength} 字符
 											</span>
 										</div>
 									)}
 									{statsData.engagement.interactionDepth && (
 										<div className="flex justify-between">
-											<span className="text-gray-600">交互深度:</span>
-											<span className="font-medium">
+											<span className="text-gray-400">交互深度:</span>
+											<span className="font-medium text-gray-200">
 												{statsData.engagement.interactionDepth}
 											</span>
 										</div>
@@ -273,7 +273,7 @@ export const StatsMessage: React.FC<StatsMessageProps> = ({ message }) => {
 				) : (
 					<div className="space-y-2">
 						{message.content && (
-							<div className="text-xs text-gray-700">{message.content}</div>
+							<div className="text-xs text-gray-200">{message.content}</div>
 						)}
 					</div>
 				)}
