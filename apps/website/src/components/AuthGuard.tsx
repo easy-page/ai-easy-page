@@ -20,7 +20,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
 		const checkAuth = async () => {
 			try {
 				// 如果有 token，检查是否有效
-				if (localStorage.getItem('access_token')) {
+				if (localStorage.getItem('token')) {
 					const isValid = await authService.checkAuthStatus();
 					if (!isValid && requireAuth) {
 						navigate('/login');

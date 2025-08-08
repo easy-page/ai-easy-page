@@ -13,7 +13,7 @@ export class AuthStateEntity extends Entity {
 	private _authState$: LiveData<AuthState> = new LiveData<AuthState>({
 		isAuthenticated: false,
 		user: null,
-		token: localStorage.getItem('access_token'),
+		token: localStorage.getItem('token'),
 		loading: false,
 	});
 
@@ -45,7 +45,7 @@ export class AuthStateEntity extends Entity {
 	}
 
 	setAuth(token: string, user: UserInfo) {
-		localStorage.setItem('access_token', token);
+		localStorage.setItem('token', token);
 		this._authState$.next({
 			isAuthenticated: true,
 			user,
@@ -55,7 +55,7 @@ export class AuthStateEntity extends Entity {
 	}
 
 	clearAuth() {
-		localStorage.removeItem('access_token');
+		localStorage.removeItem('token');
 		this._authState$.next({
 			isAuthenticated: false,
 			user: null,

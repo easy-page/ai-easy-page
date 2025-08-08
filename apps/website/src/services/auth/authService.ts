@@ -19,9 +19,11 @@ export interface LoginParams {
 
 export interface RegisterParams {
 	username: string;
-	email: string;
+	english_name: string;
 	password: string;
-	nickname?: string;
+	avatar_url?: string;
+	email?: string;
+	phone?: string;
 }
 
 export interface AuthResponse {
@@ -43,9 +45,9 @@ export class AuthService extends Service {
 			const result = await loginApi(params);
 
 			if (result.success && result.data) {
-				const { access_token, user } = result.data;
-				this.authState.setAuth(access_token, user);
-				return { success: true, data: { token: access_token, user } };
+				const { token, user } = result.data;
+				this.authState.setAuth(token, user);
+				return { success: true, data: { token, user } };
 			} else {
 				return { success: false, message: result.message || '登录失败' };
 			}
@@ -142,7 +144,15 @@ export class AuthService extends Service {
 
 	async updateUserInfo(params: UpdateUserInfoParams): Promise<AuthResponse> {
 		try {
-			const result = await updateUserInfoApi(params);
+			const currentUser = this.authState.user;
+			if (!currentUser) {
+				return { success: false, message: '用户未登录' };
+			}
+
+			const result = await updateUserInfoApi({
+				user_id: currentUser.id,
+				user_data: params,
+			});
 
 			if (result.success && result.data) {
 				this.authState.updateUser(result.data);
@@ -163,7 +173,15 @@ export class AuthService extends Service {
 
 	async changePassword(params: ChangePasswordParams): Promise<AuthResponse> {
 		try {
-			const result = await changePasswordApi(params);
+			const currentUser = this.authState.user;
+			if (!currentUser) {
+				return { success: false, message: '用户未登录' };
+			}
+
+			const result = await changePasswordApi({
+				user_id: currentUser.id,
+				password_data: params,
+			});
 
 			if (result.success) {
 				return { success: true, message: '密码修改成功' };

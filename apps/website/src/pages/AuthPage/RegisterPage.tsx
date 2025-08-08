@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Card, message, Divider } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import {
+	UserOutlined,
+	LockOutlined,
+	MailOutlined,
+	RocketOutlined,
+	CodeOutlined,
+	ThunderboltOutlined,
+	SafetyOutlined,
+} from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useService } from '@/infra';
 import { AuthService } from '@/services/auth/authService';
@@ -8,10 +16,11 @@ import './AuthPage.less';
 
 interface RegisterFormData {
 	username: string;
-	email: string;
+	english_name: string;
 	password: string;
 	confirmPassword: string;
-	nickname?: string;
+	email?: string;
+	phone?: string;
 }
 
 const RegisterPage: React.FC = () => {
@@ -41,90 +50,198 @@ const RegisterPage: React.FC = () => {
 
 	return (
 		<div className="auth-page">
-			<div className="auth-container">
-				<Card className="auth-card" title="注册 Easy Page">
-					<Form
-						name="register"
-						onFinish={onFinish}
-						autoComplete="off"
-						size="large"
-					>
-						<Form.Item
-							name="username"
-							rules={[
-								{ required: true, message: '请输入用户名！' },
-								{ min: 3, message: '用户名至少3个字符！' },
-								{
-									pattern: /^[a-zA-Z0-9_]+$/,
-									message: '用户名只能包含字母、数字和下划线！',
-								},
-							]}
-						>
-							<Input prefix={<UserOutlined />} placeholder="用户名" />
-						</Form.Item>
+			{/* 科技感装饰元素 */}
+			<div className="tech-elements">
+				<div className="tech-circle"></div>
+				<div className="tech-circle"></div>
+				<div className="tech-circle"></div>
+				<div className="tech-circle"></div>
+				<div className="tech-line"></div>
+				<div className="tech-line"></div>
+			</div>
 
-						<Form.Item
-							name="email"
-							rules={[
-								{ required: true, message: '请输入邮箱！' },
-								{ type: 'email', message: '请输入有效的邮箱地址！' },
-							]}
-						>
-							<Input prefix={<MailOutlined />} placeholder="邮箱" />
-						</Form.Item>
+			<div className="auth-layout">
+				{/* 左侧介绍区域 */}
+				<div className="intro-section">
+					<div className="intro-content">
+						<div className="logo-section">
+							<div className="logo">Easy Page</div>
+							<div className="tagline">下一代动态表单构建框架</div>
+						</div>
 
-						<Form.Item
-							name="nickname"
-							rules={[{ max: 20, message: '昵称不能超过20个字符！' }]}
-						>
-							<Input prefix={<UserOutlined />} placeholder="昵称（可选）" />
-						</Form.Item>
+						<div className="features">
+							<div className="feature-item">
+								<div className="feature-icon">
+									<RocketOutlined />
+								</div>
+								<div className="feature-text">
+									<div className="feature-title">快速构建</div>
+									<div className="feature-desc">
+										通过配置快速生成复杂的动态表单
+									</div>
+								</div>
+							</div>
 
-						<Form.Item
-							name="password"
-							rules={[
-								{ required: true, message: '请输入密码！' },
-								{ min: 6, message: '密码至少6个字符！' },
-							]}
-						>
-							<Input.Password prefix={<LockOutlined />} placeholder="密码" />
-						</Form.Item>
+							<div className="feature-item">
+								<div className="feature-icon">
+									<CodeOutlined />
+								</div>
+								<div className="feature-text">
+									<div className="feature-title">高度可定制</div>
+									<div className="feature-desc">
+										支持自定义组件、验证规则和样式
+									</div>
+								</div>
+							</div>
 
-						<Form.Item
-							name="confirmPassword"
-							dependencies={['password']}
-							rules={[
-								{ required: true, message: '请确认密码！' },
-								({ getFieldValue }) => ({
-									validator(_, value) {
-										if (!value || getFieldValue('password') === value) {
-											return Promise.resolve();
-										}
-										return Promise.reject(new Error('两次输入的密码不一致！'));
-									},
-								}),
-							]}
-						>
-							<Input.Password
-								prefix={<LockOutlined />}
-								placeholder="确认密码"
-							/>
-						</Form.Item>
+							<div className="feature-item">
+								<div className="feature-icon">
+									<ThunderboltOutlined />
+								</div>
+								<div className="feature-text">
+									<div className="feature-title">动态交互</div>
+									<div className="feature-desc">
+										支持条件显示、联动验证等高级功能
+									</div>
+								</div>
+							</div>
 
-						<Form.Item>
-							<Button type="primary" htmlType="submit" loading={loading} block>
-								注册
-							</Button>
-						</Form.Item>
-					</Form>
+							<div className="feature-item">
+								<div className="feature-icon">
+									<SafetyOutlined />
+								</div>
+								<div className="feature-text">
+									<div className="feature-title">类型安全</div>
+									<div className="feature-desc">
+										完整的TypeScript支持，开发体验更佳
+									</div>
+								</div>
+							</div>
+						</div>
 
-					<Divider>或者</Divider>
-
-					<div className="auth-footer">
-						<span>已有账号？</span>
-						<Link to="/login">立即登录</Link>
+						<div className="stats">
+							<div className="stat-item">
+								<div className="stat-number">25+</div>
+								<div className="stat-label">内置组件</div>
+							</div>
+							<div className="stat-item">
+								<div className="stat-number">100%</div>
+								<div className="stat-label">类型安全</div>
+							</div>
+							<div className="stat-item">
+								<div className="stat-number">∞</div>
+								<div className="stat-label">扩展性</div>
+							</div>
+						</div>
 					</div>
-				</Card>
+				</div>
+
+				{/* 右侧表单区域 */}
+				<div className="form-section">
+					<div className="auth-container">
+						<Card className="auth-card" title="注册">
+							<Form
+								name="register"
+								onFinish={onFinish}
+								autoComplete="off"
+								size="large"
+							>
+								<Form.Item
+									name="username"
+									rules={[
+										{ required: true, message: '请输入用户名！' },
+										{ min: 2, message: '用户名至少2个字符！' },
+									]}
+								>
+									<Input prefix={<UserOutlined />} placeholder="用户名" />
+								</Form.Item>
+
+								<Form.Item
+									name="english_name"
+									rules={[
+										{ required: true, message: '请输入英文名！' },
+										{ min: 2, message: '英文名至少2个字符！' },
+									]}
+								>
+									<Input prefix={<UserOutlined />} placeholder="英文名" />
+								</Form.Item>
+
+								<Form.Item
+									name="email"
+									rules={[{ type: 'email', message: '请输入有效的邮箱地址！' }]}
+								>
+									<Input prefix={<MailOutlined />} placeholder="邮箱（可选）" />
+								</Form.Item>
+
+								<Form.Item
+									name="phone"
+									rules={[
+										{ min: 10, max: 11, message: '请输入有效的手机号码！' },
+									]}
+								>
+									<Input
+										prefix={<UserOutlined />}
+										placeholder="手机号码（可选）"
+									/>
+								</Form.Item>
+
+								<Form.Item
+									name="password"
+									rules={[
+										{ required: true, message: '请输入密码！' },
+										{ min: 6, message: '密码至少6个字符！' },
+									]}
+								>
+									<Input.Password
+										prefix={<LockOutlined />}
+										placeholder="密码"
+									/>
+								</Form.Item>
+
+								<Form.Item
+									name="confirmPassword"
+									dependencies={['password']}
+									rules={[
+										{ required: true, message: '请确认密码！' },
+										({ getFieldValue }) => ({
+											validator(_, value) {
+												if (!value || getFieldValue('password') === value) {
+													return Promise.resolve();
+												}
+												return Promise.reject(
+													new Error('两次输入的密码不一致！')
+												);
+											},
+										}),
+									]}
+								>
+									<Input.Password
+										prefix={<LockOutlined />}
+										placeholder="确认密码"
+									/>
+								</Form.Item>
+
+								<Form.Item>
+									<Button
+										type="primary"
+										htmlType="submit"
+										loading={loading}
+										block
+									>
+										注册
+									</Button>
+								</Form.Item>
+							</Form>
+
+							<Divider>或者</Divider>
+
+							<div className="auth-footer">
+								<span>已有账号？</span>
+								<Link to="/login">立即登录</Link>
+							</div>
+						</Card>
+					</div>
+				</div>
 			</div>
 		</div>
 	);

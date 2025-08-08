@@ -31,6 +31,12 @@ export default defineConfig({
 				changeOrigin: true,
 				secure: false,
 			},
+			'/zspt-agent-api': {
+				// target: 'https://uoc.tsp.test.sankuai.com/',
+				target: 'http://127.0.0.1:8000',
+				changeOrigin: true,
+				secure: false,
+			},
 			'/api/ka': {
 				// target: 'http://127.0.0.1:8000',
 				// target: 'https://uoc.tsp.test.sankuai.com/',
@@ -43,12 +49,6 @@ export default defineConfig({
 				target: 'ws://localhost:8000',
 				ws: true,
 				changeOrigin: true,
-			},
-			'/zspt-agent-api': {
-				// target: 'https://uoc.tsp.test.sankuai.com/',
-				target: 'http://127.0.0.1:8000',
-				changeOrigin: true,
-				secure: false,
 			},
 			'/api/zspt/xf': {
 				// target: 'http://127.0.0.1:8000',

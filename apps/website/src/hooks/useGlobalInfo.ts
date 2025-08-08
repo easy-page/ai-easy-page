@@ -26,7 +26,7 @@ export const useGlobalInfo = () => {
 					});
 					if (response.success && response.data) {
 						console.log('response:', response);
-						const userMis = currentUser?.mis || '';
+						const userMis = currentUser?.username || '';
 						// 设置用户的团队
 						const myTeams = response.data.data.filter(
 							(team) =>

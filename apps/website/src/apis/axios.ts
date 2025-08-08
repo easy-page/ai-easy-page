@@ -33,7 +33,7 @@ const instance = axios.create({ ...baseConfig, responseType: 'json' });
 // 请求拦截器 - 添加 token
 instance.interceptors.request.use(
 	(config) => {
-		const token = localStorage.getItem('access_token');
+		const token = localStorage.getItem('token');
 		if (token) {
 			config.headers.Authorization = `Bearer ${token}`;
 		}

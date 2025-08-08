@@ -90,7 +90,7 @@ const ProfilePage: React.FC = () => {
 								<Avatar
 									size={80}
 									icon={<UserOutlined />}
-									src={user?.avatar}
+									src={user?.avatar_url}
 									style={{ marginBottom: 16 }}
 								/>
 								<Upload
@@ -116,8 +116,16 @@ const ProfilePage: React.FC = () => {
 									<Text>{user?.username}</Text>
 								</div>
 								<div>
+									<Text strong>英文名：</Text>
+									<Text>{user?.english_name}</Text>
+								</div>
+								<div>
 									<Text strong>邮箱：</Text>
-									<Text>{user?.email}</Text>
+									<Text>{user?.email || '未设置'}</Text>
+								</div>
+								<div>
+									<Text strong>手机：</Text>
+									<Text>{user?.phone || '未设置'}</Text>
 								</div>
 								<div>
 									<Text strong>注册时间：</Text>
@@ -147,18 +155,22 @@ const ProfilePage: React.FC = () => {
 										layout="vertical"
 										onFinish={onProfileFinish}
 										initialValues={{
-											nickname: user?.nickname || '',
+											english_name: user?.english_name || '',
 											email: user?.email || '',
+											phone: user?.phone || '',
 										}}
 									>
 										<Form.Item
-											label="昵称"
-											name="nickname"
-											rules={[{ max: 20, message: '昵称不能超过20个字符！' }]}
+											label="英文名"
+											name="english_name"
+											rules={[
+												{ required: true, message: '请输入英文名！' },
+												{ min: 2, message: '英文名至少2个字符！' },
+											]}
 										>
 											<Input
 												prefix={<UserOutlined />}
-												placeholder="请输入昵称"
+												placeholder="请输入英文名"
 											/>
 										</Form.Item>
 
@@ -166,13 +178,25 @@ const ProfilePage: React.FC = () => {
 											label="邮箱"
 											name="email"
 											rules={[
-												{ required: true, message: '请输入邮箱！' },
 												{ type: 'email', message: '请输入有效的邮箱地址！' },
 											]}
 										>
 											<Input
 												prefix={<MailOutlined />}
-												placeholder="请输入邮箱"
+												placeholder="请输入邮箱（可选）"
+											/>
+										</Form.Item>
+
+										<Form.Item
+											label="手机号码"
+											name="phone"
+											rules={[
+												{ min: 10, max: 11, message: '请输入有效的手机号码！' },
+											]}
+										>
+											<Input
+												prefix={<UserOutlined />}
+												placeholder="请输入手机号码（可选）"
 											/>
 										</Form.Item>
 

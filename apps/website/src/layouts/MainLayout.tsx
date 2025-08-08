@@ -448,7 +448,7 @@ const MainLayout: React.FC = () => {
 										arrow
 									>
 										<Avatar
-											src={user?.avatar}
+											src={user?.avatar_url}
 											icon={<UserOutlined />}
 											className="user-avatar"
 											style={{ cursor: 'pointer' }}

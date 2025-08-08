@@ -21,7 +21,7 @@ const WorkspacePage: React.FC = () => {
 			<div className="workspace-header">
 				<Title level={2}>个人工作空间</Title>
 				<Text type="secondary">
-					欢迎回来，{user?.nickname || user?.username}
+					欢迎回来，{user?.english_name || user?.username}
 				</Text>
 			</div>
 
@@ -136,12 +136,16 @@ const WorkspacePage: React.FC = () => {
 								<Text>{user?.username}</Text>
 							</div>
 							<div>
-								<Text strong>邮箱：</Text>
-								<Text>{user?.email}</Text>
+								<Text strong>英文名：</Text>
+								<Text>{user?.english_name}</Text>
 							</div>
 							<div>
-								<Text strong>昵称：</Text>
-								<Text>{user?.nickname || '未设置'}</Text>
+								<Text strong>邮箱：</Text>
+								<Text>{user?.email || '未设置'}</Text>
+							</div>
+							<div>
+								<Text strong>手机：</Text>
+								<Text>{user?.phone || '未设置'}</Text>
 							</div>
 							<div>
 								<Text strong>注册时间：</Text>
