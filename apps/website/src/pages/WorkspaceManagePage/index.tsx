@@ -44,12 +44,14 @@ import { ChatService } from '@/services/chatGlobalState';
 import {
 	ProjectInfo,
 	ProjectCreateParams,
-	ProjectStatus,
-	PROJECT_STATUS_CONFIG,
+	ProjectType,
+	PROJECT_TYPE_CONFIG,
 } from '@/apis/project';
 import { TeamInfo } from '@/apis/team';
 import './index.less';
 import { useNavigate } from 'react-router-dom';
+import CreateProjectModal from '../WorkspacePage/CreateProject';
+import { useGlobalInfo } from '@/hooks/useGlobalInfo';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -62,16 +64,21 @@ interface ProjectManagePageProps {
 const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 	onProjectSelect,
 }) => {
+	// 初始化全局信息：确保获取用户信息与团队列表，并设置默认团队
+	// 这样当进入本页时会有 curTeam，从而触发项目请求
+	useGlobalInfo();
 	const navigate = useNavigate();
 	const [form] = Form.useForm();
 	const [isModalVisible, setIsModalVisible] = useState(false);
+	const [createOpen, setCreateOpen] = useState(false);
 	const [editingProject, setEditingProject] = useState<ProjectInfo | null>(
 		null
 	);
 	const [loading, setLoading] = useState(false);
 	const [tableLoading, setTableLoading] = useState(false);
 	const [searchText, setSearchText] = useState('');
-	const [statusFilter, setStatusFilter] = useState<string>('all');
+	const [typeFilter, setTypeFilter] = useState<string>('all');
+	const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
 
 	const chatService = useService(ChatService);
 
@@ -84,13 +91,19 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 	const fetchProjects = async () => {
 		setTableLoading(true);
 		try {
+			const projectType: ProjectType | undefined =
+				typeFilter === 'all'
+					? curTeam
+						? undefined
+						: ProjectType.PERSONAL // 无团队时默认查询个人项目
+					: (typeFilter as ProjectType);
+
 			await chatService.getProjects({
 				team_id: curTeam?.id,
 				page_size: 100,
 				page_num: 1,
 				keyword: searchText || undefined,
-				status:
-					statusFilter === 'all' ? undefined : (statusFilter as ProjectStatus),
+				project_type: projectType,
 			});
 		} catch (error) {
 			console.error('Fetch projects error:', error);
@@ -114,6 +127,7 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 			setIsModalVisible(false);
 			form.resetFields();
 			setEditingProject(null);
+			setModalMode('create');
 		} catch (error) {
 			console.error('Submit project error:', error);
 		} finally {
@@ -158,25 +172,13 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 	// 打开编辑模态框
 	const showEditModal = (project: ProjectInfo) => {
 		setEditingProject(project);
-		form.setFieldsValue({
-			name: project.name,
-			description: project.description,
-			icon: project.icon,
-			tags: project.tags,
-			status: project.status,
-		});
-		setIsModalVisible(true);
+		setModalMode('edit');
+		setCreateOpen(true);
 	};
 
 	// 打开创建模态框
 	const showCreateModal = () => {
-		if (!curTeam) {
-			message.warning('请先选择一个团队');
-			return;
-		}
-		setEditingProject(null);
-		form.resetFields();
-		setIsModalVisible(true);
+		setCreateOpen(true);
 	};
 
 	// 关闭模态框
@@ -194,15 +196,14 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 	// 重置筛选
 	const handleReset = () => {
 		setSearchText('');
-		setStatusFilter('all');
+		setTypeFilter('all');
 		fetchProjects();
 	};
 
 	useEffect(() => {
-		if (curTeam) {
-			fetchProjects();
-		}
-	}, [curTeam, searchText, statusFilter]);
+		fetchProjects();
+		// 当 curTeam 变化或筛选条件变化时，都重新获取（无团队则查个人项目）
+	}, [curTeam, searchText, typeFilter]);
 
 	// 表格列配置
 	const columns = [
@@ -242,16 +243,15 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 			),
 		},
 		{
-			title: '状态',
-			key: 'status',
+			title: '类型',
+			key: 'project_type',
 			render: (record: ProjectInfo) => {
-				const statusConfig = PROJECT_STATUS_CONFIG[record.status];
+				const typeConfig =
+					PROJECT_TYPE_CONFIG[record.project_type as ProjectType];
 				return (
 					<Badge
-						status={
-							record.status === ProjectStatus.ACTIVE ? 'success' : 'default'
-						}
-						text={<Tag color={statusConfig.color}>{statusConfig.text}</Tag>}
+						status={'processing'}
+						text={<Tag color={typeConfig.color}>{typeConfig.text}</Tag>}
 					/>
 				);
 			},
@@ -328,16 +328,14 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 							onClick={() => handleCopy(record.id, record.name)}
 						/>
 					</Tooltip>
-					{record.status !== ProjectStatus.ARCHIVED && (
-						<Tooltip title="归档项目">
-							<Button
-								type="text"
-								size="small"
-								icon={<InboxOutlined />}
-								onClick={() => handleArchive(record.id)}
-							/>
-						</Tooltip>
-					)}
+					<Tooltip title="归档项目">
+						<Button
+							type="text"
+							size="small"
+							icon={<InboxOutlined />}
+							onClick={() => handleArchive(record.id)}
+						/>
+					</Tooltip>
 					<Tooltip title="删除项目">
 						<Popconfirm
 							title="确定要删除这个项目吗？"
@@ -364,10 +362,10 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 	// 统计数据
 	const stats = {
 		total: projectList.length,
-		active: projectList.filter((p) => p.status === ProjectStatus.ACTIVE).length,
-		archived: projectList.filter((p) => p.status === ProjectStatus.ARCHIVED)
+		team: projectList.filter((p) => p.project_type === ProjectType.TEAM).length,
+		personal: projectList.filter((p) => p.project_type === ProjectType.PERSONAL)
 			.length,
-		totalVenues: projectList.reduce((sum, p) => sum + p.venue_count, 0),
+		totalVenues: projectList.reduce((sum, p) => sum + (p.venue_count || 0), 0),
 	};
 
 	return (
@@ -399,9 +397,8 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 						type="primary"
 						icon={<PlusOutlined />}
 						size="large"
-						onClick={showCreateModal}
+						onClick={() => setCreateOpen(true)}
 						className="create-btn"
-						disabled={!curTeam}
 					>
 						创建项目
 					</Button>
@@ -423,8 +420,8 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 				<Col xs={24} sm={12} lg={6}>
 					<Card className="stat-card">
 						<Statistic
-							title="活跃项目"
-							value={stats.active}
+							title="团队项目"
+							value={stats.team}
 							prefix={<UserOutlined />}
 							valueStyle={{ color: '#52c41a' }}
 						/>
@@ -433,8 +430,8 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 				<Col xs={24} sm={12} lg={6}>
 					<Card className="stat-card">
 						<Statistic
-							title="当前项目"
-							value={curProject ? 1 : 0}
+							title="个人项目"
+							value={stats.personal}
 							prefix={<SettingOutlined />}
 							valueStyle={{ color: '#1890ff' }}
 						/>
@@ -467,15 +464,15 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 					</Col>
 					<Col xs={24} sm={6}>
 						<Select
-							placeholder="状态筛选"
-							value={statusFilter}
-							onChange={setStatusFilter}
+							placeholder="类型筛选"
+							value={typeFilter}
+							onChange={setTypeFilter}
 							style={{ width: '100%' }}
 						>
-							<Option value="all">全部状态</Option>
-							<Option value={ProjectStatus.ACTIVE}>活跃</Option>
-							<Option value={ProjectStatus.INACTIVE}>非活跃</Option>
-							<Option value={ProjectStatus.ARCHIVED}>已归档</Option>
+							<Option value="all">全部类型</Option>
+							<Option value={ProjectType.PERSONAL}>个人</Option>
+							<Option value={ProjectType.TEAM}>团队</Option>
+							<Option value={ProjectType.PUBLIC}>公共</Option>
 						</Select>
 					</Col>
 					<Col xs={24} sm={10}>
@@ -519,7 +516,7 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 									style={{ display: 'block', marginTop: 16 }}
 								>
 									{!curTeam
-										? '请先选择一个团队'
+										? '暂无个人项目，创建您的第一个项目吧！'
 										: '暂无项目，创建您的第一个项目吧！'}
 								</Text>
 								{curTeam && (
@@ -527,7 +524,7 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 										type="primary"
 										icon={<PlusOutlined />}
 										style={{ marginTop: 16 }}
-										onClick={showCreateModal}
+										onClick={() => setCreateOpen(true)}
 									>
 										创建项目
 									</Button>
@@ -539,88 +536,17 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 			</Card>
 
 			{/* 创建/编辑项目模态框 */}
-			<Modal
-				title={
-					<div className="modal-title">
-						{editingProject ? (
-							<>
-								<EditOutlined /> 编辑项目
-							</>
-						) : (
-							<>
-								<PlusOutlined /> 创建项目
-							</>
-						)}
-					</div>
-				}
-				open={isModalVisible}
-				onOk={form.submit}
-				onCancel={handleCancel}
-				confirmLoading={loading}
-				width={600}
-				className="project-modal"
-				okText={editingProject ? '更新' : '创建'}
-				cancelText="取消"
-			>
-				<Form
-					form={form}
-					layout="vertical"
-					onFinish={handleSubmit}
-					className="project-form"
-				>
-					<Form.Item
-						name="name"
-						label="项目名称"
-						rules={[
-							{ required: true, message: '请输入项目名称' },
-							{ max: 50, message: '项目名称不能超过50个字符' },
-						]}
-					>
-						<Input
-							placeholder="请输入项目名称"
-							prefix={<FolderOutlined />}
-							maxLength={50}
-						/>
-					</Form.Item>
-
-					<Form.Item
-						name="description"
-						label="项目描述"
-						rules={[{ max: 200, message: '项目描述不能超过200个字符' }]}
-					>
-						<TextArea
-							placeholder="请输入项目描述（可选）"
-							rows={4}
-							maxLength={200}
-							showCount
-						/>
-					</Form.Item>
-
-					<Form.Item name="tags" label="项目标签">
-						<Input
-							placeholder="请输入项目标签，用逗号分隔（可选）"
-							prefix={<SettingOutlined />}
-						/>
-					</Form.Item>
-
-					<Form.Item name="icon" label="项目图标">
-						<Input
-							placeholder="请输入项目图标URL（可选）"
-							prefix={<SettingOutlined />}
-						/>
-					</Form.Item>
-
-					{editingProject && (
-						<Form.Item name="status" label="项目状态">
-							<Select placeholder="请选择项目状态">
-								<Option value={ProjectStatus.ACTIVE}>活跃</Option>
-								<Option value={ProjectStatus.INACTIVE}>非活跃</Option>
-								<Option value={ProjectStatus.ARCHIVED}>已归档</Option>
-							</Select>
-						</Form.Item>
-					)}
-				</Form>
-			</Modal>
+			<CreateProjectModal
+				open={createOpen}
+				onClose={() => {
+					setCreateOpen(false);
+					setEditingProject(null);
+					setModalMode('create');
+				}}
+				onSuccess={() => fetchProjects()}
+				mode={modalMode}
+				project={editingProject}
+			/>
 		</div>
 	);
 };

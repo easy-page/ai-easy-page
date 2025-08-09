@@ -1,6 +1,7 @@
 import {
-	ChatGlobalStateEntity,
-	ChatGlobalStateEntityOptions,
+    ChatGlobalStateEntity,
+    ChatGlobalStateEntityOptions,
+    ProjectListInfo,
 } from './chatGlobalStateEntity';
 import { ChatGlobalState, ChatGlobalStateImpl } from './chatGlobalState';
 import { Framework, Service } from '@/infra';
@@ -364,8 +365,14 @@ export class ChatService extends Service {
 		try {
 			const response = await queryProjects(params);
 			if (response.success && response.data) {
-				this.globalState.setProjects(response.data);
-				return response.data;
+				const listInfo: ProjectListInfo = {
+					data: response.data.data,
+					total: response.data.total,
+					pageSize: response.data.page_size,
+					pageNo: response.data.page_num,
+				};
+				this.globalState.setProjects(listInfo);
+				return listInfo;
 			} else {
 				Toast.error({
 					content: '获取项目列表失败',
@@ -390,7 +397,7 @@ export class ChatService extends Service {
 				});
 				// 刷新项目列表
 				await this.getProjects({
-					team_id: params.team_id,
+					team_id: params.team_id || undefined,
 					page_size: 100,
 					page_num: 1,
 				});

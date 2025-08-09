@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, Row, Col, Statistic, Button, Space, Typography } from 'antd';
 import {
 	UserOutlined,
@@ -10,11 +10,13 @@ import {
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import './index.less';
+import CreateProjectModal from './CreateProject';
 
 const { Title, Text } = Typography;
 
 const WorkspacePage: React.FC = () => {
 	const { user } = useAuth();
+	const [createOpen, setCreateOpen] = useState(false);
 
 	return (
 		<div className="workspace-page">
@@ -87,7 +89,7 @@ const WorkspacePage: React.FC = () => {
 								icon={<PlusOutlined />}
 								size="large"
 								block
-								onClick={() => window.open('/playground', '_blank')}
+								onClick={() => setCreateOpen(true)}
 							>
 								创建新项目
 							</Button>
@@ -125,7 +127,7 @@ const WorkspacePage: React.FC = () => {
 							<Button
 								type="primary"
 								style={{ marginTop: 16 }}
-								onClick={() => window.open('/playground', '_blank')}
+								onClick={() => setCreateOpen(true)}
 							>
 								创建项目
 							</Button>
@@ -190,6 +192,10 @@ const WorkspacePage: React.FC = () => {
 					</Card>
 				</Col>
 			</Row>
+			<CreateProjectModal
+				open={createOpen}
+				onClose={() => setCreateOpen(false)}
+			/>
 		</div>
 	);
 };

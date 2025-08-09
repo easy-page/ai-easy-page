@@ -37,8 +37,8 @@ import { useService } from '@/infra';
 import { ChatService } from '@/services/chatGlobalState';
 import {
 	ProjectInfo,
-	ProjectStatus,
-	PROJECT_STATUS_CONFIG,
+	ProjectType,
+	PROJECT_TYPE_CONFIG,
 	getProjectDetail,
 	getProjectStats,
 	getProjectVenues,
@@ -59,6 +59,13 @@ const ProjectDetailPage: React.FC = () => {
 
 	const chatService = useService(ChatService);
 	const curTeam = useObservable(chatService.globalState.curTeam$, null);
+	const curProject = useObservable(chatService.globalState.curProject$, null);
+
+	const handleSetCurrentProject = () => {
+		if (!project) return;
+		chatService.setCurrentProject(project);
+		message.success(`已设为当前项目：${project.name}`);
+	};
 
 	// 获取项目详情
 	const fetchProjectDetail = async () => {
@@ -226,7 +233,7 @@ const ProjectDetailPage: React.FC = () => {
 		);
 	}
 
-	const statusConfig = PROJECT_STATUS_CONFIG[project.status];
+	const typeConfig = PROJECT_TYPE_CONFIG[project.project_type as ProjectType];
 
 	return (
 		<div className="project-detail-page">
@@ -249,6 +256,13 @@ const ProjectDetailPage: React.FC = () => {
 					</Text>
 				</div>
 				<Space>
+					{curProject?.id === project.id ? (
+						<Button disabled>当前项目</Button>
+					) : (
+						<Button type="primary" onClick={handleSetCurrentProject}>
+							设为当前项目
+						</Button>
+					)}
 					<Button
 						icon={<ReloadOutlined />}
 						onClick={() => {
@@ -318,8 +332,15 @@ const ProjectDetailPage: React.FC = () => {
 					<Col xs={24} lg={8}>
 						<div className="project-status-section">
 							<Descriptions title="项目状态" column={1}>
-								<Descriptions.Item label="状态">
-									<Tag color={statusConfig.color}>{statusConfig.text}</Tag>
+								<Descriptions.Item label="项目类型">
+									<Tag color={typeConfig.color}>{typeConfig.text}</Tag>
+								</Descriptions.Item>
+								<Descriptions.Item label="当前项目">
+									<Tag
+										color={curProject?.id === project.id ? 'blue' : 'default'}
+									>
+										{curProject?.id === project.id ? '是' : '否'}
+									</Tag>
 								</Descriptions.Item>
 								<Descriptions.Item label="会场数量">
 									<Text strong>{project.venue_count}</Text>
