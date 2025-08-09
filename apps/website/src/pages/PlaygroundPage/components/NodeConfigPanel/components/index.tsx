@@ -9,7 +9,14 @@ import CheckboxGroupConfigPanel from './CheckboxGroupConfigPanel';
 import RadioConfigPanel from './RadioConfigPanel';
 import RadioGroupConfigPanel from './RadioGroupConfigPanel';
 import ContainerConfigPanel from './ContainerConfigPanel';
-import HtmlElementConfigPanel from './HtmlElementConfigPanel';
+import DivConfigPanel from './DivConfigPanel';
+import SpanConfigPanel from './SpanConfigPanel';
+import PConfigPanel from './PConfigPanel';
+import AConfigPanel from './AConfigPanel';
+import UlConfigPanel from './UlConfigPanel';
+import LiConfigPanel from './LiConfigPanel';
+import CanvasConfigPanel from './CanvasConfigPanel';
+import IframeConfigPanel from './IframeConfigPanel';
 import DynamicFormConfigPanel from './DynamicFormConfigPanel';
 import CustomConfigPanel from './CustomConfigPanel';
 import FormItemConfigPanel from './FormItemConfigPanel';
@@ -35,15 +42,15 @@ export const ComponentConfigPanelMap = {
 	Container: ContainerConfigPanel,
 	DynamicForm: DynamicFormConfigPanel,
 	Custom: CustomConfigPanel,
-	// 原生 HTML 元素：复用通用属性编辑（暂无专属面板）
-	div: HtmlElementConfigPanel,
-	span: HtmlElementConfigPanel,
-	p: HtmlElementConfigPanel,
-	a: HtmlElementConfigPanel,
-	ul: HtmlElementConfigPanel,
-	li: HtmlElementConfigPanel,
-	canvas: HtmlElementConfigPanel,
-	iframe: HtmlElementConfigPanel,
+	// 原生 HTML 元素：按元素拆分面板
+	div: DivConfigPanel,
+	span: SpanConfigPanel,
+	p: PConfigPanel,
+	a: AConfigPanel,
+	ul: UlConfigPanel,
+	li: LiConfigPanel,
+	canvas: CanvasConfigPanel,
+	iframe: IframeConfigPanel,
 };
 
 // 导出所有配置面板
