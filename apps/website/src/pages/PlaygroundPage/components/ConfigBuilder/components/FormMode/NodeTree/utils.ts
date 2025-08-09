@@ -12,6 +12,10 @@ export const canAddChildren = (component: ComponentSchema): boolean => {
 	if (typeof (component as any).canHaveChildren === 'boolean') {
 		return (component as any).canHaveChildren as boolean;
 	}
+	// New structure: children is separated from props
+	if (Array.isArray((component as any).children)) {
+		return true;
+	}
 	if (component && (component as any).props) {
 		const maybeChildren = ((component as any).props as Record<string, unknown>)[
 			'children'

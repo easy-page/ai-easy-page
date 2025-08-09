@@ -124,20 +124,35 @@ const FormMode: FC<FormModeProps> = ({
 				: undefined,
 		};
 
-		// 更新schema
+		// 更新schema：插入到当前选中的父节点下面
 		if (schemaData) {
-			// 过滤掉空节点
-			const filteredChildren = (schemaData.properties.children || []).filter(
-				(child) => child.type !== 'EmptyNode'
-			);
+			const cloneSchema: FormSchema = { ...schemaData };
 
-			const updatedSchema: FormSchema = {
-				...schemaData,
-				properties: {
-					...schemaData.properties,
-					children: [...filteredChildren, newComponent],
-				},
+			// 计算要插入的 children 路径
+			const resolveChildrenPath = (
+				parentId: string | null | undefined
+			): string => {
+				if (!parentId || parentId === 'form') return 'properties.children';
+				const basePath = nodeIdToPropertyPath(parentId);
+				// basePath 指向组件对象或组件属性（为组件）
+				return basePath ? `${basePath}.children` : 'properties.children';
 			};
+
+			const childrenPath = resolveChildrenPath(currentParentId);
+			const currentChildren = (getValueByPath(cloneSchema, childrenPath) ||
+				[]) as unknown[];
+
+			// 过滤掉空节点，仅在根层使用；嵌套时也尽量保持
+			const normalizedChildren = Array.isArray(currentChildren)
+				? currentChildren.filter((c: any) => c?.type !== 'EmptyNode')
+				: [];
+
+			const newChildrenArray = [...normalizedChildren, newComponent];
+			const updatedSchema = setValueByPath(
+				cloneSchema,
+				childrenPath,
+				newChildrenArray
+			);
 
 			chatService.globalState.updateVenueSchema(updatedSchema);
 
@@ -145,17 +160,26 @@ const FormMode: FC<FormModeProps> = ({
 			setShowAddModal(false);
 
 			// 自动选中新创建的节点并展开到该节点
-			const newComponentIndex = filteredChildren.length;
-			const newNodeId = `child-${newComponentIndex}`;
-			onNodeSelect?.(newNodeId);
-
-			// 确保父节点展开
-			setExpandedKeys(['form']);
+			// 选中规则：
+			// - 在根插入：child-<index>
+			// - 在子组件 children 中插入：父ID保持不变（让用户在右侧配置看到新的 children）
+			if (childrenPath === 'properties.children') {
+				const newComponentIndex = newChildrenArray.length - 1;
+				const newNodeId = `child-${newComponentIndex}`;
+				onNodeSelect?.(newNodeId);
+				setExpandedKeys(['form']);
+			} else {
+				// 尝试展开父节点
+				if (currentParentId) {
+					onNodeSelect?.(currentParentId);
+					setExpandedKeys((prev) =>
+						Array.from(new Set([...(prev || []), currentParentId!]))
+					);
+				}
+			}
 
 			message.success(`已添加${ComponentDisplayNames[componentType]}组件`);
-			console.log('添加组件:', newComponent);
 
-			// 如果组件不能使用FormItem，显示特殊提示
 			if (isFormComponent && !canUseFormItemForComponent) {
 				message.warning(
 					`${ComponentDisplayNames[componentType]}组件不支持FormItem包装，已自动移除FormItem配置`
@@ -428,47 +452,58 @@ const FormMode: FC<FormModeProps> = ({
 
 	// 从节点ID解析出属性路径
 	function nodeIdToPropertyPath(nodeId: string): string | null {
-		// 顶层 child-<index>
-		const topChildOnly = nodeId.match(/^child-(\d+)$/);
-		if (topChildOnly) {
-			return `properties.children.${Number(topChildOnly[1])}`;
+		const parts = nodeId.split('-');
+
+		// 解析多层 children：child-<i>-child-<j>-...
+		const childIndexes: number[] = [];
+		for (let i = 0; i < parts.length; i++) {
+			if (parts[i] === 'child' && i + 1 < parts.length) {
+				const idx = Number(parts[i + 1]);
+				if (!Number.isNaN(idx)) childIndexes.push(idx);
+			}
+		}
+		if (childIndexes.length === 0) return null;
+
+		const tokens: string[] = [
+			'properties',
+			'children',
+			String(childIndexes[0]),
+		];
+		for (let i = 1; i < childIndexes.length; i++) {
+			tokens.push('children', String(childIndexes[i]));
 		}
 
-		// 在更复杂的 key 中查找 child-<index>
-		const childMatch = nodeId.match(/child-(\d+)/);
-		if (!childMatch) return null;
-		const componentIndex = Number(childMatch[1]);
-		let path = `properties.children.${componentIndex}`;
-
-		const parts = nodeId.split('-');
+		// 属性（prop-<name>）
 		const propIdx = parts.indexOf('prop');
 		if (propIdx >= 0) {
 			const propName = parts[propIdx + 1];
-			path += `.props.${propName}`;
+			if (propName) {
+				tokens.push('props', propName);
+			}
 		}
 
-		// 如果存在数组项
+		// 数组项（item-<n>）
 		const itemIdx = parts.indexOf('item');
 		if (itemIdx >= 0) {
 			const indexStr = parts[itemIdx + 1];
-			if (indexStr) path += `.${Number(indexStr)}`;
+			if (indexStr) tokens.push(String(Number(indexStr)));
 		}
 
-		// 行内的属性（如 rows.item.N.rowprop.fields）
+		// 行内属性（rowprop-<name>）
 		const rowPropIdx = parts.indexOf('rowprop');
 		if (rowPropIdx >= 0) {
 			const rowPropName = parts[rowPropIdx + 1];
-			path += `.${rowPropName}`;
+			if (rowPropName) tokens.push(rowPropName);
 		}
 
-		// 字段索引（如 fields.field.M）
+		// 字段索引（field-<m>）
 		const fieldIdx = parts.indexOf('field');
 		if (fieldIdx >= 0) {
 			const fIndexStr = parts[fieldIdx + 1];
-			if (fIndexStr) path += `.${Number(fIndexStr)}`;
+			if (fIndexStr) tokens.push(String(Number(fIndexStr)));
 		}
 
-		return path;
+		return tokens.join('.');
 	}
 
 	const handleDeleteNode = (nodeId: string) => {

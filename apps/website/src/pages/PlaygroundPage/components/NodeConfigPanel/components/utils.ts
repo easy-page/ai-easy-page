@@ -138,14 +138,32 @@ export const parseNodeId = (
 		};
 	}
 
-	// 子组件节点
-	if (nodeId.startsWith('child-')) {
-		const componentIndex = parseInt(parts[1]);
-		return {
-			type: 'component',
-			componentIndex,
-			propertyPath: `properties.children.${componentIndex}`,
-		};
+	// 组件节点（支持嵌套 children：child-<i>-child-<j>-child-<k>）
+	if (nodeId.includes('child-')) {
+		// 累积 children 层级
+		const childIndexes: number[] = [];
+		for (let i = 0; i < parts.length; i++) {
+			if (parts[i] === 'child' && i + 1 < parts.length) {
+				const idx = Number(parts[i + 1]);
+				if (!Number.isNaN(idx)) childIndexes.push(idx);
+			}
+		}
+		if (childIndexes.length > 0) {
+			const basePath = ['properties', 'children', String(childIndexes[0])];
+			for (let i = 1; i < childIndexes.length; i++) {
+				basePath.push('children', String(childIndexes[i]));
+			}
+
+			return {
+				type: 'component',
+				componentIndex: childIndexes[0],
+				propertyPath: basePath.join('.'),
+				parentPath:
+					childIndexes.length > 1
+						? basePath.slice(0, -1).join('.')
+						: 'properties.children',
+			};
+		}
 	}
 
 	// 根 form 节点

@@ -3,7 +3,7 @@ import { Tabs, Typography } from 'antd';
 import { FormSchema } from '../../../Schema/form';
 import { ComponentSchema } from '../../../Schema/component';
 import { ComponentConfigPanelMap, FormItemConfigPanel } from './index';
-import { NodeInfo } from './utils';
+import { NodeInfo, getValueByPath } from './utils';
 
 const { Title } = Typography;
 
@@ -29,19 +29,10 @@ const ComponentPropertiesSection: FC<ComponentPropertiesSectionProps> = ({
 }) => {
 	if (nodeInfo.type !== 'component') return null;
 
-	const children = effectiveSchema.properties?.children || [];
-
-	let component: ComponentSchema | undefined;
-	if (nodeInfo.propName) {
-		const parentComponent = children[nodeInfo.componentIndex!];
-		const propValue = parentComponent?.props?.[nodeInfo.propName];
-		if (!propValue || typeof propValue !== 'object' || !('type' in propValue)) {
-			return null;
-		}
-		component = propValue as ComponentSchema;
-	} else {
-		component = children[nodeInfo.componentIndex!];
-	}
+	// Resolve current component by deep propertyPath to support nested children chains
+	const component = getValueByPath(effectiveSchema, nodeInfo.propertyPath) as
+		| ComponentSchema
+		| undefined;
 
 	if (!component) return null;
 
@@ -52,86 +43,25 @@ const ComponentPropertiesSection: FC<ComponentPropertiesSectionProps> = ({
 		];
 
 	const handleComponentPropsChange = (newProps: any) => {
-		const newChildren = [...children];
-
-		if (nodeInfo.propName) {
-			const parentComponent = newChildren[nodeInfo.componentIndex!];
-			if (parentComponent && parentComponent.props) {
-				const propComponent = parentComponent.props[
-					nodeInfo.propName
-				] as ComponentSchema;
-				if (propComponent) {
-					const mergedProps = {
-						...(propComponent.props || {}),
-						...(newProps || {}),
-					};
-					// 透传组件类型给原生元素配置面板识别
-					if (typeof propComponent.type === 'string') {
-						mergedProps.__componentType = propComponent.type;
-					}
-					parentComponent.props[nodeInfo.propName] = {
-						...propComponent,
-						props: mergedProps,
-					} as ComponentSchema;
-				}
-			}
-		} else {
-			const oldComponent = newChildren[
-				nodeInfo.componentIndex!
-			] as ComponentSchema;
-			const mergedProps = {
-				...(oldComponent?.props || {}),
-				...(newProps || {}),
-			};
-			if (typeof oldComponent?.type === 'string') {
-				mergedProps.__componentType = oldComponent.type;
-			}
-			newChildren[nodeInfo.componentIndex!] = {
-				...oldComponent,
-				props: mergedProps,
-			} as ComponentSchema;
+		const mergedProps = {
+			...(component?.props || {}),
+			...(newProps || {}),
+		} as any;
+		if (typeof component?.type === 'string') {
+			mergedProps.__componentType = component.type;
 		}
-
-		onPropertyChange('properties.children', newChildren);
+		onPropertyChange(`${nodeInfo.propertyPath}.props`, mergedProps);
 	};
 
 	const handleFormItemPropsChange = (newFormItemProps: any) => {
-		const newChildren = [...children];
-
-		if (nodeInfo.propName) {
-			const parentComponent = newChildren[nodeInfo.componentIndex!];
-			if (parentComponent && parentComponent.props) {
-				const propComponent = parentComponent.props[
-					nodeInfo.propName
-				] as ComponentSchema;
-				if (propComponent) {
-					parentComponent.props[nodeInfo.propName] = {
-						...propComponent,
-						formItem: {
-							type: 'formItem' as const,
-							properties: {
-								...propComponent.formItem?.properties,
-								...newFormItemProps,
-							},
-						},
-					} as ComponentSchema;
-				}
-			}
-		} else {
-			newChildren[nodeInfo.componentIndex!] = {
-				...newChildren[nodeInfo.componentIndex!],
-				formItem: {
-					type: 'formItem' as const,
-					properties: {
-						...(newChildren[nodeInfo.componentIndex!] as ComponentSchema)
-							.formItem?.properties,
-						...newFormItemProps,
-					},
-				},
-			} as ComponentSchema;
-		}
-
-		onPropertyChange('properties.children', newChildren);
+		const merged = {
+			...(component?.formItem?.properties || {}),
+			...newFormItemProps,
+		};
+		onPropertyChange(`${nodeInfo.propertyPath}.formItem`, {
+			type: 'formItem' as const,
+			properties: merged,
+		});
 	};
 
 	if (component.formItem && ComponentConfigPanel) {
@@ -141,6 +71,7 @@ const ComponentPropertiesSection: FC<ComponentPropertiesSectionProps> = ({
 				label: '表单属性',
 				children: (
 					<FormItemConfigPanel
+						key={`${nodeInfo.propertyPath}-formItem`}
 						props={component.formItem.properties || {}}
 						onChange={handleFormItemPropsChange}
 						onNodeSelect={onNodeSelect}
@@ -155,6 +86,7 @@ const ComponentPropertiesSection: FC<ComponentPropertiesSectionProps> = ({
 				label: '组件属性',
 				children: (
 					<ComponentConfigPanel
+						key={`${nodeInfo.propertyPath}-component`}
 						props={component.props || {}}
 						onChange={handleComponentPropsChange}
 						onNodeSelect={onNodeSelect}
@@ -182,6 +114,7 @@ const ComponentPropertiesSection: FC<ComponentPropertiesSectionProps> = ({
 		return (
 			<div className="component-properties">
 				<FormItemConfigPanel
+					key={`${nodeInfo.propertyPath}-formItem-only`}
 					props={component.formItem.properties || {}}
 					onChange={handleFormItemPropsChange}
 					onNodeSelect={onNodeSelect}
@@ -197,6 +130,7 @@ const ComponentPropertiesSection: FC<ComponentPropertiesSectionProps> = ({
 		return (
 			<div className="component-properties">
 				<ComponentConfigPanel
+					key={`${nodeInfo.propertyPath}-component-only`}
 					props={component.props || {}}
 					onChange={handleComponentPropsChange}
 					onNodeSelect={onNodeSelect}

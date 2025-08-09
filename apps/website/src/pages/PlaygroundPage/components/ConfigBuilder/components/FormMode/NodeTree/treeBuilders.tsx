@@ -81,7 +81,93 @@ const buildComponentPropertiesTree = (
 	actions: BuildActions
 ): TreeNode[] => {
 	const properties: TreeNode[] = [];
-	Object.entries((component as any).props || {}).forEach(([key, value]) => {
+	const propsEntries = Object.entries((component as any).props || {});
+	// If the new structure exposes children at top-level, render it as an array property first
+	if (Array.isArray((component as any).children)) {
+		const key = 'children';
+		const value = (component as any).children as unknown[];
+		const propKey = `${parentKey}-prop-${key}`;
+		const currentPropertyPath = `${propertyPath}.children`;
+
+		properties.push({
+			key: propKey,
+			title: (
+				<Space>
+					<UnorderedListOutlined style={{ color: '#722ed1' }} />
+					<Text style={{ color: '#fff' }}>{key}</Text>
+					<Badge count={value.length} size="small" />
+					<Button
+						type="text"
+						size="small"
+						icon={<PlusOutlined />}
+						onClick={(e) => {
+							e.stopPropagation();
+							actions.onAddNode(parentKey, 'component');
+						}}
+					/>
+				</Space>
+			),
+			isProperty: true,
+			propertyPath: currentPropertyPath,
+			nodeType: 'array',
+			children: value.map((child, childIndex) => {
+				const itemKey = `${parentKey}-child-${childIndex}`;
+				const itemPropertyPath = `${currentPropertyPath}.${childIndex}`;
+				if (isReactNodeProperty(child)) {
+					return buildReactNodeTree(
+						child,
+						itemKey,
+						0,
+						itemPropertyPath,
+						actions
+					);
+				}
+				const canHaveChildrenFlag = canAddChildren(child as any);
+				return {
+					key: itemKey,
+					title: (
+						<Space>
+							<FileOutlined style={{ color: '#1890ff' }} />
+							<Text style={{ color: '#fff' }}>
+								{(child as any).type || 'Component'}
+							</Text>
+							{canHaveChildrenFlag && (
+								<Button
+									type="text"
+									size="small"
+									icon={<PlusOutlined />}
+									onClick={(e) => {
+										e.stopPropagation();
+										actions.onAddNode(itemKey, 'component');
+									}}
+								/>
+							)}
+							{Array.isArray((child as any).children) && (
+								<Badge
+									count={(child as any).children.length || 0}
+									size="small"
+								/>
+							)}
+							<Button
+								type="text"
+								size="small"
+								icon={<DeleteOutlined />}
+								onClick={(e) => {
+									e.stopPropagation();
+									actions.onDeleteNode(itemKey);
+								}}
+							/>
+						</Space>
+					),
+					isProperty: true,
+					propertyPath: itemPropertyPath,
+					nodeType: 'component',
+				};
+			}),
+		});
+	}
+
+	propsEntries.forEach(([key, value]) => {
 		const propKey = `${parentKey}-prop-${key}`;
 		const currentPropertyPath = `${propertyPath}.props.${key}`;
 
