@@ -982,3 +982,27 @@ venues$: LiveData<VenueListInfo | null> = new LiveData<VenueListInfo | null>(
 
 - video 等也需要补充
   可以建立 schema 组件市场，选择对应节点加入，如何支持扩展组件 + 组件面板定义～
+
+# 优化队列机制
+
+帮我优化这个：apps/website/src/pages/PlaygroundPage/hooks/useSchemaSaveQueue.ts ，不需要这么复杂，只需设置一段从：curVenue 拿出 schema 并保存即可：
+
+```ts
+const curVenue = useObservable(chatService.globalState.curVenue$, null);
+const currentSchema = curVenue?.page_schema || EMPTY_FORM_SCHEMA;
+```
+
+调用下方接口进行保存
+
+```ts
+const res = await updateVenue({
+	venue_id: String(venueId),
+	venue_data: { page_schema: currentSchema },
+});
+if (res.message) {
+	message.error(res.message);
+	return;
+}
+```
+
+然后保留，在页面离开或者刷新或者关闭前，弹出正在保存窗口，保存完毕继续关闭窗口。

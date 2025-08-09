@@ -38,10 +38,8 @@ const PlaygroundPage: FC = () => {
 	const [loading, setLoading] = useState(false);
 
 	// 使用保存队列 Hook
-	const { enqueueChange } = useSchemaSaveQueue({
+	const { saveNow } = useSchemaSaveQueue({
 		venueId: curVenue?.id,
-		latestSchema: currentSchema,
-		intervalMs: 1500,
 		enableNavigationBlock: true,
 	});
 
@@ -142,9 +140,6 @@ const PlaygroundPage: FC = () => {
 			}
 			chatService.globalState.updateVenueSchema(newSchema);
 		}
-
-		// 入队，等待批量提交
-		enqueueChange(propertyPath, value);
 	};
 
 	// 无兜底页，缺参时直接弹窗
