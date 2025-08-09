@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Segmented, Typography, Collapse } from 'antd';
+import { Segmented, Typography, Collapse, Form } from 'antd';
 import {
 	SizePositionGroup,
 	TypographyGroup,
@@ -91,14 +91,21 @@ const StyleEditor: FC<StyleEditorProps> = ({ value, onChange }) => {
 						header={<Text type="secondary">样式设置</Text>}
 						key="panel"
 					>
-						<SizePositionGroup value={styleObject} onChange={updateStyle} />
-						<TypographyGroup value={styleObject} onChange={updateStyle} />
-						<FillGroup value={styleObject} onChange={updateStyle} />
-						<SpacingGroup value={styleObject} onChange={updateStyle} />
-						<BorderShadowGroup value={styleObject} onChange={updateStyle} />
-						<AlignmentGroup value={styleObject} onChange={updateStyle} />
-						<AutoLayoutGroup value={styleObject} onChange={updateStyle} />
-						<PositionGroup value={styleObject} onChange={updateStyle} />
+						<Form
+							layout="vertical"
+							size="small"
+							colon={false}
+							style={{ padding: 8 }}
+						>
+							<SizePositionGroup value={styleObject} onChange={updateStyle} />
+							<TypographyGroup value={styleObject} onChange={updateStyle} />
+							<FillGroup value={styleObject} onChange={updateStyle} />
+							<SpacingGroup value={styleObject} onChange={updateStyle} />
+							<BorderShadowGroup value={styleObject} onChange={updateStyle} />
+							<AlignmentGroup value={styleObject} onChange={updateStyle} />
+							<AutoLayoutGroup value={styleObject} onChange={updateStyle} />
+							<PositionGroup value={styleObject} onChange={updateStyle} />
+						</Form>
 					</Collapse.Panel>
 				</Collapse>
 			)}

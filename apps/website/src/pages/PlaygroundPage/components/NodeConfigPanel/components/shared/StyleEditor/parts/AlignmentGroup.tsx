@@ -1,5 +1,5 @@
 import React from 'react';
-import { Collapse, Form, Row, Col, Typography, Segmented } from 'antd';
+import { Form, Row, Col, Typography, Segmented } from 'antd';
 import {
 	AlignLeftOutlined,
 	AlignCenterOutlined,
@@ -15,9 +15,9 @@ export const AlignmentGroup: React.FC<{
 }> = ({ value, onChange }) => {
 	return (
 		<div>
-			<Row gutter={8}>
+			<Row gutter={[12, 12]}>
 				<Col span={12}>
-					<Form.Item label="水平">
+					<Form.Item label="水平" style={{ marginBottom: 0 }}>
 						<Segmented
 							value={value.textAlign || 'left'}
 							onChange={(v) => onChange({ textAlign: v })}
@@ -31,7 +31,7 @@ export const AlignmentGroup: React.FC<{
 					</Form.Item>
 				</Col>
 				<Col span={12}>
-					<Form.Item label="垂直">
+					<Form.Item label="垂直" style={{ marginBottom: 0 }}>
 						<Segmented
 							value={value.verticalAlign || 'baseline'}
 							onChange={(v) => onChange({ verticalAlign: v })}

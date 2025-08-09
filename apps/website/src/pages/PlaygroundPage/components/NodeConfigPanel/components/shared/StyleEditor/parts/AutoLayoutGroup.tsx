@@ -21,9 +21,9 @@ export const AutoLayoutGroup: React.FC<{
 
 	return (
 		<div>
-			<Row gutter={8}>
+			<Row gutter={[12, 12]}>
 				<Col span={12}>
-					<Form.Item label="启用">
+					<Form.Item label="启用" style={{ marginBottom: 0 }}>
 						<Switch
 							checked={isFlex}
 							onChange={(checked) =>
@@ -33,7 +33,7 @@ export const AutoLayoutGroup: React.FC<{
 					</Form.Item>
 				</Col>
 				<Col span={12}>
-					<Form.Item label="换行">
+					<Form.Item label="换行" style={{ marginBottom: 0 }}>
 						<Segmented
 							value={value.flexWrap || 'nowrap'}
 							onChange={(v) => onChange({ flexWrap: v })}
@@ -48,9 +48,9 @@ export const AutoLayoutGroup: React.FC<{
 
 			{isFlex && (
 				<>
-					<Row gutter={8}>
+					<Row gutter={[12, 12]}>
 						<Col span={12}>
-							<Form.Item label="方向">
+							<Form.Item label="方向" style={{ marginBottom: 0 }}>
 								<Segmented
 									value={value.flexDirection || 'row'}
 									onChange={(v) => onChange({ flexDirection: v })}
@@ -76,7 +76,7 @@ export const AutoLayoutGroup: React.FC<{
 							</Form.Item>
 						</Col>
 						<Col span={12}>
-							<Form.Item label="间距">
+							<Form.Item label="间距" style={{ marginBottom: 0 }}>
 								<InputNumber
 									min={0}
 									style={{ width: '100%' }}
@@ -88,9 +88,9 @@ export const AutoLayoutGroup: React.FC<{
 						</Col>
 					</Row>
 
-					<Row gutter={8}>
+					<Row gutter={[12, 12]}>
 						<Col span={12}>
-							<Form.Item label="主轴对齐">
+							<Form.Item label="主轴对齐" style={{ marginBottom: 0 }}>
 								<Segmented
 									value={value.justifyContent || 'flex-start'}
 									onChange={(v) => onChange({ justifyContent: v })}
@@ -105,7 +105,7 @@ export const AutoLayoutGroup: React.FC<{
 							</Form.Item>
 						</Col>
 						<Col span={12}>
-							<Form.Item label="交叉轴对齐">
+							<Form.Item label="交叉轴对齐" style={{ marginBottom: 0 }}>
 								<Segmented
 									value={value.alignItems || 'stretch'}
 									onChange={(v) => onChange({ alignItems: v })}

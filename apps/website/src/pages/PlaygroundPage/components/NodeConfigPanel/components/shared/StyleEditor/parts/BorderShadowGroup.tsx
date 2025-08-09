@@ -8,9 +8,9 @@ export const BorderShadowGroup: React.FC<{
 }> = ({ value, onChange }) => {
 	return (
 		<div>
-			<Row gutter={8}>
+			<Row gutter={[12, 12]}>
 				<Col span={12}>
-					<Form.Item label="边框">
+					<Form.Item label="边框" style={{ marginBottom: 0 }}>
 						<Input
 							value={value.border as any}
 							onChange={(e) => onChange({ border: e.target.value })}
@@ -19,7 +19,7 @@ export const BorderShadowGroup: React.FC<{
 					</Form.Item>
 				</Col>
 				<Col span={12}>
-					<Form.Item label="圆角">
+					<Form.Item label="圆角" style={{ marginBottom: 0 }}>
 						<Input
 							value={value.borderRadius as any}
 							onChange={(e) => onChange({ borderRadius: e.target.value })}
@@ -28,7 +28,7 @@ export const BorderShadowGroup: React.FC<{
 					</Form.Item>
 				</Col>
 				<Col span={24}>
-					<Form.Item label="阴影">
+					<Form.Item label="阴影" style={{ marginBottom: 0 }}>
 						<Input
 							value={value.boxShadow as any}
 							onChange={(e) => onChange({ boxShadow: e.target.value })}

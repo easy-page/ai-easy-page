@@ -27,6 +27,7 @@ export * from './dynamicForm';
 
 // 导出 Custom 组件
 export * from './custom';
+export * from './text';
 
 // 导入所有组件的类型定义
 import { InputPropsSchema, getDefaultInputProps } from './input';
@@ -58,6 +59,7 @@ import {
 	getDefaultDynamicFormProps,
 } from './dynamicForm';
 import { CustomPropsSchema, getDefaultCustomProps } from './custom';
+import { TextSchema, getDefaultTextProps } from './text';
 import { ComponentType } from '../../constant/componentTypes';
 import {
 	type DivPropsSchema,
@@ -101,6 +103,8 @@ export type ComponentPropsSchema =
 	| LiPropsSchema
 	| CanvasPropsSchema
 	| IframePropsSchema;
+  // text 是简单节点，直接用 TextSchema（properties: { text: string }）
+export type SimpleTextSchema = TextSchema;
 
 // 组件类型到Schema的映射
 export const ComponentPropsSchemaMap = {
@@ -126,6 +130,7 @@ export const ComponentPropsSchemaMap = {
 	li: {} as LiPropsSchema,
 	canvas: {} as CanvasPropsSchema,
 	iframe: {} as IframePropsSchema,
+  text: {} as TextSchema,
 };
 
 // 获取组件的默认属性Schema
@@ -176,6 +181,8 @@ export function getDefaultComponentPropsSchema(
 			return getDefaultCanvasProps();
 		case 'iframe':
 			return getDefaultIframeProps();
+    case 'text':
+      return getDefaultTextProps();
 		default:
 			return getDefaultInputProps();
 	}

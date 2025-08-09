@@ -8,9 +8,9 @@ export const PositionGroup: React.FC<{
 }> = ({ value, onChange }) => {
 	return (
 		<div>
-			<Row gutter={8}>
+			<Row gutter={[12, 12]}>
 				<Col span={12}>
-					<Form.Item label="定位方式">
+					<Form.Item label="定位方式" style={{ marginBottom: 0 }}>
 						<Select
 							value={value.position as any}
 							onChange={(v) => onChange({ position: v })}
@@ -26,7 +26,7 @@ export const PositionGroup: React.FC<{
 					</Form.Item>
 				</Col>
 				<Col span={12}>
-					<Form.Item label="层级 zIndex">
+					<Form.Item label="层级 zIndex" style={{ marginBottom: 0 }}>
 						<InputNumber
 							style={{ width: '100%' }}
 							value={Number(value.zIndex ?? 0)}
@@ -35,7 +35,7 @@ export const PositionGroup: React.FC<{
 					</Form.Item>
 				</Col>
 				<Col span={12}>
-					<Form.Item label="旋转 (°)">
+					<Form.Item label="旋转 (°)" style={{ marginBottom: 0 }}>
 						<InputNumber
 							style={{ width: '100%' }}
 							value={Number(
@@ -50,7 +50,7 @@ export const PositionGroup: React.FC<{
 					</Form.Item>
 				</Col>
 				<Col span={12}>
-					<Form.Item label="裁剪内容">
+					<Form.Item label="裁剪内容" style={{ marginBottom: 0 }}>
 						<Select
 							value={value.overflow as any}
 							onChange={(v) => onChange({ overflow: v })}

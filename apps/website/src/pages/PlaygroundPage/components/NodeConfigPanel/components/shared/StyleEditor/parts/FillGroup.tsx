@@ -8,9 +8,9 @@ export const FillGroup: React.FC<{
 }> = ({ value, onChange }) => {
 	return (
 		<div>
-			<Row gutter={8}>
+			<Row gutter={[12, 12]}>
 				<Col span={24}>
-					<Form.Item label="背景色">
+					<Form.Item label="背景色" style={{ marginBottom: 0 }}>
 						<div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
 							<ColorPicker
 								value={value.backgroundColor as any}
@@ -25,7 +25,7 @@ export const FillGroup: React.FC<{
 					</Form.Item>
 				</Col>
 				<Col span={24}>
-					<Form.Item label="透明度">
+					<Form.Item label="透明度" style={{ marginBottom: 0 }}>
 						<Slider
 							min={0}
 							max={1}

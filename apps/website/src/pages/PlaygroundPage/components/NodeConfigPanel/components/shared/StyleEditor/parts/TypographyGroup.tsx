@@ -19,9 +19,9 @@ export const TypographyGroup: React.FC<{
 }> = ({ value, onChange }) => {
 	return (
 		<div>
-			<Row gutter={8}>
+			<Row gutter={[12, 12]}>
 				<Col span={8}>
-					<Form.Item label="字号">
+					<Form.Item label="字号" style={{ marginBottom: 0 }}>
 						<InputNumber
 							min={0}
 							style={{ width: '100%' }}
@@ -31,7 +31,7 @@ export const TypographyGroup: React.FC<{
 					</Form.Item>
 				</Col>
 				<Col span={8}>
-					<Form.Item label="对齐">
+					<Form.Item label="对齐" style={{ marginBottom: 0 }}>
 						<Select
 							value={value.textAlign as any}
 							onChange={(v) => onChange({ textAlign: v })}
@@ -46,7 +46,7 @@ export const TypographyGroup: React.FC<{
 					</Form.Item>
 				</Col>
 				<Col span={8}>
-					<Form.Item label="文字颜色">
+					<Form.Item label="文字颜色" style={{ marginBottom: 0 }}>
 						<div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
 							<ColorPicker
 								value={value.color as any}
