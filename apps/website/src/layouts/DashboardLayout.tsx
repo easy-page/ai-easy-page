@@ -123,6 +123,13 @@ const DashboardLayout: React.FC = () => {
 		return navItem?.label || '工作台';
 	};
 
+	// Playground 页面需要更大空间，隐藏左侧菜单栏
+	const shouldShowSidebar = () => {
+		const pageType = getCurrentPageType();
+		if (pageType === 'playground') return false;
+		return true;
+	};
+
 	const getSideMenuItems = () => {
 		const pageType = getCurrentPageType();
 		return (
@@ -235,100 +242,102 @@ const DashboardLayout: React.FC = () => {
 				/>
 			</Drawer>
 
-			<Sider
-				trigger={null}
-				collapsible
-				collapsed={collapsed}
-				className="dashboard-sider"
-				breakpoint="lg"
-				onBreakpoint={(broken) => {
-					if (broken) {
-						setCollapsed(true);
-					}
-				}}
-				width={280}
-			>
-				<div className="sider-header">
-					<motion.div
-						className="logo-container"
-						initial={{ opacity: 0, x: -20 }}
-						animate={{ opacity: 1, x: 0 }}
-						transition={{ duration: 0.5 }}
-					>
-						<div className="logo-icon">
-							<AppstoreOutlined />
-						</div>
+			{shouldShowSidebar() && (
+				<Sider
+					trigger={null}
+					collapsible
+					collapsed={collapsed}
+					className="dashboard-sider"
+					breakpoint="lg"
+					onBreakpoint={(broken) => {
+						if (broken) {
+							setCollapsed(true);
+						}
+					}}
+					width={280}
+				>
+					<div className="sider-header">
+						<motion.div
+							className="logo-container"
+							initial={{ opacity: 0, x: -20 }}
+							animate={{ opacity: 1, x: 0 }}
+							transition={{ duration: 0.5 }}
+						>
+							<div className="logo-icon">
+								<AppstoreOutlined />
+							</div>
+							{!collapsed && (
+								<motion.span
+									className="logo-text"
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
+									transition={{ duration: 0.3, delay: 0.2 }}
+								>
+									Easy Page
+								</motion.span>
+							)}
+						</motion.div>
 						{!collapsed && (
-							<motion.span
-								className="logo-text"
+							<motion.div
+								className="logo-subtitle"
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
-								transition={{ duration: 0.3, delay: 0.2 }}
+								transition={{ duration: 0.3, delay: 0.3 }}
 							>
-								Easy Page
-							</motion.span>
+								工作台
+							</motion.div>
 						)}
-					</motion.div>
-					{!collapsed && (
-						<motion.div
-							className="logo-subtitle"
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							transition={{ duration: 0.3, delay: 0.3 }}
-						>
-							工作台
-						</motion.div>
-					)}
-				</div>
+					</div>
 
-				<div className="sider-content">
-					{!collapsed && (
-						<motion.div
-							className="category-title"
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							transition={{ duration: 0.3 }}
-						>
-							{getSidebarTitle()}
-						</motion.div>
-					)}
-
-					<Menu
-						mode="inline"
-						selectedKeys={[location.pathname]}
-						items={getSideMenuItems()}
-						onClick={handleMenuClick}
-						className="dashboard-menu"
-					/>
-				</div>
-
-				<motion.div
-					className="sider-footer"
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					transition={{ duration: 0.3, delay: 0.4 }}
-				>
-					<div className="footer-content">
+					<div className="sider-content">
 						{!collapsed && (
-							<div className="user-info">
-								<Avatar
-									src={user?.avatar_url}
-									icon={<UserOutlined />}
-									size="small"
-								/>
-								<span className="user-name">{user?.username || '用户'}</span>
-							</div>
+							<motion.div
+								className="category-title"
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								transition={{ duration: 0.3 }}
+							>
+								{getSidebarTitle()}
+							</motion.div>
 						)}
-						<Button
-							type="text"
-							icon={<LogoutOutlined />}
-							className="logout-btn"
-							onClick={handleLogout}
-							title="退出登录"
+
+						<Menu
+							mode="inline"
+							selectedKeys={[location.pathname]}
+							items={getSideMenuItems()}
+							onClick={handleMenuClick}
+							className="dashboard-menu"
 						/>
 					</div>
-				</motion.div>
-			</Sider>
+
+					<motion.div
+						className="sider-footer"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ duration: 0.3, delay: 0.4 }}
+					>
+						<div className="footer-content">
+							{!collapsed && (
+								<div className="user-info">
+									<Avatar
+										src={user?.avatar_url}
+										icon={<UserOutlined />}
+										size="small"
+									/>
+									<span className="user-name">{user?.username || '用户'}</span>
+								</div>
+							)}
+							<Button
+								type="text"
+								icon={<LogoutOutlined />}
+								className="logout-btn"
+								onClick={handleLogout}
+								title="退出登录"
+							/>
+						</div>
+					</motion.div>
+				</Sider>
+			)}
 
 			<Layout>
 				<Header className="dashboard-header">
