@@ -1,7 +1,8 @@
+import { ComponentSchema } from '../component';
 import { CommonComponentProps, baseProps } from './types';
 
 // Input 组件属性 Schema
-export interface InputPropsSchema {
+export interface InputPropsSchema extends ComponentSchema {
 	type: 'input';
 	properties: CommonComponentProps & {
 		type?: 'text' | 'password' | 'number' | 'email' | 'url';

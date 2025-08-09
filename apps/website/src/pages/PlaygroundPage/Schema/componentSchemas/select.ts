@@ -1,8 +1,9 @@
+import { ComponentSchema } from '../component';
 import { FunctionProperty } from '../specialProperties';
 import { CommonComponentProps, OptionItem, baseProps } from './types';
 
 // Select 组件属性 Schema
-export interface SelectPropsSchema {
+export interface SelectPropsSchema extends ComponentSchema {
 	type: 'select';
 	properties: CommonComponentProps & {
 		options?: OptionItem[];

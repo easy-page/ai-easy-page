@@ -1,7 +1,8 @@
+import { ComponentSchema } from '../component';
 import { CommonComponentProps, OptionItem, baseProps } from './types';
 
 // Checkbox 组件属性 Schema
-export interface CheckboxPropsSchema {
+export interface CheckboxPropsSchema extends ComponentSchema {
 	type: 'checkbox';
 	properties: CommonComponentProps & {
 		indeterminate?: boolean;
@@ -10,7 +11,7 @@ export interface CheckboxPropsSchema {
 }
 
 // CheckboxGroup 组件属性 Schema
-export interface CheckboxGroupPropsSchema {
+export interface CheckboxGroupPropsSchema extends ComponentSchema {
 	type: 'checkboxGroup';
 	properties: CommonComponentProps & {
 		options?: OptionItem[];

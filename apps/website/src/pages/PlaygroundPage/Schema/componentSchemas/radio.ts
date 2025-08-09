@@ -1,7 +1,8 @@
+import { ComponentSchema } from '../component';
 import { CommonComponentProps, OptionItem, baseProps } from './types';
 
 // Radio 组件属性 Schema
-export interface RadioPropsSchema {
+export interface RadioPropsSchema extends ComponentSchema {
 	type: 'radio';
 	properties: CommonComponentProps & {
 		label?: string;
@@ -10,7 +11,7 @@ export interface RadioPropsSchema {
 }
 
 // RadioGroup 组件属性 Schema
-export interface RadioGroupPropsSchema {
+export interface RadioGroupPropsSchema extends ComponentSchema {
 	type: 'radioGroup';
 	properties: CommonComponentProps & {
 		options?: OptionItem[];

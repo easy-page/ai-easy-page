@@ -1,7 +1,8 @@
+import { ComponentSchema } from '../component';
 import { CommonComponentProps, baseProps } from './types';
 
 // TextArea 组件属性 Schema
-export interface TextAreaPropsSchema {
+export interface TextAreaPropsSchema extends ComponentSchema {
 	type: 'textArea';
 	properties: CommonComponentProps & {
 		rows?: number;

@@ -1,7 +1,8 @@
+import { ComponentSchema } from '../component';
 import { CommonComponentProps, baseProps } from './types';
 
 // Custom 组件属性 Schema
-export interface CustomPropsSchema {
+export interface CustomPropsSchema extends ComponentSchema {
 	type: 'custom';
 	properties: CommonComponentProps & {
 		componentName?: string;

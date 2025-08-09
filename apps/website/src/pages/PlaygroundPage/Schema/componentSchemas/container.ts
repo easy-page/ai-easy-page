@@ -1,3 +1,4 @@
+import { ComponentSchema } from '../component';
 import {
 	FunctionProperty,
 	ReactNodeProperty,
@@ -6,7 +7,7 @@ import {
 import { CommonComponentProps, baseProps } from './types';
 
 // Container 组件属性 Schema
-export interface ContainerPropsSchema {
+export interface ContainerPropsSchema extends ComponentSchema {
 	type: 'container';
 	properties: CommonComponentProps & {
 		title?: ReactNodeProperty;

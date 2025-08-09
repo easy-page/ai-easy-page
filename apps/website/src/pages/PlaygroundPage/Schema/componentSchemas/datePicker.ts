@@ -1,7 +1,8 @@
+import { ComponentSchema } from '../component';
 import { CommonComponentProps, baseProps } from './types';
 
 // DatePicker 组件属性 Schema
-export interface DatePickerPropsSchema {
+export interface DatePickerPropsSchema extends ComponentSchema {
 	type: 'datePicker';
 	properties: CommonComponentProps & {
 		format?: string;
@@ -11,7 +12,7 @@ export interface DatePickerPropsSchema {
 }
 
 // DateRangePicker 组件属性 Schema
-export interface DateRangePickerPropsSchema {
+export interface DateRangePickerPropsSchema extends ComponentSchema {
 	type: 'dateRangePicker';
 	properties: CommonComponentProps & {
 		format?: string;
@@ -21,7 +22,7 @@ export interface DateRangePickerPropsSchema {
 }
 
 // TimePicker 组件属性 Schema
-export interface TimePickerPropsSchema {
+export interface TimePickerPropsSchema extends ComponentSchema {
 	type: 'timePicker';
 	properties: CommonComponentProps & {
 		format?: string;

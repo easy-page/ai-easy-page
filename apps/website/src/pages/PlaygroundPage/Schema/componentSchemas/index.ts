@@ -59,15 +59,23 @@ import {
 } from './dynamicForm';
 import { CustomPropsSchema, getDefaultCustomProps } from './custom';
 import { ComponentType } from '../../constant/componentTypes';
-import type {
-	DivPropsSchema,
-	SpanPropsSchema,
-	PPropsSchema,
-	APropsSchema,
-	UlPropsSchema,
-	LiPropsSchema,
-	CanvasPropsSchema,
-	IframePropsSchema,
+import {
+	type DivPropsSchema,
+	type SpanPropsSchema,
+	type PPropsSchema,
+	type APropsSchema,
+	type UlPropsSchema,
+	type LiPropsSchema,
+	type CanvasPropsSchema,
+	type IframePropsSchema,
+	getDefaultPProps,
+	getDefaultAProps,
+	getDefaultUlProps,
+	getDefaultLiProps,
+	getDefaultCanvasProps,
+	getDefaultIframeProps,
+	getDefaultDivProps,
+	getDefaultSpanProps,
 } from './native';
 
 // 组件属性 Schema 联合类型
@@ -153,36 +161,21 @@ export function getDefaultComponentPropsSchema(
 			return getDefaultCustomProps();
 		// HTML 原生元素默认 props
 		case 'div':
-			return { type: 'div', properties: {} } as DivPropsSchema;
+			return getDefaultDivProps();
 		case 'span':
-			return { type: 'span', properties: {} } as SpanPropsSchema;
+			return getDefaultSpanProps();
 		case 'p':
-			return {
-				type: 'p',
-				properties: { children: '段落文本' },
-			} as PPropsSchema;
+			return getDefaultPProps();
 		case 'a':
-			return {
-				type: 'a',
-				properties: { href: '#', children: '链接' },
-			} as APropsSchema;
+			return getDefaultAProps();
 		case 'ul':
-			return { type: 'ul', properties: {} } as UlPropsSchema;
+			return getDefaultUlProps();
 		case 'li':
-			return {
-				type: 'li',
-				properties: { children: '列表项' },
-			} as LiPropsSchema;
+			return getDefaultLiProps();
 		case 'canvas':
-			return {
-				type: 'canvas',
-				properties: { width: 300, height: 150 },
-			} as CanvasPropsSchema;
+			return getDefaultCanvasProps();
 		case 'iframe':
-			return {
-				type: 'iframe',
-				properties: { src: 'https://example.com', width: '100%', height: 300 },
-			} as IframePropsSchema;
+			return getDefaultIframeProps();
 		default:
 			return getDefaultInputProps();
 	}

@@ -1,3 +1,4 @@
+import { ComponentSchema } from '../component';
 import {
 	FunctionProperty,
 	ReactNodeProperty,
@@ -6,7 +7,7 @@ import {
 import { CommonComponentProps, baseProps } from './types';
 
 // DynamicForm 组件属性 Schema
-export interface DynamicFormPropsSchema {
+export interface DynamicFormPropsSchema extends ComponentSchema {
 	type: 'dynamicForm';
 	properties: CommonComponentProps & {
 		id?: string;

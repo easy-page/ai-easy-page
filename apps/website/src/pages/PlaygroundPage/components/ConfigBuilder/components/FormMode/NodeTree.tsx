@@ -586,6 +586,7 @@ const NodeTree: FC<NodeTreeProps> = ({
 
 									// 如果不是ReactNode类型，不显示
 									return null;
+									
 								})
 								.filter((item): item is TreeNode => item !== null);
 
