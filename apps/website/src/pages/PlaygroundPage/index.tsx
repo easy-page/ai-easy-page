@@ -1,5 +1,5 @@
 import { useState, FC, useEffect, useCallback } from 'react';
-import { Layout, Tabs, Card, Row, Col } from 'antd';
+import { Layout, Tabs, Card } from 'antd';
 import { RobotOutlined, SettingOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 import { useService } from '@/infra/ioc/react';
@@ -10,7 +10,7 @@ import ConfigBuilder from './components/ConfigBuilder';
 import AIBuilder from './components/AIBuilder';
 import PreviewPanel from './components/PreviewPanel';
 import NodeConfigPanel from './components/NodeConfigPanel';
-import VenueSelectionModal from './components/VenueSelectionModal';
+import VenueProjectModal from '@/components/VenueProjectModal';
 import { FormSchema } from './Schema';
 import './index.less';
 import { getVenueDetail } from '@/apis/venue';
@@ -30,24 +30,35 @@ const PlaygroundPage: FC = () => {
 	);
 	const [selectedNode, setSelectedNode] = useState<string | null>(null);
 	const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
-	const [showVenueModal, setShowVenueModal] = useState(false);
+	// 入口参数缺失时，弹出通用选择/创建弹窗
+	const [showVenueProjectModal, setShowVenueProjectModal] = useState(false);
+	const [initProjectId, setInitProjectId] = useState<number | undefined>(
+		undefined
+	);
 	const [loading, setLoading] = useState(false);
 
-	// 检查是否需要显示会场选择弹窗
-	useEffect(() => {
-		const venueId = getQueryString('venueId');
+	// 使用useCallback来避免无限循环（先声明函数，再创建回调）
 
-		if (!venueId) {
-			// 没有venueId参数，显示会场选择弹窗
-			setShowVenueModal(true);
-		} else if (!curVenue || curVenue.id !== Number(venueId)) {
-			// 有venueId参数但当前会场不匹配，需要加载会场信息
-			loadVenueDetailCallback(Number(venueId));
+	// 启动参数校验：必须同时具备 projectId 与 venueId
+	useEffect(() => {
+		const projectIdStr = getQueryString('projectId');
+		const venueIdStr = getQueryString('venueId');
+
+		if (!projectIdStr || !venueIdStr) {
+			// 缺少参数则弹出通用弹窗，允许用户选择项目和会场
+			setInitProjectId(projectIdStr ? Number(projectIdStr) : undefined);
+			setShowVenueProjectModal(true);
+			return;
+		}
+
+		const venueId = Number(venueIdStr);
+		if (!curVenue || curVenue.id !== venueId) {
+			loadVenueDetail(venueId);
 		}
 	}, [curVenue]);
 
 	// 加载会场详情
-	const loadVenueDetail = async (venueId: number) => {
+	async function loadVenueDetail(venueId: number) {
 		setLoading(true);
 		try {
 			const response = await getVenueDetail({ venueId });
@@ -59,22 +70,17 @@ const PlaygroundPage: FC = () => {
 					setCurrentSchema(response.data.page_schema);
 				}
 			} else {
-				// 会场不存在或加载失败，显示会场选择弹窗
-				setShowVenueModal(true);
+				// 会场不存在或加载失败，弹窗让用户重新选择
+				setShowVenueProjectModal(true);
 			}
 		} catch (error) {
 			console.error('加载会场详情失败:', error);
-			// 加载失败，显示会场选择弹窗
-			setShowVenueModal(true);
+			// 加载失败，弹窗让用户重新选择
+			setShowVenueProjectModal(true);
 		} finally {
 			setLoading(false);
 		}
-	};
-
-	// 使用useCallback来避免无限循环
-	const loadVenueDetailCallback = useCallback(loadVenueDetail, [
-		chatService.globalState,
-	]);
+	}
 
 	const handleTabChange = (key: string) => {
 		setActiveTab(key);
@@ -116,11 +122,7 @@ const PlaygroundPage: FC = () => {
 		setCurrentSchema(newSchema);
 	};
 
-	const handleVenueModalCancel = () => {
-		setShowVenueModal(false);
-		// 如果没有选择会场，可以跳转到其他页面或显示提示
-		// 这里暂时保持弹窗打开状态
-	};
+	// 无兜底页，缺参时直接弹窗
 
 	// 如果正在加载，显示加载状态
 	if (loading) {
@@ -220,10 +222,11 @@ const PlaygroundPage: FC = () => {
 				</Layout>
 			</motion.div>
 
-			{/* 会场选择弹窗 */}
-			<VenueSelectionModal
-				visible={showVenueModal}
-				onCancel={handleVenueModalCancel}
+			<VenueProjectModal
+				visible={showVenueProjectModal}
+				onCancel={() => setShowVenueProjectModal(false)}
+				initProjectId={initProjectId}
+				shouldNavigate={true}
 			/>
 		</>
 	);

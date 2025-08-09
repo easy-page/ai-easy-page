@@ -56,7 +56,7 @@ const WorkspacePage: React.FC = () => {
 		return (projects?.data || []).slice(0, 5);
 	}, [projects]);
 
-	console.log('projects', projects, recentProjects);
+	// console.log('projects', projects, recentProjects);
 	return (
 		<div className="workspace-page">
 			{/* 科技装饰元素 */}
@@ -71,10 +71,10 @@ const WorkspacePage: React.FC = () => {
 				</Text>
 			</div>
 
-			<Row gutter={[24, 24]}>
+			<Row gutter={[24, 24]} className="stretch-row">
 				{/* 统计卡片 */}
-				<Col xs={24} sm={12} lg={6}>
-					<Card>
+				<Col xs={24} sm={12} lg={6} className="full-height-col">
+					<Card className="grid-card stretch-card">
 						<Statistic
 							title="我的项目"
 							value={projects?.data?.length || 0}
@@ -115,12 +115,13 @@ const WorkspacePage: React.FC = () => {
 				</Col>
 			</Row>
 
-			<Row gutter={[24, 24]} style={{ marginTop: 24 }}>
+			<Row gutter={[24, 24]} style={{ marginTop: 24 }} className="stretch-row">
 				{/* 快速操作 */}
-				<Col xs={24} lg={12} className="quick-actions-section">
+				<Col xs={24} lg={12} className="quick-actions-section full-height-col">
 					<Card
 						title="快速操作"
 						extra={<Link to="/dashboard/profile">个人设置</Link>}
+						className="grid-card stretch-card"
 					>
 						<Space direction="vertical" size="middle" style={{ width: '100%' }}>
 							<Button
@@ -153,8 +154,12 @@ const WorkspacePage: React.FC = () => {
 				</Col>
 
 				{/* 最近项目 */}
-				<Col xs={24} lg={12}>
-					<Card title="最近项目" extra={<Link to="/projects">查看全部</Link>}>
+				<Col xs={24} lg={12} className="full-height-col">
+					<Card
+						title="最近项目"
+						extra={<Link to="/projects">查看全部</Link>}
+						className="grid-card stretch-card"
+					>
 						{recentProjects.length === 0 ? (
 							<div className="empty-projects">
 								<FileTextOutlined style={{ fontSize: 48, color: '#d9d9d9' }} />
@@ -175,12 +180,12 @@ const WorkspacePage: React.FC = () => {
 						) : (
 							<List
 								dataSource={recentProjects}
+								className="recent-project-list"
 								renderItem={(item) => {
 									const typeConfig =
 										PROJECT_TYPE_CONFIG[item.project_type as ProjectType];
 									return (
 										<List.Item
-											className="recent-project-item"
 											actions={[
 												<Button
 													key="open"
@@ -233,9 +238,9 @@ const WorkspacePage: React.FC = () => {
 			</Row>
 
 			{/* 用户信息卡片 */}
-			<Row gutter={[24, 24]} style={{ marginTop: 24 }}>
+			<Row gutter={[24, 24]} style={{ marginTop: 24 }} className="stretch-row">
 				<Col xs={24} lg={12} className="personal-info-section">
-					<Card title="个人信息">
+					<Card title="个人信息" className="grid-card stretch-card">
 						<Space direction="vertical" size="middle" style={{ width: '100%' }}>
 							<div>
 								<Text strong>用户名：</Text>
@@ -269,8 +274,8 @@ const WorkspacePage: React.FC = () => {
 					</Card>
 				</Col>
 
-				<Col xs={24} lg={12}>
-					<Card title="系统信息">
+				<Col xs={24} lg={12} className="full-height-col">
+					<Card title="系统信息" className="grid-card stretch-card">
 						<Space direction="vertical" size="middle" style={{ width: '100%' }}>
 							<div>
 								<Text strong>Easy Page 版本：</Text>

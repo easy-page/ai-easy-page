@@ -10,6 +10,7 @@ import {
 	SettingOutlined,
 	AppstoreOutlined,
 	BellOutlined,
+	RocketOutlined,
 } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
@@ -37,6 +38,12 @@ const dashboardMenuConfig = {
 			path: '/dashboard/team',
 			label: '团队',
 			icon: <TeamOutlined />,
+		},
+		{
+			key: 'playground',
+			path: '/dashboard/playground',
+			label: 'Playground',
+			icon: <RocketOutlined />,
 		},
 	],
 	sideNav: {
@@ -74,6 +81,12 @@ const dashboardMenuConfig = {
 				label: <Link to="/dashboard/team/members">成员管理</Link>,
 			},
 		],
+		playground: [
+			{
+				key: '/dashboard/playground',
+				label: <Link to="/dashboard/playground">Playground</Link>,
+			},
+		],
 	},
 };
 
@@ -98,6 +111,7 @@ const DashboardLayout: React.FC = () => {
 		if (currentPath.startsWith('/dashboard/workspace')) return 'workspace';
 		if (currentPath.startsWith('/dashboard/profile')) return 'profile';
 		if (currentPath.startsWith('/dashboard/team')) return 'team';
+		if (currentPath.startsWith('/dashboard/playground')) return 'playground';
 		return 'workspace';
 	};
 

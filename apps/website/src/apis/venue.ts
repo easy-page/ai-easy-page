@@ -31,7 +31,7 @@ export interface VenueBase {
 	icon?: string;
 	pageType?: VenuePageType;
 	page_schema?: FormSchema;
-	workspace_id?: number;
+	project_id?: number;
 	tags?: string;
 	venueId?: number;
 	members?: string;

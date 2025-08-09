@@ -36,6 +36,15 @@ const { Search } = Input;
 interface VenueSelectionModalProps {
 	visible: boolean;
 	onCancel: () => void;
+	// 仅创建模式：只显示创建tab，不展示“选择已有会场”
+	mode?: 'full' | 'createOnly';
+	// 关联项目ID（创建时会带上该ID）
+	projectId?: number;
+	// 是否在创建/选择后自动跳转到playground，默认true
+	shouldNavigate?: boolean;
+	// 非跳转模式下的回调
+	onCreated?: (venue: VenueInfo) => void;
+	onSelected?: (venue: VenueInfo) => void;
 }
 
 interface CreateVenueForm {
@@ -47,6 +56,11 @@ interface CreateVenueForm {
 const VenueSelectionModal: FC<VenueSelectionModalProps> = ({
 	visible,
 	onCancel,
+	mode = 'full',
+	projectId,
+	shouldNavigate = true,
+	onCreated,
+	onSelected,
 }) => {
 	const navigate = useNavigate();
 	const chatService = useService(ChatService);
@@ -108,6 +122,7 @@ const VenueSelectionModal: FC<VenueSelectionModalProps> = ({
 				name: createForm.name.trim(),
 				description: createForm.description.trim(),
 				pageType: createForm.pageType,
+				project_id: projectId,
 				// team_id: curTeam.id,
 			});
 
@@ -115,12 +130,18 @@ const VenueSelectionModal: FC<VenueSelectionModalProps> = ({
 				message.success('会场创建成功');
 				chatService.globalState.setCurVenue(response.data);
 
-				// 跳转到playground页面并带上venueId参数
-				const playgroundUrl = appendParamsToUrl('/playground', {
-					venueId: response.data.id,
-				});
-				navigate(playgroundUrl);
-				onCancel();
+				if (shouldNavigate) {
+					// 跳转到playground页面并带上projectId与venueId参数
+					const playgroundUrl = appendParamsToUrl('/dashboard/playground', {
+						projectId: projectId ?? response.data.project_id,
+						venueId: response.data.id,
+					});
+					navigate(playgroundUrl);
+					onCancel();
+				} else {
+					onCreated?.(response.data);
+					onCancel();
+				}
 			} else {
 				message.error(response.message || '创建会场失败');
 			}
@@ -135,12 +156,18 @@ const VenueSelectionModal: FC<VenueSelectionModalProps> = ({
 	const handleSelectVenue = (venue: VenueInfo) => {
 		chatService.globalState.setCurVenue(venue);
 
-		// 跳转到playground页面并带上venueId参数
-		const playgroundUrl = appendParamsToUrl('/playground', {
-			venueId: venue.id,
-		});
-		navigate(playgroundUrl);
-		onCancel();
+		if (shouldNavigate) {
+			// 跳转到playground页面并带上projectId和venueId参数
+			const playgroundUrl = appendParamsToUrl('/dashboard/playground', {
+				projectId,
+				venueId: venue.id,
+			});
+			navigate(playgroundUrl);
+			onCancel();
+		} else {
+			onSelected?.(venue);
+			onCancel();
+		}
 	};
 
 	const handleSearch = (value: string) => {
@@ -324,76 +351,86 @@ const VenueSelectionModal: FC<VenueSelectionModalProps> = ({
 							</div>
 						),
 					},
-					{
-						key: 'select',
-						label: '选择已有会场',
-						children: (
-							<div style={{ padding: '20px 0' }}>
-								<div style={{ marginBottom: 16 }}>
-									<Search
-										placeholder="搜索会场名称或描述"
-										allowClear
-										onSearch={handleSearch}
-										onChange={(e) => setSearchKeyword(e.target.value)}
-										style={{ width: '100%' }}
-									/>
-								</div>
+					...(mode === 'createOnly'
+						? []
+						: [
+								{
+									key: 'select',
+									label: '选择已有会场',
+									children: (
+										<div style={{ padding: '20px 0' }}>
+											<div style={{ marginBottom: 16 }}>
+												<Search
+													placeholder="搜索会场名称或描述"
+													allowClear
+													onSearch={handleSearch}
+													onChange={(e) => setSearchKeyword(e.target.value)}
+													style={{ width: '100%' }}
+												/>
+											</div>
 
-								<Spin spinning={loading}>
-									{filteredVenues.length > 0 ? (
-										<Space direction="vertical" style={{ width: '100%' }}>
-											{filteredVenues.map((venue: VenueInfo) => (
-												<Card
-													key={venue.id}
-													hoverable
-													onClick={() => handleSelectVenue(venue)}
-													style={{ cursor: 'pointer' }}
-												>
-													<div
-														style={{
-															display: 'flex',
-															justifyContent: 'space-between',
-															alignItems: 'center',
-														}}
-													>
-														<div>
-															<Title level={5} style={{ margin: 0 }}>
-																{venue.name}
-															</Title>
-															<Text type="secondary">
-																{venue.description || '暂无描述'}
-															</Text>
-														</div>
-														<div style={{ textAlign: 'right' }}>
-															<Text type="secondary" style={{ fontSize: 12 }}>
-																{venue.pageType === VenuePageType.Form
-																	? '表单页面'
-																	: '完整页面'}
-															</Text>
-															<br />
-															<Text type="secondary" style={{ fontSize: 12 }}>
-																创建于{' '}
-																{new Date(
-																	venue.created_at
-																).toLocaleDateString()}
-															</Text>
-														</div>
-													</div>
-												</Card>
-											))}
-										</Space>
-									) : (
-										<Empty
-											description={
-												searchKeyword ? '未找到匹配的会场' : '暂无会场'
-											}
-											image={Empty.PRESENTED_IMAGE_SIMPLE}
-										/>
-									)}
-								</Spin>
-							</div>
-						),
-					},
+											<Spin spinning={loading}>
+												{filteredVenues.length > 0 ? (
+													<Space direction="vertical" style={{ width: '100%' }}>
+														{filteredVenues.map((venue: VenueInfo) => (
+															<Card
+																key={venue.id}
+																hoverable
+																onClick={() => handleSelectVenue(venue)}
+																style={{ cursor: 'pointer' }}
+															>
+																<div
+																	style={{
+																		display: 'flex',
+																		justifyContent: 'space-between',
+																		alignItems: 'center',
+																	}}
+																>
+																	<div>
+																		<Title level={5} style={{ margin: 0 }}>
+																			{venue.name}
+																		</Title>
+																		<Text type="secondary">
+																			{venue.description || '暂无描述'}
+																		</Text>
+																	</div>
+																	<div style={{ textAlign: 'right' }}>
+																		<Text
+																			type="secondary"
+																			style={{ fontSize: 12 }}
+																		>
+																			{venue.pageType === VenuePageType.Form
+																				? '表单页面'
+																				: '完整页面'}
+																		</Text>
+																		<br />
+																		<Text
+																			type="secondary"
+																			style={{ fontSize: 12 }}
+																		>
+																			创建于{' '}
+																			{new Date(
+																				venue.created_at
+																			).toLocaleDateString()}
+																		</Text>
+																	</div>
+																</div>
+															</Card>
+														))}
+													</Space>
+												) : (
+													<Empty
+														description={
+															searchKeyword ? '未找到匹配的会场' : '暂无会场'
+														}
+														image={Empty.PRESENTED_IMAGE_SIMPLE}
+													/>
+												)}
+											</Spin>
+										</div>
+									),
+								},
+						  ]),
 				]}
 			/>
 		</Modal>

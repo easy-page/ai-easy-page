@@ -168,6 +168,13 @@
 		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 		transition: all 0.3s ease;
 
+		// 统一卡片最小高度，避免视觉高度不一致
+		&.stretch-card {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
+
 		&:hover {
 			transform: translateY(-4px);
 			box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
@@ -240,6 +247,24 @@
 
 	.ant-space {
 		width: 100%;
+	}
+
+	// 让同一行的卡片高度对齐
+	.stretch-row {
+		display: flex;
+		flex-wrap: wrap;
+	}
+	.full-height-col {
+		display: flex;
+	}
+	.grid-card {
+		width: 100%;
+	}
+
+	.recent-project-list {
+		.recent-project-item {
+			align-items: center;
+		}
 	}
 
 	// 修复快速操作和个人信息之间的间距

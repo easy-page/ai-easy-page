@@ -136,5 +136,5 @@ export const getProjectVenues: RequestHandler<
 	{ project_id: number; page_size?: number; page_num?: number },
 	{ data: any[]; total: number }
 > = (params) => {
-	return postReq('/zspt-agent-api/v1/projects/venues', params);
+	return postReq('/zspt-agent-api/v1/venues/query', params);
 };

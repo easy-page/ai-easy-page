@@ -45,6 +45,7 @@ import {
 } from '@/apis/project';
 import { VenueInfo } from '@/apis/venue';
 import './index.less';
+import VenueProjectModal from '@/components/VenueProjectModal';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -56,11 +57,10 @@ const ProjectDetailPage: React.FC = () => {
 	const [projectStats, setProjectStats] = useState<any>(null);
 	const [venues, setVenues] = useState<VenueInfo[]>([]);
 	const [venuesLoading, setVenuesLoading] = useState(false);
+	const [showCreateVenueModal, setShowCreateVenueModal] = useState(false);
 
 	const chatService = useService(ChatService);
-	const curTeam = useObservable(chatService.globalState.curTeam$, null);
 	const curProject = useObservable(chatService.globalState.curProject$, null);
-	const projects = useObservable(chatService.globalState.projects$, null);
 
 	const handleSetCurrentProject = () => {
 		if (!project) return;
@@ -206,6 +206,11 @@ const ProjectDetailPage: React.FC = () => {
 		},
 	];
 
+	const typeConfig = useMemo(
+		() => PROJECT_TYPE_CONFIG[project?.project_type as ProjectType],
+		[project?.project_type]
+	);
+
 	if (loading) {
 		return (
 			<div className="project-detail-page">
@@ -233,11 +238,6 @@ const ProjectDetailPage: React.FC = () => {
 			</div>
 		);
 	}
-
-	const typeConfig = useMemo(
-		() => PROJECT_TYPE_CONFIG[project.project_type as ProjectType],
-		[project.project_type]
-	);
 
 	return (
 		<div className="project-detail-page">
@@ -280,7 +280,7 @@ const ProjectDetailPage: React.FC = () => {
 					<Button
 						type="primary"
 						icon={<PlusOutlined />}
-						onClick={() => navigate('/playground')}
+						onClick={() => setShowCreateVenueModal(true)}
 					>
 						创建会场
 					</Button>
@@ -404,43 +404,46 @@ const ProjectDetailPage: React.FC = () => {
 			</Row>
 
 			{/* 会场列表 */}
-			<Card
-				title={
-					<div className="card-title">
-						<FolderOutlined /> 关联会场
-					</div>
-				}
-				className="venues-card"
-			>
-				<Table
-					columns={venueColumns}
-					dataSource={venues}
-					rowKey="id"
-					loading={venuesLoading}
-					pagination={false}
-					locale={{
-						emptyText: (
-							<div className="empty-state">
-								<FolderOutlined style={{ fontSize: 48, color: '#666' }} />
-								<Text
-									type="secondary"
-									style={{ display: 'block', marginTop: 16 }}
-								>
-									暂无会场，创建您的第一个会场吧！
-								</Text>
-								<Button
-									type="primary"
-									icon={<PlusOutlined />}
-									style={{ marginTop: 16 }}
-									onClick={() => navigate('/playground')}
-								>
-									创建会场
-								</Button>
-							</div>
-						),
-					}}
-				/>
-			</Card>
+			<Table
+				columns={venueColumns}
+				dataSource={venues}
+				rowKey="id"
+				loading={venuesLoading}
+				pagination={false}
+				locale={{
+					emptyText: (
+						<div className="empty-state">
+							<FolderOutlined style={{ fontSize: 48, color: '#666' }} />
+							<Text
+								type="secondary"
+								style={{ display: 'block', marginTop: 16 }}
+							>
+								暂无会场，创建您的第一个会场吧！
+							</Text>
+							<Button
+								type="primary"
+								icon={<PlusOutlined />}
+								style={{ marginTop: 16 }}
+								onClick={() => setShowCreateVenueModal(true)}
+							>
+								创建会场
+							</Button>
+						</div>
+					),
+				}}
+			/>
+
+			{/* 创建/选择会场弹窗（内置项目选择，默认当前项目） */}
+			<VenueProjectModal
+				visible={showCreateVenueModal}
+				onCancel={() => setShowCreateVenueModal(false)}
+				initProjectId={project ? Number(project.id) : undefined}
+				shouldNavigate={false}
+				onCompleted={() => {
+					// 创建或选择成功后刷新列表
+					fetchProjectVenues();
+				}}
+			/>
 		</div>
 	);
 };

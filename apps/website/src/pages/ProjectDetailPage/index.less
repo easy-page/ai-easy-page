@@ -89,3 +89,45 @@
 	}
 }
 
+// 深色主题下的可读性增强（覆盖默认黑色文字）
+.project-detail-page {
+	color: rgba(255, 255, 255, 0.85);
+
+	.ant-card {
+		background: rgba(255, 255, 255, 0.06);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		backdrop-filter: blur(6px);
+	}
+
+	.project-description {
+		color: rgba(255, 255, 255, 0.75);
+	}
+
+	.project-meta {
+		.meta-item {
+			color: rgba(255, 255, 255, 0.75);
+		}
+	}
+
+	.venues-card {
+		.venue-info-cell {
+			.venue-details {
+				.venue-description {
+					color: rgba(255, 255, 255, 0.65);
+				}
+			}
+		}
+	}
+
+	.ant-descriptions-title,
+	.page-title,
+	.card-title {
+		color: #fff;
+	}
+	.ant-descriptions-item-label {
+		color: rgba(255, 255, 255, 0.65);
+	}
+	.ant-descriptions-item-content {
+		color: rgba(255, 255, 255, 0.85);
+	}
+}

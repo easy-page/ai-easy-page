@@ -42,7 +42,6 @@ const App: React.FC = () => {
 							<Route index element={<HomePage />} />
 							<Route path="guide/*" element={<GuidePage />} />
 							<Route path="api/*" element={<ApiPage />} />
-							<Route path="playground" element={<PlaygroundPage />} />
 						</Route>
 
 						{/* 登录后的路由 - 使用DashboardLayout */}
@@ -54,6 +53,7 @@ const App: React.FC = () => {
 								</AuthGuard>
 							}
 						>
+							<Route path="playground" element={<PlaygroundPage />} />
 							<Route path="workspace" element={<WorkspacePage />} />
 							<Route
 								path="workspace/projects"
