@@ -369,8 +369,101 @@ const FormMode: FC<FormModeProps> = ({
 		}
 	};
 
+	// 删除路径上的值：如果最后一级是数组下标，则删除该下标元素；否则删除对象键
+	function deleteValueByPath<TObj extends object>(
+		obj: TObj,
+		path: string
+	): TObj {
+		if (!path) return obj;
+		const parts = path.split('.');
+		const parentPath = parts.slice(0, -1).join('.');
+		const lastKey = parts[parts.length - 1];
+
+		const parent: unknown = parentPath ? getValueByPath(obj, parentPath) : obj;
+		if (parent == null || typeof parent !== 'object') return obj;
+
+		let updatedParent: unknown;
+		const isIndex = /^\d+$/.test(lastKey);
+		if (Array.isArray(parent) && isIndex) {
+			const idx = Number(lastKey);
+			const newArr = [...parent];
+			if (idx < 0 || idx >= newArr.length) return obj;
+			newArr.splice(idx, 1);
+			updatedParent = newArr;
+		} else {
+			const newObj = { ...(parent as Record<string, unknown>) };
+			delete (newObj as Record<string, unknown>)[lastKey];
+			updatedParent = newObj;
+		}
+
+		if (!parentPath) {
+			return updatedParent as TObj;
+		}
+		return setValueByPath(obj, parentPath, updatedParent as unknown as never);
+	}
+
+	// 从节点ID解析出属性路径
+	function nodeIdToPropertyPath(nodeId: string): string | null {
+		// 顶层 child-<index>
+		const topChildOnly = nodeId.match(/^child-(\d+)$/);
+		if (topChildOnly) {
+			return `properties.children.${Number(topChildOnly[1])}`;
+		}
+
+		// 在更复杂的 key 中查找 child-<index>
+		const childMatch = nodeId.match(/child-(\d+)/);
+		if (!childMatch) return null;
+		const componentIndex = Number(childMatch[1]);
+		let path = `properties.children.${componentIndex}`;
+
+		const parts = nodeId.split('-');
+		const propIdx = parts.indexOf('prop');
+		if (propIdx >= 0) {
+			const propName = parts[propIdx + 1];
+			path += `.props.${propName}`;
+		}
+
+		// 如果存在数组项
+		const itemIdx = parts.indexOf('item');
+		if (itemIdx >= 0) {
+			const indexStr = parts[itemIdx + 1];
+			if (indexStr) path += `.${Number(indexStr)}`;
+		}
+
+		// 行内的属性（如 rows.item.N.rowprop.fields）
+		const rowPropIdx = parts.indexOf('rowprop');
+		if (rowPropIdx >= 0) {
+			const rowPropName = parts[rowPropIdx + 1];
+			path += `.${rowPropName}`;
+		}
+
+		// 字段索引（如 fields.field.M）
+		const fieldIdx = parts.indexOf('field');
+		if (fieldIdx >= 0) {
+			const fIndexStr = parts[fieldIdx + 1];
+			if (fIndexStr) path += `.${Number(fIndexStr)}`;
+		}
+
+		return path;
+	}
+
 	const handleDeleteNode = (nodeId: string) => {
-		message.info('删除节点功能暂未实现');
+		if (!schemaData) return;
+
+		let updatedSchema: FormSchema | null = null;
+
+		// 解析属性路径
+		const propertyPath = nodeIdToPropertyPath(nodeId);
+
+		if (propertyPath) {
+			updatedSchema = deleteValueByPath(schemaData, propertyPath);
+		} else {
+			message.warning('无法解析需要删除的节点');
+			return;
+		}
+
+		chatService.globalState.updateVenueSchema(updatedSchema);
+		message.success('已删除节点');
 	};
 
 	return (
