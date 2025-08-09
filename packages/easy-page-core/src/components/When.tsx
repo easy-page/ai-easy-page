@@ -7,7 +7,7 @@ import { RowInfo, useRowInfo } from './DynamicForm';
 // When 组件的 props 类型定义
 export interface WhenProps {
 	effectedBy?: string[]; // 被哪些字段影响
-	show: (params: {
+	show?: (params: {
 		store: FormStore;
 		effectedValues: Record<string, any>;
 		rowInfo?: RowInfo;
@@ -17,7 +17,7 @@ export interface WhenProps {
 
 // When 组件实现
 export const When: React.FC<WhenProps> = observer(
-	({ effectedBy = [], show, children }) => {
+	({ effectedBy = [], show = () => true, children }) => {
 		const { store } = useFormContext();
 		const rowInfo = useRowInfo();
 		const listenerRef = useRef<WhenListener | null>(null);

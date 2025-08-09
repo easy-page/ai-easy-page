@@ -20,14 +20,13 @@ const { Sider, Content } = Layout;
 const PlaygroundPage: FC = () => {
 	const chatService = useService(ChatService);
 	const curVenue = useObservable(chatService.globalState.curVenue$, null);
+	const currentSchema = curVenue?.page_schema || EMPTY_FORM_SCHEMA;
 
 	const [activeTab, setActiveTab] = useState('config');
 	const [previewMode, setPreviewMode] = useState<'create' | 'edit' | 'view'>(
 		'create'
 	);
-	const [currentSchema, setCurrentSchema] = useState<FormSchema | undefined>(
-		undefined
-	);
+
 	const [selectedNode, setSelectedNode] = useState<string | null>(null);
 	const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
 	// 入口参数缺失时，弹出通用选择/创建弹窗
@@ -54,13 +53,6 @@ const PlaygroundPage: FC = () => {
 		const venueId = Number(venueIdStr);
 		if (!curVenue || curVenue.id !== venueId) {
 			loadVenueDetail(venueId);
-		} else {
-			// 当前全局会场已存在，直接依据会场信息设置当前 schema
-			if (curVenue.page_schema) {
-				setCurrentSchema(curVenue.page_schema as FormSchema);
-			} else {
-				setCurrentSchema(EMPTY_FORM_SCHEMA);
-			}
 		}
 	}, [curVenue]);
 
@@ -71,13 +63,6 @@ const PlaygroundPage: FC = () => {
 			const response = await getVenueDetail({ venueId });
 			if (response.success && response.data) {
 				chatService.globalState.setCurVenue(response.data);
-
-				// 如果会场有页面schema，则加载到当前schema，否则使用默认空表单
-				if (response.data.page_schema) {
-					setCurrentSchema(response.data.page_schema as FormSchema);
-				} else {
-					setCurrentSchema(EMPTY_FORM_SCHEMA);
-				}
 			} else {
 				// 会场不存在或加载失败，弹窗让用户重新选择
 				setShowVenueProjectModal(true);
@@ -100,8 +85,7 @@ const PlaygroundPage: FC = () => {
 	};
 
 	const handleSchemaChange = (schema: FormSchema) => {
-		console.log('handleSchemaChange called:', schema);
-		setCurrentSchema(schema);
+		chatService.globalState.updateVenueSchema(schema);
 	};
 
 	const handleNodeSelect = (nodeId: string) => {
@@ -117,18 +101,16 @@ const PlaygroundPage: FC = () => {
 	const handlePropertyChange = (propertyPath: string, value: any) => {
 		if (!currentSchema) return;
 
-		const newSchema = { ...currentSchema };
+		const newSchema = { ...currentSchema } as any;
 		const pathParts = propertyPath.split('.');
 		let current: any = newSchema;
 
-		// 导航到属性路径
 		for (let i = 0; i < pathParts.length - 1; i++) {
 			current = current[pathParts[i]];
 		}
 
-		// 设置新值
 		current[pathParts[pathParts.length - 1]] = value;
-		setCurrentSchema(newSchema);
+		chatService.globalState.updateVenueSchema(newSchema);
 	};
 
 	// 无兜底页，缺参时直接弹窗
@@ -178,8 +160,6 @@ const PlaygroundPage: FC = () => {
 										),
 										children: (
 											<ConfigBuilder
-												schema={currentSchema || null}
-												onSchemaChange={handleSchemaChange}
 												selectedNode={selectedNode}
 												onNodeSelect={handleNodeSelect}
 												expandedKeys={expandedKeys}
@@ -218,7 +198,6 @@ const PlaygroundPage: FC = () => {
 						<Sider width={320} className="playground-config-sider">
 							<Card className="config-sider-card">
 								<NodeConfigPanel
-									schema={currentSchema || null}
 									selectedNode={selectedNode}
 									onNodeSelect={handleNodeSelect}
 									onExpand={setExpandedKeys}

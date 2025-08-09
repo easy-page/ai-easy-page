@@ -29,6 +29,7 @@ import { getQueryString } from '../../common/utils/url';
 import { ConversationMessageType } from '../../common/interfaces/messages/chatMessages/interface';
 import { TeamInfo } from '@/apis/team';
 import { VenueInfo } from '@/apis/venue';
+import { FormSchema } from '@/pages/PlaygroundPage/Schema';
 import { ProjectInfo } from '@/apis/project';
 
 export const MAX_NAME_LENGTH = 10;
@@ -175,6 +176,52 @@ export class ChatGlobalStateEntity extends Entity {
 
 	setCurVenue(venue: VenueInfo | null) {
 		this.curVenue$.next(venue);
+	}
+
+	/**
+	 * 更新当前会场的部分信息（不可为空）
+	 */
+	updateVenue(venuePartial: Partial<VenueInfo>) {
+		const currentVenue = this.curVenue$.value;
+		if (!currentVenue) return;
+		const updatedVenue: VenueInfo = {
+			...currentVenue,
+			...venuePartial,
+			updated_at: new Date().toISOString(),
+		} as VenueInfo;
+		this.curVenue$.next(updatedVenue);
+
+		// 同步更新 venues 列表中对应项（如果已加载）
+		const venuesList = this.venues$.value;
+		if (venuesList && Array.isArray(venuesList.data)) {
+			const newData = venuesList.data.map((item) =>
+				item.id === updatedVenue.id ? { ...item, ...updatedVenue } : item
+			);
+			this.venues$.next({ ...venuesList, data: newData });
+		}
+	}
+
+	/**
+	 * 仅更新当前会场的页面 Schema
+	 */
+	updateVenueSchema(schema: FormSchema) {
+		const currentVenue = this.curVenue$.value;
+		if (!currentVenue) return;
+		const updatedVenue: VenueInfo = {
+			...currentVenue,
+			page_schema: schema,
+			updated_at: new Date().toISOString(),
+		} as VenueInfo;
+		this.curVenue$.next(updatedVenue);
+
+		// 同步更新 venues 列表中对应项（如果已加载）
+		const venuesList = this.venues$.value;
+		if (venuesList && Array.isArray(venuesList.data)) {
+			const newData = venuesList.data.map((item) =>
+				item.id === updatedVenue.id ? { ...item, page_schema: schema } : item
+			);
+			this.venues$.next({ ...venuesList, data: newData });
+		}
 	}
 
 	setVenues(venues: VenueListInfo | null) {

@@ -1,13 +1,14 @@
 import { FC, useState, useEffect } from 'react';
 import { message } from 'antd';
-import { SCHEMA_TEMPLATES, FormSchema } from '../../Schema';
+import { SCHEMA_TEMPLATES } from '../../Schema';
 import FormMode from './components/FormMode';
 import PageMode from './components/PageMode';
 import './index.less';
+import { useService } from '@/infra/ioc/react';
+import { ChatService } from '@/services/chatGlobalState';
+import { useObservable } from '@/hooks/useObservable';
 
 interface ConfigBuilderProps {
-	schema?: FormSchema | null;
-	onSchemaChange?: (schema: FormSchema) => void;
 	selectedNode?: string | null;
 	onNodeSelect?: (nodeId: string) => void;
 	expandedKeys?: string[];
@@ -15,35 +16,26 @@ interface ConfigBuilderProps {
 }
 
 const ConfigBuilder: FC<ConfigBuilderProps> = ({
-	schema,
-	onSchemaChange,
 	selectedNode,
 	onNodeSelect,
 	expandedKeys,
 	onExpand,
 }) => {
-	const [currentSchema, setCurrentSchema] = useState<FormSchema | null>(null);
+	const chatService = useService(ChatService);
+	const curVenue = useObservable(chatService.globalState.curVenue$, null);
 	const [buildMode, setBuildMode] = useState<'form' | 'page'>('form');
-	console.log('12321213123:', currentSchema, schema);
-	// 初始化/同步：优先使用外部 schema，其次用空模板
+	// 若全局还没有 schema，初始化为空模板
 	useEffect(() => {
-		if (schema) {
-			setCurrentSchema(schema);
-		} else if (!currentSchema) {
-			const formSchema = SCHEMA_TEMPLATES.EMPTY_FORM;
-			setCurrentSchema(formSchema);
-			onSchemaChange?.(formSchema);
+		if (!curVenue?.page_schema) {
+			chatService.globalState.updateVenueSchema(SCHEMA_TEMPLATES.EMPTY_FORM);
 		}
-		// 仅当外部 schema 变化时同步；currentSchema 只在本地修改时更新
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [schema]);
+	}, [curVenue?.page_schema]);
 
 	const handleBackToSelect = () => {
 		// 重置为表单模式
 		setBuildMode('form');
 		const formSchema = SCHEMA_TEMPLATES.EMPTY_FORM;
-		setCurrentSchema(formSchema);
-		onSchemaChange?.(formSchema);
+		chatService.globalState.updateVenueSchema(formSchema);
 		message.success('已重置为基础表单结构');
 	};
 
@@ -63,13 +55,11 @@ const ConfigBuilder: FC<ConfigBuilderProps> = ({
 		default:
 			return (
 				<FormMode
-					schema={currentSchema}
 					onBack={handleBackToSelect}
 					onImport={handleImportConfig}
 					onSwitchToPage={handleSwitchToPage}
 					selectedNode={selectedNode}
 					onNodeSelect={onNodeSelect}
-					onSchemaChange={onSchemaChange}
 					expandedKeys={expandedKeys}
 					onExpand={onExpand}
 				/>

@@ -23,43 +23,39 @@ import NodeConfigPanel from '../../../NodeConfigPanel';
 import { getDefaultComponentPropsSchema } from '@/pages/PlaygroundPage/Schema/componentSchemas';
 import { ComponentDisplayNames } from './types';
 import { ComponentType } from './types';
+import { useService } from '@/infra/ioc/react';
+import { ChatService } from '@/services/chatGlobalState';
+import { useObservable } from '@/hooks/useObservable';
 
 interface FormModeProps {
-	schema: FormSchema | null;
 	onBack: () => void;
 	onImport: () => void;
 	onSwitchToPage?: () => void;
 	selectedNode?: string | null;
 	onNodeSelect?: (nodeId: string) => void;
-	onSchemaChange?: (schema: FormSchema) => void;
 	expandedKeys?: string[];
 	onExpand?: (expandedKeys: string[]) => void;
 }
 
 const FormMode: FC<FormModeProps> = ({
-	schema,
 	onBack,
 	onImport,
 	onSwitchToPage,
 	selectedNode,
 	onNodeSelect,
-	onSchemaChange,
 	expandedKeys: externalExpandedKeys,
 	onExpand: externalOnExpand,
 }) => {
-	const [schemaData, setSchemaData] = useState<FormSchema | null>(schema);
+	const chatService = useService(ChatService);
+	const curVenue = useObservable(chatService.globalState.curVenue$, null);
+	const schemaData = (curVenue?.page_schema as FormSchema) || null;
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [currentParentId, setCurrentParentId] = useState<string>('');
 	const [expandedKeys, setExpandedKeys] = useState<string[]>(
 		externalExpandedKeys || []
 	);
 
-	// 当外部 schema 变更时，同步到本地状态（首次加载或上层编辑后）
-	useEffect(() => {
-		if (schema) {
-			setSchemaData(schema);
-		}
-	}, [schema]);
+	// schema 全局管理，无需本地同步
 
 	// 同步外部展开状态
 	useEffect(() => {
@@ -118,8 +114,7 @@ const FormMode: FC<FormModeProps> = ({
 				},
 			};
 
-			setSchemaData(updatedSchema);
-			onSchemaChange?.(updatedSchema);
+			chatService.globalState.updateVenueSchema(updatedSchema);
 
 			// 关闭弹窗
 			setShowAddModal(false);
@@ -203,8 +198,7 @@ const FormMode: FC<FormModeProps> = ({
 					},
 				};
 
-				setSchemaData(updatedSchema);
-				onSchemaChange?.(updatedSchema);
+				chatService.globalState.updateVenueSchema(updatedSchema);
 
 				// 自动选中新创建的项
 				const newItemIndex = currentArray.length;
@@ -246,8 +240,7 @@ const FormMode: FC<FormModeProps> = ({
 						parentParse.propertyPath,
 						newRow
 					);
-					setSchemaData(updatedSchema);
-					onSchemaChange?.(updatedSchema);
+					chatService.globalState.updateVenueSchema(updatedSchema);
 
 					// 自动选中新创建的字段
 					const newFieldIndex = currentRow[rowPropName].length;
@@ -345,8 +338,7 @@ const FormMode: FC<FormModeProps> = ({
 		if (node) {
 			const updatedNode = { ...node, [property]: value };
 			const updatedSchema = setValueByPath(schemaData, nodeId, updatedNode);
-			setSchemaData(updatedSchema);
-			onSchemaChange?.(updatedSchema);
+			chatService.globalState.updateVenueSchema(updatedSchema);
 		}
 	};
 
@@ -383,7 +375,6 @@ const FormMode: FC<FormModeProps> = ({
 
 				<div className="config-panel-container">
 					<NodeConfigPanel
-						schema={schemaData}
 						selectedNode={selectedNode || null}
 						onNodeSelect={onNodeSelect || (() => {})}
 						onExpand={setExpandedKeys}
@@ -396,8 +387,7 @@ const FormMode: FC<FormModeProps> = ({
 									propertyPath,
 									value
 								);
-								setSchemaData(updatedSchema);
-								onSchemaChange?.(updatedSchema);
+								chatService.globalState.updateVenueSchema(updatedSchema);
 							}
 						}}
 					/>
