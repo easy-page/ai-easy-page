@@ -23,19 +23,17 @@ export interface ContainerProps extends Omit<WhenProps, 'children'> {
 	className?: string;
 }
 
-// 标题样式配置
+// 标题样式配置（不设置固定颜色，颜色在 render 阶段按容器类型覆盖）
 const titleStyles: Record<TitleType, React.CSSProperties> = {
 	h1: {
 		fontSize: '24px',
 		fontWeight: 'bold',
 		marginBottom: '16px',
-		color: '#262626',
 	},
 	h2: {
 		fontSize: '20px',
 		fontWeight: '600',
 		marginBottom: '12px',
-		color: '#262626',
 		position: 'relative',
 		paddingLeft: '12px',
 	},
@@ -43,13 +41,11 @@ const titleStyles: Record<TitleType, React.CSSProperties> = {
 		fontSize: '16px',
 		fontWeight: '600',
 		marginBottom: '8px',
-		color: '#595959',
 	},
 	h4: {
 		fontSize: '14px',
 		fontWeight: '500',
 		marginBottom: '6px',
-		color: '#8c8c8c',
 	},
 };
 
@@ -69,7 +65,12 @@ export const Container: React.FC<ContainerProps> = ({
 	const renderTitle = () => {
 		if (!title) return null;
 
-		const titleStyle = titleStyles[titleType];
+		// 在深色背景下（如 Playground 预览卡片）希望标题继承父级颜色；
+		// 在浅色白底容器（Bordered）下强制使用深色标题。
+		const titleStyle: React.CSSProperties = {
+			...titleStyles[titleType],
+			color: containerType === 'Bordered' ? '#262626' : 'inherit',
+		};
 
 		// 二级标题特殊处理：添加左侧竖线
 		if (titleType === 'h2') {

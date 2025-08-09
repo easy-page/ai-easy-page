@@ -11,7 +11,7 @@ import AIBuilder from './components/AIBuilder';
 import PreviewPanel from './components/PreviewPanel';
 import NodeConfigPanel from './components/NodeConfigPanel';
 import VenueProjectModal from '@/components/VenueProjectModal';
-import { FormSchema } from './Schema';
+import { FormSchema, EMPTY_FORM_SCHEMA } from './Schema';
 import './index.less';
 import { getVenueDetail } from '@/apis/venue';
 
@@ -54,6 +54,13 @@ const PlaygroundPage: FC = () => {
 		const venueId = Number(venueIdStr);
 		if (!curVenue || curVenue.id !== venueId) {
 			loadVenueDetail(venueId);
+		} else {
+			// 当前全局会场已存在，直接依据会场信息设置当前 schema
+			if (curVenue.page_schema) {
+				setCurrentSchema(curVenue.page_schema as FormSchema);
+			} else {
+				setCurrentSchema(EMPTY_FORM_SCHEMA);
+			}
 		}
 	}, [curVenue]);
 
@@ -65,9 +72,11 @@ const PlaygroundPage: FC = () => {
 			if (response.success && response.data) {
 				chatService.globalState.setCurVenue(response.data);
 
-				// 如果会场有页面schema，则加载到当前schema
+				// 如果会场有页面schema，则加载到当前schema，否则使用默认空表单
 				if (response.data.page_schema) {
-					setCurrentSchema(response.data.page_schema);
+					setCurrentSchema(response.data.page_schema as FormSchema);
+				} else {
+					setCurrentSchema(EMPTY_FORM_SCHEMA);
 				}
 			} else {
 				// 会场不存在或加载失败，弹窗让用户重新选择
@@ -169,6 +178,7 @@ const PlaygroundPage: FC = () => {
 										),
 										children: (
 											<ConfigBuilder
+												schema={currentSchema || null}
 												onSchemaChange={handleSchemaChange}
 												selectedNode={selectedNode}
 												onNodeSelect={handleNodeSelect}

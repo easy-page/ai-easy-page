@@ -54,6 +54,13 @@ const FormMode: FC<FormModeProps> = ({
 		externalExpandedKeys || []
 	);
 
+	// 当外部 schema 变更时，同步到本地状态（首次加载或上层编辑后）
+	useEffect(() => {
+		if (schema) {
+			setSchemaData(schema);
+		}
+	}, [schema]);
+
 	// 同步外部展开状态
 	useEffect(() => {
 		if (externalExpandedKeys) {

@@ -6,6 +6,7 @@ import PageMode from './components/PageMode';
 import './index.less';
 
 interface ConfigBuilderProps {
+	schema?: FormSchema | null;
 	onSchemaChange?: (schema: FormSchema) => void;
 	selectedNode?: string | null;
 	onNodeSelect?: (nodeId: string) => void;
@@ -14,6 +15,7 @@ interface ConfigBuilderProps {
 }
 
 const ConfigBuilder: FC<ConfigBuilderProps> = ({
+	schema,
 	onSchemaChange,
 	selectedNode,
 	onNodeSelect,
@@ -22,15 +24,19 @@ const ConfigBuilder: FC<ConfigBuilderProps> = ({
 }) => {
 	const [currentSchema, setCurrentSchema] = useState<FormSchema | null>(null);
 	const [buildMode, setBuildMode] = useState<'form' | 'page'>('form');
-
-	// 初始化时创建基础表单结构
+	console.log('12321213123:', currentSchema, schema);
+	// 初始化/同步：优先使用外部 schema，其次用空模板
 	useEffect(() => {
-		if (!currentSchema) {
+		if (schema) {
+			setCurrentSchema(schema);
+		} else if (!currentSchema) {
 			const formSchema = SCHEMA_TEMPLATES.EMPTY_FORM;
 			setCurrentSchema(formSchema);
 			onSchemaChange?.(formSchema);
 		}
-	}, []);
+		// 仅当外部 schema 变化时同步；currentSchema 只在本地修改时更新
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [schema]);
 
 	const handleBackToSelect = () => {
 		// 重置为表单模式

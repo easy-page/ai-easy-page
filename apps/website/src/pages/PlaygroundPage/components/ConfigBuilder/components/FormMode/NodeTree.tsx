@@ -98,7 +98,7 @@ const NodeTree: FC<NodeTreeProps> = ({
 	expandedKeys = [],
 	onExpand,
 }) => {
-	const [filterReactNodeOnly, setFilterReactNodeOnly] = useState(true);
+	const [filterReactNodeOnly, setFilterReactNodeOnly] = useState(false);
 
 	// 递归构建 ReactNodeProperty 的树节点
 	const buildReactNodeTree = (
