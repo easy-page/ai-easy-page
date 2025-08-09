@@ -14,6 +14,7 @@ import VenueProjectModal from '@/components/VenueProjectModal';
 import { FormSchema, EMPTY_FORM_SCHEMA } from './Schema';
 import './index.less';
 import { getVenueDetail } from '@/apis/venue';
+import { useSchemaSaveQueue } from './hooks/useSchemaSaveQueue';
 
 const { Sider, Content } = Layout;
 
@@ -35,6 +36,14 @@ const PlaygroundPage: FC = () => {
 		undefined
 	);
 	const [loading, setLoading] = useState(false);
+
+	// 使用保存队列 Hook
+	const { enqueueChange } = useSchemaSaveQueue({
+		venueId: curVenue?.id,
+		latestSchema: currentSchema,
+		intervalMs: 1500,
+		enableNavigationBlock: true,
+	});
 
 	// 使用useCallback来避免无限循环（先声明函数，再创建回调）
 
@@ -98,19 +107,44 @@ const PlaygroundPage: FC = () => {
 		setSelectedNode(null);
 	};
 
-	const handlePropertyChange = (propertyPath: string, value: any) => {
-		if (!currentSchema) return;
-
-		const newSchema = { ...currentSchema } as any;
-		const pathParts = propertyPath.split('.');
-		let current: any = newSchema;
-
-		for (let i = 0; i < pathParts.length - 1; i++) {
-			current = current[pathParts[i]];
+	const handlePropertyChange = async (propertyPath: string, value: unknown) => {
+		// 本地立即更新（不可变写入 + 对象浅合并），保障交互体验
+		if (currentSchema) {
+			const parts = propertyPath.split('.');
+			const newSchema: any = Array.isArray(currentSchema)
+				? [...(currentSchema as any)]
+				: { ...(currentSchema as any) };
+			let cur: any = newSchema;
+			for (let i = 0; i < parts.length - 1; i++) {
+				const key = parts[i];
+				const oldVal = cur[key];
+				cur[key] =
+					oldVal && typeof oldVal === 'object'
+						? Array.isArray(oldVal)
+							? [...oldVal]
+							: { ...oldVal }
+						: {};
+				cur = cur[key];
+			}
+			const lastKey = parts[parts.length - 1];
+			const oldLeaf = cur[lastKey];
+			if (
+				oldLeaf &&
+				typeof oldLeaf === 'object' &&
+				!Array.isArray(oldLeaf) &&
+				value &&
+				typeof value === 'object' &&
+				!Array.isArray(value)
+			) {
+				cur[lastKey] = { ...oldLeaf, ...(value as Record<string, unknown>) };
+			} else {
+				cur[lastKey] = value as any;
+			}
+			chatService.globalState.updateVenueSchema(newSchema);
 		}
 
-		current[pathParts[pathParts.length - 1]] = value;
-		chatService.globalState.updateVenueSchema(newSchema);
+		// 入队，等待批量提交
+		enqueueChange(propertyPath, value);
 	};
 
 	// 无兜底页，缺参时直接弹窗

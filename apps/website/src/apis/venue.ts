@@ -1,5 +1,6 @@
 import { FormSchema } from '../pages/PlaygroundPage/Schema';
 import { postReq, getReq, RequestHandler } from './axios';
+import type { RequestResult } from './axios';
 
 // 会场状态枚举
 export enum VenueStatus {
@@ -67,6 +68,23 @@ export interface VenueInfo extends VenueBase {
 	created_at: string;
 	updated_at: string;
 }
+
+// ========== 新增：按路径更新 schema 的 API 定义 ==========
+export interface UpdateVenueSchemaByPathParams {
+	venue_id: number;
+	property_path: string; // 例如: 'properties.children.0.props.title'
+	value: unknown; // 服务端进行 JSON 解析
+	merge_object?: boolean; // 若为 true，且叶子是对象，则浅合并
+}
+
+export type UpdateVenueSchemaByPathResult = VenueInfo;
+
+export const updateVenueSchemaByPath: RequestHandler<
+	UpdateVenueSchemaByPathParams,
+	UpdateVenueSchemaByPathResult
+> = (params) => {
+	return postReq('/zspt-agent-api/v1/venues/update-schema-by-path', params);
+};
 
 // 会场列表响应
 export interface VenueListResponse {

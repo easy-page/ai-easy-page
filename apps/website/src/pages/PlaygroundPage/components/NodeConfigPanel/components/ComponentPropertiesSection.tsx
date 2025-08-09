@@ -51,31 +51,40 @@ const ComponentPropertiesSection: FC<ComponentPropertiesSectionProps> = ({
 			componentType as keyof typeof ComponentConfigPanelMap
 		];
 
-	const handleComponentPropsChange = (newProps: any) => {
-		const newChildren = [...children];
+  const handleComponentPropsChange = (newProps: any) => {
+    const newChildren = [...children];
 
-		if (nodeInfo.propName) {
-			const parentComponent = newChildren[nodeInfo.componentIndex!];
-			if (parentComponent && parentComponent.props) {
-				const propComponent = parentComponent.props[
-					nodeInfo.propName
-				] as ComponentSchema;
-				if (propComponent) {
-					parentComponent.props[nodeInfo.propName] = {
-						...propComponent,
-						props: newProps,
-					};
-				}
-			}
-		} else {
-			newChildren[nodeInfo.componentIndex!] = {
-				...newChildren[nodeInfo.componentIndex!],
-				props: newProps,
-			} as ComponentSchema;
-		}
+    if (nodeInfo.propName) {
+      const parentComponent = newChildren[nodeInfo.componentIndex!];
+      if (parentComponent && parentComponent.props) {
+        const propComponent = parentComponent.props[
+          nodeInfo.propName
+        ] as ComponentSchema;
+        if (propComponent) {
+          const mergedProps = {
+            ...(propComponent.props || {}),
+            ...(newProps || {}),
+          };
+          parentComponent.props[nodeInfo.propName] = {
+            ...propComponent,
+            props: mergedProps,
+          } as ComponentSchema;
+        }
+      }
+    } else {
+      const oldComponent = newChildren[nodeInfo.componentIndex!] as ComponentSchema;
+      const mergedProps = {
+        ...(oldComponent?.props || {}),
+        ...(newProps || {}),
+      };
+      newChildren[nodeInfo.componentIndex!] = {
+        ...oldComponent,
+        props: mergedProps,
+      } as ComponentSchema;
+    }
 
-		onPropertyChange('properties.children', newChildren);
-	};
+    onPropertyChange('properties.children', newChildren);
+  };
 
 	const handleFormItemPropsChange = (newFormItemProps: any) => {
 		const newChildren = [...children];

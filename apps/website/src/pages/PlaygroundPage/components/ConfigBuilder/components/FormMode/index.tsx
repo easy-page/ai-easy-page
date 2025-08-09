@@ -222,7 +222,9 @@ const FormMode: FC<FormModeProps> = ({
 				if (
 					currentRow &&
 					typeof currentRow === 'object' &&
-					Array.isArray(currentRow[rowPropName])
+					Array.isArray(
+						(currentRow as Record<string, unknown[]>)[rowPropName] as unknown[]
+					)
 				) {
 					// 添加新的字段
 					const newField = {
@@ -231,8 +233,16 @@ const FormMode: FC<FormModeProps> = ({
 							'<FormItem id="newField" label="新字段" required={false}><Input id="newField" placeholder="请输入内容" /></FormItem>',
 					};
 
-					const newFields = [...currentRow[rowPropName], newField];
-					const newRow = { ...currentRow, [rowPropName]: newFields };
+					const newFields = [
+						...((currentRow as Record<string, unknown[]>)[
+							rowPropName
+						] as unknown[]),
+						newField,
+					];
+					const newRow = {
+						...(currentRow as Record<string, unknown>),
+						[rowPropName]: newFields,
+					} as Record<string, unknown>;
 
 					// 更新整个schema
 					const updatedSchema = setValueByPath(
@@ -243,7 +253,9 @@ const FormMode: FC<FormModeProps> = ({
 					chatService.globalState.updateVenueSchema(updatedSchema);
 
 					// 自动选中新创建的字段
-					const newFieldIndex = currentRow[rowPropName].length;
+					const newFieldIndex = (
+						(currentRow as Record<string, unknown[]>)[rowPropName] as unknown[]
+					).length;
 					const newNodeId = `${parentId}-field-${newFieldIndex}`;
 					onNodeSelect?.(newNodeId);
 
@@ -282,37 +294,70 @@ const FormMode: FC<FormModeProps> = ({
 		return null;
 	};
 
-	// 获取指定路径的值的辅助函数
-	const getValueByPath = (obj: any, path: string): any => {
+	// 获取指定路径的值（对数组下标和对象键均兼容），去除 any
+	function getValueByPath<TObj extends object, TResult = unknown>(
+		obj: TObj,
+		path: string
+	): TResult | undefined {
 		const parts = path.split('.');
-		let current = obj;
-		for (const part of parts) {
-			if (current && typeof current === 'object') {
-				current = current[part];
+		let current: unknown = obj;
+		for (const rawKey of parts) {
+			if (current == null || typeof current !== 'object') return undefined;
+			const isIndex = /^\d+$/.test(rawKey);
+			if (Array.isArray(current) && isIndex) {
+				current = current[Number(rawKey)];
 			} else {
-				return undefined;
+				current = (current as Record<string, unknown>)[rawKey];
 			}
 		}
-		return current;
-	};
+		return current as TResult;
+	}
 
-	// 设置指定路径的值的辅助函数
-	const setValueByPath = (obj: any, path: string, value: any): any => {
+	// 设置指定路径的值（不可变写法，必要时创建中间对象/数组），去除 any
+	function setValueByPath<TObj extends object, V = unknown>(
+		obj: TObj,
+		path: string,
+		value: V
+	): TObj {
 		const parts = path.split('.');
-		const newObj = { ...obj };
-		let current = newObj;
-
+		const rootClone: unknown = Array.isArray(obj)
+			? [...(obj as unknown[])]
+			: { ...(obj as Record<string, unknown>) };
+		let current: unknown = rootClone;
 		for (let i = 0; i < parts.length - 1; i++) {
-			const part = parts[i];
-			if (!(part in current) || typeof current[part] !== 'object') {
-				current[part] = {};
+			const rawKey = parts[i];
+			const isIndex = /^\d+$/.test(rawKey);
+			if (Array.isArray(current) && isIndex) {
+				const idx = Number(rawKey);
+				const arr = current as unknown[];
+				const nextVal = arr[idx];
+				arr[idx] =
+					nextVal && typeof nextVal === 'object'
+						? Array.isArray(nextVal)
+							? [...nextVal]
+							: { ...(nextVal as Record<string, unknown>) }
+						: {};
+				current = arr[idx];
+			} else {
+				const objCur = current as Record<string, unknown>;
+				const nextVal = objCur[rawKey];
+				objCur[rawKey] =
+					nextVal && typeof nextVal === 'object'
+						? Array.isArray(nextVal)
+							? [...nextVal]
+							: { ...(nextVal as Record<string, unknown>) }
+						: {};
+				current = objCur[rawKey];
 			}
-			current = current[part];
 		}
-
-		current[parts[parts.length - 1]] = value;
-		return newObj;
-	};
+		const lastKey = parts[parts.length - 1];
+		if (Array.isArray(current) && /^\d+$/.test(lastKey)) {
+			(current as unknown[])[Number(lastKey)] = value as unknown;
+		} else {
+			(current as Record<string, unknown>)[lastKey] = value as unknown;
+		}
+		return rootClone as TObj;
+	}
 
 	const handleAddNode = (parentId: string, nodeType: string) => {
 		if (nodeType === 'array-item') {
@@ -380,15 +425,13 @@ const FormMode: FC<FormModeProps> = ({
 						onExpand={setExpandedKeys}
 						expandedKeys={expandedKeys}
 						onPropertyChange={(propertyPath: string, value: any) => {
-							// 这里需要根据propertyPath来更新schema
-							if (schemaData) {
-								const updatedSchema = setValueByPath(
-									schemaData,
-									propertyPath,
-									value
-								);
-								chatService.globalState.updateVenueSchema(updatedSchema);
-							}
+							if (!schemaData) return;
+							const updatedSchema = setValueByPath(
+								schemaData,
+								propertyPath,
+								value
+							);
+							chatService.globalState.updateVenueSchema(updatedSchema);
 						}}
 					/>
 				</div>
