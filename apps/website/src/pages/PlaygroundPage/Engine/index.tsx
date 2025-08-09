@@ -316,7 +316,7 @@ export class SchemaEngine {
 
 		// 处理组件属性
 		const componentProps = processComponentProps(
-			schema.props,
+			schema.properties,
 			this.jsxParser,
 			this.renderComponent.bind(this)
 		);

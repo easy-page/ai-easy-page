@@ -19,6 +19,7 @@ import CanvasConfigPanel from './CanvasConfigPanel';
 import IframeConfigPanel from './IframeConfigPanel';
 import DynamicFormConfigPanel from './DynamicFormConfigPanel';
 import CustomConfigPanel from './CustomConfigPanel';
+import TextConfigPanel from './TextConfigPanel';
 import FormItemConfigPanel from './FormItemConfigPanel';
 import FormConfigPanel from './FormConfigPanel';
 import ReactNodeConfigPanel from './ReactNodeConfigPanel';
@@ -42,6 +43,7 @@ export const ComponentConfigPanelMap = {
 	Container: ContainerConfigPanel,
 	DynamicForm: DynamicFormConfigPanel,
 	Custom: CustomConfigPanel,
+	OnlyText: TextConfigPanel,
 	// 原生 HTML 元素：按元素拆分面板
 	div: DivConfigPanel,
 	span: SpanConfigPanel,
@@ -75,4 +77,5 @@ export {
 	FunctionReactNodePropertyConfigPanel,
 	ReactNodeArrayConfigPanel,
 	NodeSelectorModal,
+	TextConfigPanel,
 };

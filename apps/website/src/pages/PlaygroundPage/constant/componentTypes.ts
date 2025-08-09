@@ -46,5 +46,5 @@ export enum ComponentType {
 	CANVAS = 'canvas',
 	IFRAME = 'iframe',
 	// 简单文本组件
-	TEXT = 'text',
+	ONLY_TEXT = 'OnlyText',
 }

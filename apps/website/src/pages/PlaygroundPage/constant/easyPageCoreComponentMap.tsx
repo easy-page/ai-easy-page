@@ -83,9 +83,10 @@ export const EASY_PAGE_EXTENDED_COMPONENT_MAP: Record<
 	// 占位符组件
 	EmptyNode: () => <div style={{ color: 'white' }}>暂无内容</div>,
 	// 简单文本组件：直接渲染文本
-	text: ((props: { text?: string }) => (
-		<>{props.text ?? ''}</>
-	)) as unknown as React.ComponentType<any>,
+	OnlyText: ((props: { text?: string }) => {
+		console.log('qweqwqwew1232132132qe:', props);
+		return <>{props.text ?? ''}</>;
+	}) as unknown as React.ComponentType<any>,
 };
 
 // 获取组件

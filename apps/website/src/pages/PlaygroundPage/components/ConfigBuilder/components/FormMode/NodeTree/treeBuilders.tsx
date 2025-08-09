@@ -81,7 +81,7 @@ const buildComponentPropertiesTree = (
 	actions: BuildActions
 ): TreeNode[] => {
 	const properties: TreeNode[] = [];
-	const propsEntries = Object.entries((component as any).props || {});
+	const propsEntries = Object.entries((component as any).properties || {});
 	// If the new structure exposes children at top-level, render it as an array property first
 	if (Array.isArray((component as any).children)) {
 		const key = 'children';
@@ -169,7 +169,7 @@ const buildComponentPropertiesTree = (
 
 	propsEntries.forEach(([key, value]) => {
 		const propKey = `${parentKey}-prop-${key}`;
-		const currentPropertyPath = `${propertyPath}.props.${key}`;
+		const currentPropertyPath = `${propertyPath}.properties.${key}`;
 
 		if (
 			!showReactNodeOnly ||

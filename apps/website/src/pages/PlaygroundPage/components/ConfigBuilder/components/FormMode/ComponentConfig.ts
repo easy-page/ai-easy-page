@@ -205,6 +205,10 @@ export const COMPONENT_CONFIG: Record<ComponentType, ComponentConfig> = {
 		canUseFormItem: false,
 		description: 'HTML 内联框架',
 	},
+	[ComponentType.ONLY_TEXT]: {
+		canUseFormItem: false,
+		description: '纯文本组件，用于显示纯文本',
+	},
 };
 
 // 获取组件配置

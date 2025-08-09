@@ -190,14 +190,14 @@ const NodeConfigPanel: FC<NodeConfigPanelProps> = ({
 			if (component) {
 				// 更新组件的属性，将 ReactNodeProperty 替换为 ComponentSchema
 				const newProps = {
-					...component.props,
+					...component.properties,
 					[propertyPath]: componentSchema,
 				};
 
 				const newChildren = [...children];
 				newChildren[nodeInfo.componentIndex!] = {
 					...newChildren[nodeInfo.componentIndex!],
-					props: newProps,
+					properties: newProps,
 				};
 
 				// 通知父组件更新

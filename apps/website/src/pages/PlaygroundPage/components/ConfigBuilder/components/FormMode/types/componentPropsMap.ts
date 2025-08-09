@@ -35,7 +35,7 @@ import {
 	EmptyProps,
 	ResultProps,
 } from 'antd';
-import { CustomProps, IconProps } from './componentProps';
+import { CustomProps, IconProps, OnlyTextProps } from './componentProps';
 import { ComponentType } from '../../../../../constant/componentTypes';
 import {
 	DivProps,
@@ -97,5 +97,5 @@ export const ComponentPropsMap: Record<ComponentType, any> = {
 	[ComponentType.CANVAS]: {} as CanvasProps,
 	[ComponentType.IFRAME]: {} as IframeProps,
 	// 简单文本组件（仅 text）
-	[ComponentType.TEXT]: {} as { text?: string },
+	[ComponentType.ONLY_TEXT]: {} as OnlyTextProps,
 };

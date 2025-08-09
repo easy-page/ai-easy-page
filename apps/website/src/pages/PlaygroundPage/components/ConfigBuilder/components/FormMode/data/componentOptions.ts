@@ -389,6 +389,14 @@ export const ComponentTypeOptionsWithCategory: ComponentTypeOption[] = [
 		icon: '🪟',
 		canUseFormItem: false,
 	},
+	{
+		label: '纯文本',
+		value: ComponentType.ONLY_TEXT,
+		category: ComponentCategory.HTML,
+		description: '纯文本组件，用于显示纯文本',
+		icon: '🪟',
+		canUseFormItem: false,
+	},
 ];
 
 // 按分类获取组件选项

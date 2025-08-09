@@ -32,7 +32,7 @@ const NodeSelectorModal: FC<NodeSelectorModalProps> = ({
 	const handleConfirm = () => {
 		const componentSchema: ComponentSchema = {
 			type: selectedType as ComponentType,
-			props: {},
+			properties: {},
 		};
 		onConfirm(componentSchema);
 	};

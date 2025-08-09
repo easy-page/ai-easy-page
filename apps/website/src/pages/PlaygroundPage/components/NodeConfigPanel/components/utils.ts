@@ -109,12 +109,12 @@ export const parseNodeId = (
 		const componentIndex = parseInt(parts[1]);
 		const propName = parts[propIndex + 1];
 
-		const propertyPath = `properties.children.${componentIndex}.props.${propName}`;
+		const propertyPath = `properties.children.${componentIndex}.properties.${propName}`;
 
 		// 根据当前 schema 判定该属性是否为直接的组件 schema
 		const children = effectiveSchema?.properties?.children || [];
 		const parentComponent = children[componentIndex];
-		const propertyValue = parentComponent?.props?.[propName];
+		const propertyValue = parentComponent?.properties?.[propName];
 
 		if (
 			propertyValue &&

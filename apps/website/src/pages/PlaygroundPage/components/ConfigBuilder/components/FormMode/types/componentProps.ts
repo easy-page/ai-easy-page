@@ -217,6 +217,10 @@ export interface AlertProps extends ComponentProps {
 	closable?: boolean;
 }
 
+export interface OnlyTextProps extends ComponentProps {
+	text?: string;
+}
+
 export interface CardProps extends ComponentProps {
 	title?: string;
 	extra?: React.ReactNode;

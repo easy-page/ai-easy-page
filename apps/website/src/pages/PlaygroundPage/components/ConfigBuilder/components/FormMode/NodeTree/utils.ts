@@ -16,10 +16,10 @@ export const canAddChildren = (component: ComponentSchema): boolean => {
 	if (Array.isArray((component as any).children)) {
 		return true;
 	}
-	if (component && (component as any).props) {
-		const maybeChildren = ((component as any).props as Record<string, unknown>)[
-			'children'
-		];
+	if (component && (component as any).properties) {
+		const maybeChildren = (
+			(component as any).properties as Record<string, unknown>
+		)['children'];
 		if (isReactNodeProperty(maybeChildren)) {
 			return true;
 		}

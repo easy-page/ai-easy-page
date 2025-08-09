@@ -108,7 +108,7 @@ const FormMode: FC<FormModeProps> = ({
 
 		const newComponent = {
 			type: componentType,
-			props: defaultPropsSchema as Record<string, any>,
+			properties: defaultPropsSchema as Record<string, any>,
 			canHaveChildren: inferCanHaveChildren(componentType, defaultPropsSchema),
 			isFormComponent: finalIsFormComponent,
 			formItem: finalIsFormComponent
@@ -204,7 +204,7 @@ const FormMode: FC<FormModeProps> = ({
 			// 获取当前数组
 			const children = [...(schemaData.properties.children || [])];
 			const component = children[componentIndex];
-			const currentArray = component?.props?.[propName];
+			const currentArray = component?.properties?.[propName];
 
 			if (Array.isArray(currentArray)) {
 				// 根据属性名确定要添加的类型
@@ -236,8 +236,8 @@ const FormMode: FC<FormModeProps> = ({
 
 				// 更新数组
 				const newArray = [...currentArray, newItem];
-				const newProps = { ...component.props, [propName]: newArray };
-				children[componentIndex] = { ...component, props: newProps };
+				const newProps = { ...component.properties, [propName]: newArray };
+				children[componentIndex] = { ...component, properties: newProps };
 
 				const updatedSchema: FormSchema = {
 					...schemaData,
@@ -329,7 +329,7 @@ const FormMode: FC<FormModeProps> = ({
 				const propIndex = parentKey.split('-').indexOf('prop');
 				const componentIndex = parseInt(parentKey.split('-')[1]);
 				const propName = parentKey.split('-')[propIndex + 1];
-				const propertyPath = `properties.children.${componentIndex}.props.${propName}.${index}`;
+				const propertyPath = `properties.children.${componentIndex}.properties.${propName}.${index}`;
 
 				return {
 					type: 'array-item' as const,
@@ -478,7 +478,7 @@ const FormMode: FC<FormModeProps> = ({
 		if (propIdx >= 0) {
 			const propName = parts[propIdx + 1];
 			if (propName) {
-				tokens.push('props', propName);
+				tokens.push('properties', propName);
 			}
 		}
 

@@ -39,7 +39,7 @@ const PropertyConfigSection: FC<PropertyConfigSectionProps> = ({
 
 	const children = effectiveSchema.properties?.children || [];
 	const component = children[nodeInfo.componentIndex!];
-	const propValue = component?.props?.[nodeInfo.propName!];
+	const propValue = component?.properties?.[nodeInfo.propName!];
 
 	if (propValue && typeof propValue === 'object' && 'type' in propValue) {
 		const handlePropertyChange = (newValue: any) => {
@@ -47,8 +47,8 @@ const PropertyConfigSection: FC<PropertyConfigSectionProps> = ({
 			const newComponent = {
 				...newChildren[nodeInfo.componentIndex!],
 			} as ComponentSchema;
-			newComponent.props = {
-				...newComponent.props,
+			newComponent.properties = {
+				...newComponent.properties,
 				[nodeInfo.propName!]: newValue,
 			};
 			newChildren[nodeInfo.componentIndex!] = newComponent;
@@ -123,8 +123,8 @@ const PropertyConfigSection: FC<PropertyConfigSectionProps> = ({
 						const newComponent = {
 							...newChildren[nodeInfo.componentIndex!],
 						} as ComponentSchema;
-						newComponent.props = {
-							...newComponent.props,
+						newComponent.properties = {
+							...newComponent.properties,
 							[nodeInfo.propName!]: newValue,
 						};
 						newChildren[nodeInfo.componentIndex!] = newComponent;

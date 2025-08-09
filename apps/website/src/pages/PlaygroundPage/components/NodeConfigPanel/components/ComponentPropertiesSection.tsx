@@ -42,15 +42,17 @@ const ComponentPropertiesSection: FC<ComponentPropertiesSectionProps> = ({
 			componentType as keyof typeof ComponentConfigPanelMap
 		];
 
+	console.log('qweqwqwewqe:', componentType, ComponentConfigPanelMap);
+
 	const handleComponentPropsChange = (newProps: any) => {
 		const mergedProps = {
-			...(component?.props || {}),
+			...(component?.properties || {}),
 			...(newProps || {}),
 		} as any;
 		if (typeof component?.type === 'string') {
 			mergedProps.__componentType = component.type;
 		}
-		onPropertyChange(`${nodeInfo.propertyPath}.props`, mergedProps);
+		onPropertyChange(`${nodeInfo.propertyPath}.properties`, mergedProps);
 	};
 
 	const handleFormItemPropsChange = (newFormItemProps: any) => {
@@ -87,7 +89,7 @@ const ComponentPropertiesSection: FC<ComponentPropertiesSectionProps> = ({
 				children: (
 					<ComponentConfigPanel
 						key={`${nodeInfo.propertyPath}-component`}
-						props={component.props || {}}
+						props={component.properties || {}}
 						onChange={handleComponentPropsChange}
 						onNodeSelect={onNodeSelect}
 						onExpand={onExpand}
@@ -131,7 +133,7 @@ const ComponentPropertiesSection: FC<ComponentPropertiesSectionProps> = ({
 			<div className="component-properties">
 				<ComponentConfigPanel
 					key={`${nodeInfo.propertyPath}-component-only`}
-					props={component.props || {}}
+					props={component.properties || {}}
 					onChange={handleComponentPropsChange}
 					onNodeSelect={onNodeSelect}
 					onExpand={onExpand}

@@ -96,10 +96,8 @@ const ReactNodeConfigPanel: FC<ReactNodeConfigPanelProps> = ({
 		// 创建新的组件schema
 		const newComponent: ComponentSchema = {
 			type: componentType,
-			props: getDefaultComponentPropsSchema(componentType).properties as Record<
-				string,
-				any
-			>,
+			properties: getDefaultComponentPropsSchema(componentType)
+				.properties as Record<string, any>,
 			formItem: isFormComponent
 				? {
 						type: 'formItem' as const,
@@ -126,7 +124,7 @@ const ReactNodeConfigPanel: FC<ReactNodeConfigPanelProps> = ({
 
 		// 自动选中新创建的节点并展开到该节点
 		if (propertyPath) {
-			// 如果 propertyPath 是完整路径（如 properties.children.0.props.title）
+			// 如果 propertyPath 是完整路径（如 properties.children.0.properties.title）
 			const pathParts = propertyPath.split('.');
 			if (
 				pathParts.length >= 4 &&
@@ -158,7 +156,7 @@ const ReactNodeConfigPanel: FC<ReactNodeConfigPanelProps> = ({
 	// 处理查看节点按钮点击
 	const handleViewNode = () => {
 		if (value?.schema && propertyPath) {
-			// 如果 propertyPath 是完整路径（如 properties.children.0.props.title）
+			// 如果 propertyPath 是完整路径（如 properties.children.0.properties.title）
 			const pathParts = propertyPath.split('.');
 			if (
 				pathParts.length >= 4 &&

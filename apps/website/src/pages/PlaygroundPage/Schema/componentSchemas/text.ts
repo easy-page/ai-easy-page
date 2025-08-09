@@ -1,14 +1,14 @@
 import { ComponentSchema } from '../component';
 
-export interface TextSchema extends ComponentSchema {
-	type: 'text';
+export interface TextPropsSchema extends ComponentSchema {
+	type: 'OnlyText';
 	properties: {
 		text: string;
 	};
 }
 
-export const getDefaultTextProps = (): TextSchema => ({
-	type: 'text',
+export const getDefaultTextProps = (): TextPropsSchema => ({
+	type: 'OnlyText',
 	properties: {
 		text: '',
 	},
