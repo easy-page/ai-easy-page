@@ -175,6 +175,7 @@ export class ChatGlobalStateEntity extends Entity {
 	}
 
 	setCurVenue(venue: VenueInfo | null) {
+		console.log('setCurVenue', venue?.page_schema?.properties?.children);
 		this.curVenue$.next(venue);
 	}
 
@@ -182,6 +183,10 @@ export class ChatGlobalStateEntity extends Entity {
 	 * 更新当前会场的部分信息（不可为空）
 	 */
 	updateVenue(venuePartial: Partial<VenueInfo>) {
+		console.log(
+			'setCurVenue updateVenue',
+			venuePartial?.page_schema?.properties?.children
+		);
 		const currentVenue = this.curVenue$.value;
 		if (!currentVenue) return;
 		const updatedVenue: VenueInfo = {
@@ -205,6 +210,7 @@ export class ChatGlobalStateEntity extends Entity {
 	 * 仅更新当前会场的页面 Schema
 	 */
 	updateVenueSchema(schema: FormSchema) {
+		console.log('setCurVenue updateVenueSchema', schema?.properties?.children);
 		const currentVenue = this.curVenue$.value;
 		if (!currentVenue) return;
 		const updatedVenue: VenueInfo = {

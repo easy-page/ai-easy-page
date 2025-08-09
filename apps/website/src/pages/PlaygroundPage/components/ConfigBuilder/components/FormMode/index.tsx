@@ -49,6 +49,7 @@ const FormMode: FC<FormModeProps> = ({
 	const chatService = useService(ChatService);
 	const curVenue = useObservable(chatService.globalState.curVenue$, null);
 	const schemaData = (curVenue?.page_schema as FormSchema) || null;
+	console.log('loadVenueDetail response.data schemaData123213', curVenue);
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [currentParentId, setCurrentParentId] = useState<string>('');
 	const [expandedKeys, setExpandedKeys] = useState<string[]>(
@@ -370,21 +371,6 @@ const FormMode: FC<FormModeProps> = ({
 
 	const handleDeleteNode = (nodeId: string) => {
 		message.info('删除节点功能暂未实现');
-	};
-
-	const handlePropertyChange = (
-		nodeId: string,
-		property: string,
-		value: any
-	) => {
-		if (!schemaData) return;
-
-		const node = getValueByPath(schemaData, nodeId);
-		if (node) {
-			const updatedNode = { ...node, [property]: value };
-			const updatedSchema = setValueByPath(schemaData, nodeId, updatedNode);
-			chatService.globalState.updateVenueSchema(updatedSchema);
-		}
 	};
 
 	return (

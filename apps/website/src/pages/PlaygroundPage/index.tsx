@@ -64,11 +64,12 @@ const PlaygroundPage: FC = () => {
 	}, [curVenue]);
 
 	// 加载会场详情
-	async function loadVenueDetail(venueId: number) {
+	const loadVenueDetail = async (venueId: number) => {
 		setLoading(true);
 		try {
 			const response = await getVenueDetail({ venueId });
 			if (response.success && response.data) {
+				console.log('loadVenueDetail response.data', response.data);
 				chatService.globalState.setCurVenue(response.data);
 			} else {
 				// 会场不存在或加载失败，弹窗让用户重新选择
@@ -81,7 +82,7 @@ const PlaygroundPage: FC = () => {
 		} finally {
 			setLoading(false);
 		}
-	}
+	};
 
 	const handleTabChange = (key: string) => {
 		setActiveTab(key);
@@ -89,10 +90,6 @@ const PlaygroundPage: FC = () => {
 
 	const handlePreviewModeChange = (mode: 'create' | 'edit' | 'view') => {
 		setPreviewMode(mode);
-	};
-
-	const handleSchemaChange = (schema: FormSchema) => {
-		chatService.globalState.updateVenueSchema(schema);
 	};
 
 	const handleNodeSelect = (nodeId: string) => {
@@ -138,6 +135,7 @@ const PlaygroundPage: FC = () => {
 			} else {
 				cur[lastKey] = value as any;
 			}
+			console.log('setCurVenue handlePropertyChange newSchema', newSchema);
 			chatService.globalState.updateVenueSchema(newSchema);
 		}
 	};

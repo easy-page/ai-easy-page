@@ -23,13 +23,8 @@ const ConfigBuilder: FC<ConfigBuilderProps> = ({
 }) => {
 	const chatService = useService(ChatService);
 	const curVenue = useObservable(chatService.globalState.curVenue$, null);
+	console.log('loadVenueDetail response.data configBuilder', curVenue);
 	const [buildMode, setBuildMode] = useState<'form' | 'page'>('form');
-	// 若全局还没有 schema，初始化为空模板
-	useEffect(() => {
-		if (!curVenue?.page_schema) {
-			chatService.globalState.updateVenueSchema(SCHEMA_TEMPLATES.EMPTY_FORM);
-		}
-	}, [curVenue?.page_schema]);
 
 	const handleBackToSelect = () => {
 		// 重置为表单模式
