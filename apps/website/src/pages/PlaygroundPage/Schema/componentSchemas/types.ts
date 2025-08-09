@@ -5,7 +5,7 @@ import {
 } from '../specialProperties';
 
 // 通用组件属性
-export interface CommonComponentProps {
+export interface CommonComponentProps extends Record<string, any> {
 	placeholder?: string;
 	disabled?: boolean;
 	style?: Record<string, any>;

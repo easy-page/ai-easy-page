@@ -80,12 +80,36 @@ const FormMode: FC<FormModeProps> = ({
 		const canUseFormItemForComponent = canUseFormItem(componentType);
 		const finalIsFormComponent = isFormComponent && canUseFormItemForComponent;
 
+		const defaultPropsSchema = getDefaultComponentPropsSchema(componentType)
+			.properties as Record<string, any>;
+
+		const inferCanHaveChildren = (
+			type: ComponentType,
+			props: Record<string, any>
+		): boolean => {
+			if (props && Object.prototype.hasOwnProperty.call(props, 'children')) {
+				return true;
+			}
+			const legacyContainerTypes = new Set<ComponentType>([
+				ComponentType.CONTAINER,
+				ComponentType.DYNAMIC_FORM,
+				ComponentType.CUSTOM,
+				// HTML-like elements commonly accepting children
+				ComponentType.DIV,
+				ComponentType.SPAN,
+				ComponentType.P,
+				ComponentType.A,
+				ComponentType.UL,
+				ComponentType.LI,
+			]);
+
+			return legacyContainerTypes.has(type);
+		};
+
 		const newComponent = {
 			type: componentType,
-			props: getDefaultComponentPropsSchema(componentType).properties as Record<
-				string,
-				any
-			>,
+			props: defaultPropsSchema as Record<string, any>,
+			canHaveChildren: inferCanHaveChildren(componentType, defaultPropsSchema),
 			isFormComponent: finalIsFormComponent,
 			formItem: finalIsFormComponent
 				? {

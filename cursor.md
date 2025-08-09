@@ -1006,3 +1006,14 @@ if (res.message) {
 ```
 
 然后保留，在页面离开或者刷新或者关闭前，弹出正在保存窗口，保存完毕继续关闭窗口。
+
+# 修改配置面板
+
+1. 刚才新增的 html 所有元素，比如：canvas、div、p、iframe 、span、a 、ul、li，应该都具备自身特点 + 通用 html 元素配置的配置面板
+
+现在的配置面板：/Users/kp/Documents/ai-works/easy-page-v2/apps/website/src/pages/PlaygroundPage/components/NodeConfigPanel/components/HtmlElementConfigPanel.tsx
+
+因此：
+
+- 现在已经有了：apps/website/src/pages/PlaygroundPage/Schema/componentSchemas/native.ts 定义
+- 应该和其他组件一样，基于这个定义去给每个元素增加配置面板：自身属性 + 通用 html 元素配置

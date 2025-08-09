@@ -33,17 +33,20 @@ interface TreeNode {
 	nodeType?: 'component' | 'property' | 'array' | 'reactNode'; // 节点类型
 }
 
-// 判断组件是否支持children
-const supportsChildren = (componentType: string): boolean => {
-	// 支持children的组件类型
-	const componentsWithChildren = [
-		'Container',
-		'DynamicForm',
-		'Custom',
-		// 可以根据需要添加更多支持children的组件
-	];
-
-	return componentsWithChildren.includes(componentType);
+// 判断组件是否支持 children 添加（优先使用 schema 显式标志）
+// 顺序：schema.canHaveChildren → props.children 是 ReactNodeProperty → 兼容旧容器白名单
+const canAddChildren = (component: ComponentSchema): boolean => {
+	if (typeof (component as any).canHaveChildren === 'boolean') {
+		return (component as any).canHaveChildren as boolean;
+	}
+	if (component && (component as any).props) {
+		const maybeChildren = ((component as any).props as Record<string, unknown>)['children'];
+		if (isReactNodeProperty(maybeChildren)) {
+			return true;
+		}
+	}
+	const legacyContainerTypes = new Set(['Container', 'DynamicForm', 'Custom']);
+	return legacyContainerTypes.has(component.type);
 };
 
 // 判断组件是否支持数组属性
@@ -166,7 +169,7 @@ const NodeTree: FC<NodeTreeProps> = ({
 		const properties: TreeNode[] = [];
 
 		// 遍历组件的所有属性
-		Object.entries(component.props || {}).forEach(([key, value]) => {
+		Object.entries((component as any).props || {}).forEach(([key, value]) => {
 			const propKey = `${parentKey}-prop-${key}`;
 			const currentPropertyPath = `${propertyPath}.props.${key}`;
 
@@ -178,7 +181,7 @@ const NodeTree: FC<NodeTreeProps> = ({
 				(value &&
 					typeof value === 'object' &&
 					'type' in value &&
-					value.type !== 'reactNode')
+					(value as any).type !== 'reactNode')
 			) {
 				// 如果是数组类型
 				if (Array.isArray(value)) {
@@ -369,10 +372,10 @@ const NodeTree: FC<NodeTreeProps> = ({
 					value &&
 					typeof value === 'object' &&
 					'type' in value &&
-					value.type !== 'reactNode'
+					(value as any).type !== 'reactNode'
 				) {
 					const componentSchema = value as ComponentSchema;
-					const canHaveChildren = supportsChildren(componentSchema.type);
+					const canHaveChildren = canAddChildren(componentSchema);
 
 					properties.push({
 						key: propKey,
@@ -380,11 +383,11 @@ const NodeTree: FC<NodeTreeProps> = ({
 							<Space>
 								<FileOutlined style={{ color: '#1890ff' }} />
 								<Text style={{ color: '#fff' }}>
-									【{key}】{componentSchema.type || 'Component'}
+									【{key}】{(componentSchema as any).type || 'Component'}
 								</Text>
 								{canHaveChildren && (
 									<Badge
-										count={componentSchema.children?.length || 0}
+										count={(componentSchema as any).children?.length || 0}
 										size="small"
 									/>
 								)}
@@ -414,30 +417,30 @@ const NodeTree: FC<NodeTreeProps> = ({
 						propertyPath: currentPropertyPath,
 						nodeType: 'component',
 						children: canHaveChildren
-							? componentSchema.children?.map((child, childIndex) => {
-									if (isReactNodeProperty(child)) {
-										return buildReactNodeTree(
-											child,
-											propKey,
-											childIndex,
-											`${currentPropertyPath}.children.${childIndex}`
-										);
-									}
-									return {
-										key: `${propKey}-child-${childIndex}`,
-										title: (
-											<Space>
-												<FileOutlined style={{ color: '#1890ff' }} />
-												<Text style={{ color: '#fff' }}>
-													{child.type || 'Component'}
-												</Text>
-											</Space>
-										),
-										isProperty: true,
-										propertyPath: `${currentPropertyPath}.children.${childIndex}`,
-										nodeType: 'component',
-									};
-							  })
+							? (componentSchema as any).children?.map((child: any, childIndex: number) => {
+								if (isReactNodeProperty(child)) {
+									return buildReactNodeTree(
+										child,
+										propKey,
+										childIndex,
+										`${currentPropertyPath}.children.${childIndex}`
+									);
+								}
+								return {
+									key: `${propKey}-child-${childIndex}`,
+									title: (
+										<Space>
+											<FileOutlined style={{ color: '#1890ff' }} />
+											<Text style={{ color: '#fff' }}>
+												{(child as any).type || 'Component'}
+											</Text>
+										</Space>
+									),
+									isProperty: true,
+									propertyPath: `${currentPropertyPath}.children.${childIndex}`,
+									nodeType: 'component',
+								};
+							})
 							: undefined,
 					});
 				}
@@ -476,7 +479,7 @@ const NodeTree: FC<NodeTreeProps> = ({
 							return Object.values(obj).some(
 								(val) =>
 									Array.isArray(val) &&
-									val.some((subItem) => isReactNodeProperty(subItem))
+									(val as any[]).some((subItem) => isReactNodeProperty(subItem))
 							);
 						}
 						return false;
@@ -484,120 +487,123 @@ const NodeTree: FC<NodeTreeProps> = ({
 
 					// 只有当数组包含ReactNodeProperty时才显示
 					if (hasReactNodeItems) {
-						properties.push({
-							key: propKey,
-							title: (
-								<Space>
-									<UnorderedListOutlined style={{ color: '#722ed1' }} />
-									<Text style={{ color: '#fff' }}>{key}</Text>
-									<Badge count={value.length} size="small" />
-								</Space>
-							),
-							isProperty: true,
-							propertyPath: currentPropertyPath,
-							nodeType: 'array',
-							children: value
-								.map((item, index) => {
-									const itemKey = `${propKey}-item-${index}`;
-									const itemPropertyPath = `${currentPropertyPath}.${index}`;
+						// 预先构建 children 节点，避免在对象字面量中进行复杂链式调用
+						const arrayChildren = (value as unknown[])
+							.map((item, index) => {
+								const itemKey = `${propKey}-item-${index}`;
+								const itemPropertyPath = `${currentPropertyPath}.${index}`;
 
-									// 如果数组元素是 ReactNodeProperty
-									if (isReactNodeProperty(item)) {
-										return buildReactNodeTree(
-											item,
-											itemKey,
-											0,
-											itemPropertyPath
-										);
-									}
+								// 如果数组元素是 ReactNodeProperty
+								if (isReactNodeProperty(item)) {
+									return buildReactNodeTree(
+										item,
+										itemKey,
+										0,
+										itemPropertyPath
+									);
+								}
 
-									// 如果数组元素是对象（如 rows 中的 row 对象）
-									if (item && typeof item === 'object' && !('type' in item)) {
-										const rowObj = item as Record<string, any>;
-										// 检查对象中是否包含ReactNodeProperty数组
-										const reactNodeFields = Object.entries(rowObj).filter(
-											([rowKey, rowValue]) =>
-												Array.isArray(rowValue) &&
-												rowValue.some((subItem) => isReactNodeProperty(subItem))
-										);
+								// 如果数组元素是对象（如 rows 中的 row 对象）
+								if (item && typeof item === 'object' && !('type' in item)) {
+									const rowObj = item as Record<string, any>;
+									// 检查对象中是否包含ReactNodeProperty数组
+									const reactNodeFields = Object.entries(rowObj).filter(
+										([rowKey, rowValue]) =>
+											Array.isArray(rowValue) &&
+											(rowValue as any[]).some((subItem) => isReactNodeProperty(subItem))
+									);
 
-										// 只有当对象包含ReactNodeProperty数组时才显示
-										if (reactNodeFields.length > 0) {
-											const children: TreeNode[] = [];
+									// 只有当对象包含ReactNodeProperty数组时才显示
+									if (reactNodeFields.length > 0) {
+										const children: TreeNode[] = [];
 
-											reactNodeFields.forEach(([rowKey, rowValue]) => {
-												const rowPropKey = `${itemKey}-rowprop-${rowKey}`;
-												const rowPropPath = `${itemPropertyPath}.${rowKey}`;
+										reactNodeFields.forEach(([rowKey, rowValue]) => {
+											const rowPropKey = `${itemKey}-rowprop-${rowKey}`;
+											const rowPropPath = `${itemPropertyPath}.${rowKey}`;
 
-												// 如果 row 属性是 ReactNodeProperty 数组（如 fields）
-												if (Array.isArray(rowValue)) {
-													const fieldChildren: TreeNode[] = [];
+											// 如果 row 属性是 ReactNodeProperty 数组（如 fields）
+											if (Array.isArray(rowValue)) {
+												const fieldChildren: TreeNode[] = [];
 
-													rowValue.forEach((fieldItem, fieldIndex) => {
-														const fieldKey = `${rowPropKey}-field-${fieldIndex}`;
-														const fieldPath = `${rowPropPath}.${fieldIndex}`;
+												(rowValue as any[]).forEach((fieldItem, fieldIndex) => {
+													const fieldKey = `${rowPropKey}-field-${fieldIndex}`;
+													const fieldPath = `${rowPropPath}.${fieldIndex}`;
 
-														// 只展示ReactNode类型的字段
-														if (isReactNodeProperty(fieldItem)) {
-															fieldChildren.push(
-																buildReactNodeTree(
-																	fieldItem,
-																	fieldKey,
-																	0,
-																	fieldPath
-																)
-															);
-														}
-													});
-
-													if (fieldChildren.length > 0) {
-														children.push({
-															key: rowPropKey,
-															title: (
-																<Space>
-																	<UnorderedListOutlined
-																		style={{ color: '#722ed1' }}
-																	/>
-																	<Text style={{ color: '#fff' }}>
-																		{rowKey}
-																	</Text>
-																	<Badge count={rowValue.length} size="small" />
-																</Space>
-															),
-															isProperty: true,
-															propertyPath: rowPropPath,
-															nodeType: 'array',
-															children: fieldChildren,
-														});
+													// 只展示ReactNode类型的字段
+													if (isReactNodeProperty(fieldItem)) {
+														fieldChildren.push(
+															buildReactNodeTree(
+																fieldItem,
+																fieldKey,
+																0,
+																fieldPath
+															)
+														);
 													}
-												}
-											});
+												});
 
-											if (children.length > 0) {
-												return {
-													key: itemKey,
-													title: (
-														<Space>
-															<FolderOutlined style={{ color: '#fa8c16' }} />
-															<Text style={{ color: '#fff' }}>
-																Row {index + 1}
-															</Text>
-														</Space>
-													),
-													isProperty: true,
-													propertyPath: itemPropertyPath,
-													nodeType: 'property',
-													children,
-												};
+												if (fieldChildren.length > 0) {
+													children.push({
+														key: rowPropKey,
+														title: (
+															<Space>
+																<UnorderedListOutlined
+																	style={{ color: '#722ed1' }}
+																/>
+																<Text style={{ color: '#fff' }}>
+																	{rowKey}
+																</Text>
+																<Badge count={(rowValue as any[]).length} size="small" />
+															</Space>
+														),
+														isProperty: true,
+														propertyPath: rowPropPath,
+														nodeType: 'array',
+														children: fieldChildren,
+													});
+												}
 											}
+										});
+
+										if (children.length > 0) {
+											return {
+												key: itemKey,
+												title: (
+													<Space>
+														<FolderOutlined style={{ color: '#fa8c16' }} />
+														<Text style={{ color: '#fff' }}>
+															Row {index + 1}
+														</Text>
+													</Space>
+												),
+												isProperty: true,
+												propertyPath: itemPropertyPath,
+												nodeType: 'property',
+												children,
+											};
 										}
 									}
 
 									// 如果不是ReactNode类型，不显示
 									return null;
 								})
-								.filter((item): item is TreeNode => item !== null),
-						});
+								.filter((item): item is TreeNode => item !== null);
+
+							properties.push({
+								key: propKey,
+								title: (
+									<Space>
+										<UnorderedListOutlined style={{ color: '#722ed1' }} />
+										<Text style={{ color: '#fff' }}>{key}</Text>
+										<Badge count={value.length} size="small" />
+									</Space>
+								),
+								isProperty: true,
+								propertyPath: currentPropertyPath,
+								nodeType: 'array',
+								children: arrayChildren,
+							});
+						}
 					}
 				}
 				// 如果是 ReactNodeProperty 类型
@@ -647,7 +653,7 @@ const NodeTree: FC<NodeTreeProps> = ({
 					childPropertyPath
 				);
 
-				const canHaveChildren = supportsChildren(child.type);
+				const canHaveChildren = canAddChildren(child);
 				const canHaveArrayProps = supportsArrayProps(child.type);
 
 				return {
@@ -657,7 +663,7 @@ const NodeTree: FC<NodeTreeProps> = ({
 							<FileOutlined style={{ color: '#1890ff' }} />
 							<Text style={{ color: '#fff' }}>{child.type || 'Component'}</Text>
 							{canHaveChildren && (
-								<Badge count={child.children?.length || 0} size="small" />
+								<Badge count={(child as any).children?.length || 0} size="small" />
 							)}
 							{canHaveArrayProps && componentProperties.length > 0 && (
 								<Badge

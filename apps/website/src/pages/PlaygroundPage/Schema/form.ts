@@ -43,7 +43,7 @@ export const EMPTY_FORM_SCHEMA: FormSchema = {
 		children: [
 			{
 				type: 'EmptyNode',
-				props: {},
+				properties: {},
 			},
 		],
 	},

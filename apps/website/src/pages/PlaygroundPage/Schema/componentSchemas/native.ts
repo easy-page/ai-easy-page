@@ -1,53 +1,50 @@
+import { ComponentSchema } from '../component';
+import { ReactNodeProperty } from '../specialProperties';
 import { CommonComponentProps, baseProps } from './types';
 
 // 原生 HTML 元素属性 Schema 定义
 
-export interface DivPropsSchema {
+export interface DivPropsSchema extends ComponentSchema {
 	type: 'div';
-	properties: CommonComponentProps & {
-		children?: string;
-	};
+	properties: CommonComponentProps;
+	canHaveChildren: true;
 }
 
-export interface SpanPropsSchema {
+export interface SpanPropsSchema extends ComponentSchema {
 	type: 'span';
-	properties: CommonComponentProps & {
-		children?: string;
-	};
+	properties: CommonComponentProps;
+	canHaveChildren: true;
 }
 
-export interface PPropsSchema {
+export interface PPropsSchema extends ComponentSchema {
 	type: 'p';
-	properties: CommonComponentProps & {
-		children?: string;
-	};
+	properties: CommonComponentProps;
+	canHaveChildren: true;
 }
 
-export interface APropsSchema {
+export interface APropsSchema extends ComponentSchema {
 	type: 'a';
 	properties: CommonComponentProps & {
 		href?: string;
 		target?: '_self' | '_blank' | '_parent' | '_top';
 		rel?: string;
-		children?: string;
 	};
+	canHaveChildren: true;
 }
 
-export interface UlPropsSchema {
+export interface UlPropsSchema extends ComponentSchema {
 	type: 'ul';
-	properties: CommonComponentProps & {
-		children?: string;
-	};
+	properties: CommonComponentProps;
+	canHaveChildren: true;
 }
 
-export interface LiPropsSchema {
+export interface LiPropsSchema extends ComponentSchema {
 	type: 'li';
-	properties: CommonComponentProps & {
-		children?: string;
-	};
+	properties: CommonComponentProps;
+	canHaveChildren: true;
 }
 
-export interface CanvasPropsSchema {
+export interface CanvasPropsSchema extends ComponentSchema {
 	type: 'canvas';
 	properties: CommonComponentProps & {
 		width?: number;
@@ -55,7 +52,7 @@ export interface CanvasPropsSchema {
 	};
 }
 
-export interface IframePropsSchema {
+export interface IframePropsSchema extends ComponentSchema {
 	type: 'iframe';
 	properties: CommonComponentProps & {
 		src?: string;
@@ -71,36 +68,50 @@ export interface IframePropsSchema {
 export const getDefaultDivProps = (): DivPropsSchema => ({
 	type: 'div',
 	properties: { ...baseProps },
+	canHaveChildren: true,
 });
 
 export const getDefaultSpanProps = (): SpanPropsSchema => ({
 	type: 'span',
 	properties: { ...baseProps },
+	canHaveChildren: true,
 });
 
 export const getDefaultPProps = (): PPropsSchema => ({
 	type: 'p',
-	properties: { ...baseProps, children: '段落文本' },
+	properties: {
+		...baseProps,
+	},
+	canHaveChildren: true,
 });
 
 export const getDefaultAProps = (): APropsSchema => ({
 	type: 'a',
-	properties: { ...baseProps, href: '#', children: '链接' },
+	properties: {
+		...baseProps,
+		href: '#',
+	},
+	canHaveChildren: true,
 });
 
 export const getDefaultUlProps = (): UlPropsSchema => ({
 	type: 'ul',
 	properties: { ...baseProps },
+	canHaveChildren: true,
 });
 
 export const getDefaultLiProps = (): LiPropsSchema => ({
 	type: 'li',
-	properties: { ...baseProps, children: '列表项' },
+	properties: {
+		...baseProps,
+	},
+	canHaveChildren: true,
 });
 
 export const getDefaultCanvasProps = (): CanvasPropsSchema => ({
 	type: 'canvas',
 	properties: { ...baseProps, width: 300, height: 150 },
+	canHaveChildren: false,
 });
 
 export const getDefaultIframeProps = (): IframePropsSchema => ({

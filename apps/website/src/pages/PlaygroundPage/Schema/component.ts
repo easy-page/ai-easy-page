@@ -3,7 +3,9 @@ import { FormItemSchema } from './formItem';
 
 export interface ComponentSchema {
 	type: string;
-	props?: Record<string, FieldValue>;
+	properties?: Record<string, FieldValue>;
 	formItem?: FormItemSchema;
 	children?: ComponentSchema[];
+	/** 显式声明该组件是否可添加子节点（优先级最高，便于覆盖默认推断） */
+	canHaveChildren?: boolean;
 }
