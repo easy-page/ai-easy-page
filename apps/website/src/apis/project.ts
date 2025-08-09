@@ -56,10 +56,8 @@ export interface ProjectInfo extends Omit<ProjectBase, 'team_id'> {
 
 // 项目列表响应
 export interface ProjectListResponse {
-	data: ProjectInfo[];
 	total: number;
-	page_size: number;
-	page_num: number;
+	items: ProjectInfo[];
 }
 
 // 项目统计信息（后端统计结构，保持不变）

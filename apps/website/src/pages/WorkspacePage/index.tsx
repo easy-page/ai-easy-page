@@ -1,5 +1,16 @@
-import React, { useState } from 'react';
-import { Card, Row, Col, Statistic, Button, Space, Typography } from 'antd';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+	Card,
+	Row,
+	Col,
+	Statistic,
+	Button,
+	Space,
+	Typography,
+	List,
+	Avatar,
+	Tag,
+} from 'antd';
 import {
 	UserOutlined,
 	FileTextOutlined,
@@ -7,17 +18,45 @@ import {
 	SettingOutlined,
 	PlusOutlined,
 } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import './index.less';
 import CreateProjectModal from './CreateProject';
+import { useService } from '@/infra';
+import { ChatService } from '@/services/chatGlobalState';
+import { useObservable } from '@/hooks/useObservable';
+import { ProjectInfo, ProjectType, PROJECT_TYPE_CONFIG } from '@/apis/project';
+import { useGlobalInfo } from '@/hooks/useGlobalInfo';
 
 const { Title, Text } = Typography;
 
 const WorkspacePage: React.FC = () => {
 	const { user } = useAuth();
 	const [createOpen, setCreateOpen] = useState(false);
+	const navigate = useNavigate();
+	const chatService = useService(ChatService);
+	const curTeam = useObservable(chatService.globalState.curTeam$, null);
+	const projects = useObservable(chatService.globalState.projects$, null);
+	useGlobalInfo();
 
+	const fetchProjects = useCallback(async () => {
+		await chatService.getProjects({
+			team_id: curTeam?.id,
+			page_size: 100,
+			page_num: 1,
+			project_type: curTeam ? undefined : ProjectType.PERSONAL,
+		});
+	}, [chatService, curTeam]);
+
+	useEffect(() => {
+		fetchProjects();
+	}, [fetchProjects]);
+
+	const recentProjects = useMemo<ProjectInfo[]>(() => {
+		return (projects?.data || []).slice(0, 5);
+	}, [projects]);
+
+	console.log('projects', projects, recentProjects);
 	return (
 		<div className="workspace-page">
 			{/* 科技装饰元素 */}
@@ -38,7 +77,7 @@ const WorkspacePage: React.FC = () => {
 					<Card>
 						<Statistic
 							title="我的项目"
-							value={0}
+							value={projects?.data?.length || 0}
 							prefix={<FileTextOutlined />}
 							valueStyle={{ color: '#3f8600' }}
 						/>
@@ -116,22 +155,79 @@ const WorkspacePage: React.FC = () => {
 				{/* 最近项目 */}
 				<Col xs={24} lg={12}>
 					<Card title="最近项目" extra={<Link to="/projects">查看全部</Link>}>
-						<div className="empty-projects">
-							<FileTextOutlined style={{ fontSize: 48, color: '#d9d9d9' }} />
-							<Text
-								type="secondary"
-								style={{ display: 'block', marginTop: 16 }}
-							>
-								暂无项目，开始创建您的第一个项目吧！
-							</Text>
-							<Button
-								type="primary"
-								style={{ marginTop: 16 }}
-								onClick={() => setCreateOpen(true)}
-							>
-								创建项目
-							</Button>
-						</div>
+						{recentProjects.length === 0 ? (
+							<div className="empty-projects">
+								<FileTextOutlined style={{ fontSize: 48, color: '#d9d9d9' }} />
+								<Text
+									type="secondary"
+									style={{ display: 'block', marginTop: 16 }}
+								>
+									暂无项目，开始创建您的第一个项目吧！
+								</Text>
+								<Button
+									type="primary"
+									style={{ marginTop: 16 }}
+									onClick={() => setCreateOpen(true)}
+								>
+									创建项目
+								</Button>
+							</div>
+						) : (
+							<List
+								dataSource={recentProjects}
+								renderItem={(item) => {
+									const typeConfig =
+										PROJECT_TYPE_CONFIG[item.project_type as ProjectType];
+									return (
+										<List.Item
+											className="recent-project-item"
+											actions={[
+												<Button
+													key="open"
+													type="link"
+													onClick={() =>
+														navigate(`/dashboard/workspace/projects/${item.id}`)
+													}
+												>
+													详情
+												</Button>,
+											]}
+										>
+											<List.Item.Meta
+												avatar={
+													<Avatar
+														icon={<FileTextOutlined />}
+														style={{ backgroundColor: '#00ffff' }}
+													/>
+												}
+												title={
+													<span
+														className="clickable"
+														onClick={() =>
+															navigate(
+																`/dashboard/workspace/projects/${item.id}`
+															)
+														}
+													>
+														{item.name}
+													</span>
+												}
+												description={
+													<>
+														<span style={{ marginRight: 8 }}>
+															{item.description || '暂无描述'}
+														</span>
+														<Tag color={typeConfig.color}>
+															{typeConfig.text}
+														</Tag>
+													</>
+												}
+											/>
+										</List.Item>
+									);
+								}}
+							/>
+						)}
 					</Card>
 				</Col>
 			</Row>

@@ -1,7 +1,7 @@
 import {
-    ChatGlobalStateEntity,
-    ChatGlobalStateEntityOptions,
-    ProjectListInfo,
+	ChatGlobalStateEntity,
+	ChatGlobalStateEntityOptions,
+	ProjectListInfo,
 } from './chatGlobalStateEntity';
 import { ChatGlobalState, ChatGlobalStateImpl } from './chatGlobalState';
 import { Framework, Service } from '@/infra';
@@ -366,10 +366,13 @@ export class ChatService extends Service {
 			const response = await queryProjects(params);
 			if (response.success && response.data) {
 				const listInfo: ProjectListInfo = {
-					data: response.data.data,
-					total: response.data.total,
-					pageSize: response.data.page_size,
-					pageNo: response.data.page_num,
+					data: response.data.items || [],
+					total: response.data.total || (response.data.items || []).length,
+					pageSize:
+						(params && params.page_size) ||
+						(response.data.items || []).length ||
+						0,
+					pageNo: (params && params.page_num) || 1,
 				};
 				this.globalState.setProjects(listInfo);
 				return listInfo;

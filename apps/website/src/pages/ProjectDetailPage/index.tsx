@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
 	Card,
 	Row,
@@ -60,6 +60,7 @@ const ProjectDetailPage: React.FC = () => {
 	const chatService = useService(ChatService);
 	const curTeam = useObservable(chatService.globalState.curTeam$, null);
 	const curProject = useObservable(chatService.globalState.curProject$, null);
+	const projects = useObservable(chatService.globalState.projects$, null);
 
 	const handleSetCurrentProject = () => {
 		if (!project) return;
@@ -233,7 +234,10 @@ const ProjectDetailPage: React.FC = () => {
 		);
 	}
 
-	const typeConfig = PROJECT_TYPE_CONFIG[project.project_type as ProjectType];
+	const typeConfig = useMemo(
+		() => PROJECT_TYPE_CONFIG[project.project_type as ProjectType],
+		[project.project_type]
+	);
 
 	return (
 		<div className="project-detail-page">
