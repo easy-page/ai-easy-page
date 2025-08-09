@@ -36,4 +36,13 @@ export enum ComponentType {
 	SPIN = 'Spin',
 	EMPTY = 'Empty',
 	RESULT = 'Result',
+	// 原生 HTML 元素
+	DIV = 'div',
+	SPAN = 'span',
+	P = 'p',
+	A = 'a',
+	UL = 'ul',
+	LI = 'li',
+	CANVAS = 'canvas',
+	IFRAME = 'iframe',
 }

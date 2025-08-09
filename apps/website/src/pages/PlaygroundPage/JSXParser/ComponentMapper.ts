@@ -33,6 +33,10 @@ export class ComponentMapper {
 		if (['Title', 'Paragraph', 'Text'].includes(name)) return 'typography';
 		if (['Option', 'TabPane', 'Step', 'Item', 'BreadcrumbItem'].includes(name))
 			return 'sub-components';
+		if (
+			['div', 'span', 'p', 'a', 'ul', 'li', 'canvas', 'iframe'].includes(name)
+		)
+			return 'html';
 		return 'components';
 	}
 

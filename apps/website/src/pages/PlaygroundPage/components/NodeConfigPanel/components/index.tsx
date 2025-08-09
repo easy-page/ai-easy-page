@@ -9,6 +9,7 @@ import CheckboxGroupConfigPanel from './CheckboxGroupConfigPanel';
 import RadioConfigPanel from './RadioConfigPanel';
 import RadioGroupConfigPanel from './RadioGroupConfigPanel';
 import ContainerConfigPanel from './ContainerConfigPanel';
+import HtmlElementConfigPanel from './HtmlElementConfigPanel';
 import DynamicFormConfigPanel from './DynamicFormConfigPanel';
 import CustomConfigPanel from './CustomConfigPanel';
 import FormItemConfigPanel from './FormItemConfigPanel';
@@ -34,6 +35,15 @@ export const ComponentConfigPanelMap = {
 	Container: ContainerConfigPanel,
 	DynamicForm: DynamicFormConfigPanel,
 	Custom: CustomConfigPanel,
+	// 原生 HTML 元素：复用通用属性编辑（暂无专属面板）
+	div: HtmlElementConfigPanel,
+	span: HtmlElementConfigPanel,
+	p: HtmlElementConfigPanel,
+	a: HtmlElementConfigPanel,
+	ul: HtmlElementConfigPanel,
+	li: HtmlElementConfigPanel,
+	canvas: HtmlElementConfigPanel,
+	iframe: HtmlElementConfigPanel,
 };
 
 // 导出所有配置面板

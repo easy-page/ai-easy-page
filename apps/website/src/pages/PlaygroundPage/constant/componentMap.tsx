@@ -276,6 +276,15 @@ export const DEFAULT_COMPONENT_MAP: ComponentMap = {
 	FileProtectOutlined,
 	FileSearchOutlined,
 	FileSyncOutlined,
+	// 原生 HTML 元素（直接映射）
+	div: 'div' as unknown as React.ComponentType<any>,
+	span: 'span' as unknown as React.ComponentType<any>,
+	p: 'p' as unknown as React.ComponentType<any>,
+	a: 'a' as unknown as React.ComponentType<any>,
+	ul: 'ul' as unknown as React.ComponentType<any>,
+	li: 'li' as unknown as React.ComponentType<any>,
+	canvas: 'canvas' as unknown as React.ComponentType<any>,
+	iframe: 'iframe' as unknown as React.ComponentType<any>,
 };
 
 // 导出组件示例相关的函数和映射

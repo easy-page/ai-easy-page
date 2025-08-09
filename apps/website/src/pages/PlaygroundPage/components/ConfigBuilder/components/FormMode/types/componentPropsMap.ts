@@ -37,6 +37,16 @@ import {
 } from 'antd';
 import { CustomProps, IconProps } from './componentProps';
 import { ComponentType } from '../../../../../constant/componentTypes';
+import {
+	DivProps,
+	SpanProps,
+	PProps,
+	AProps,
+	UlProps,
+	LiProps,
+	CanvasProps,
+	IframeProps,
+} from './componentProps';
 
 // 组件属性映射
 export const ComponentPropsMap: Record<ComponentType, any> = {
@@ -77,4 +87,13 @@ export const ComponentPropsMap: Record<ComponentType, any> = {
 	[ComponentType.SPIN]: {} as SpinProps,
 	[ComponentType.EMPTY]: {} as EmptyProps,
 	[ComponentType.RESULT]: {} as ResultProps,
+	// 原生 HTML 元素
+	[ComponentType.DIV]: {} as DivProps,
+	[ComponentType.SPAN]: {} as SpanProps,
+	[ComponentType.P]: {} as PProps,
+	[ComponentType.A]: {} as AProps,
+	[ComponentType.UL]: {} as UlProps,
+	[ComponentType.LI]: {} as LiProps,
+	[ComponentType.CANVAS]: {} as CanvasProps,
+	[ComponentType.IFRAME]: {} as IframeProps,
 };

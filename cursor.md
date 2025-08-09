@@ -958,3 +958,27 @@ venues$: LiveData<VenueListInfo | null> = new LiveData<VenueListInfo | null>(
 ```
 
 帮我增加项目管理相关 API，结合表和接口优化项目管理 Tab 下内容
+
+# 丰富组件选择
+
+1. 组件选择上，我也希望增加上默认的 html 所有元素，比如：canvas、div、p、iframe 、span、a 、ul、li 等，
+2. 每个元素也有对应的配置面板：apps/website/src/pages/PlaygroundPage/components/NodeConfigPanel/components
+
+帮我检查：
+
+- 组件对应关系 Map：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/types/componentPropsMap.ts
+- 组件 Props 定义：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/types/componentProps.ts
+- 组件分类：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/types/componentCategories.ts
+- 组件选项：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/types/componentTypeOptions.ts
+- 配置面板位置：apps/website/src/pages/PlaygroundPage/components/NodeConfigPanel/components
+- 组件解析渲染引擎：apps/website/src/pages/PlaygroundPage/Engine
+- JSX 语法解析：apps/website/src/pages/PlaygroundPage/JSXParser
+- Schema 定义：apps/website/src/pages/PlaygroundPage/Schema
+- 语法树解析：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder
+
+帮我完成上述需求，结合这些上下文
+
+补齐：
+
+- video 等也需要补充
+  可以建立 schema 组件市场，选择对应节点加入，如何支持扩展组件 + 组件面板定义～

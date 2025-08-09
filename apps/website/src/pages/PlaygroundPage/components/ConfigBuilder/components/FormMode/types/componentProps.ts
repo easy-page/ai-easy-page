@@ -261,3 +261,46 @@ export interface ResultProps extends ComponentProps {
 	subTitle?: string;
 	extra?: React.ReactNode;
 }
+
+// ================ 原生 HTML 元素 Props ================
+
+export interface DivProps extends ComponentProps {
+	children?: React.ReactNode;
+}
+
+export interface SpanProps extends ComponentProps {
+	children?: React.ReactNode;
+}
+
+export interface PProps extends ComponentProps {
+	children?: React.ReactNode;
+}
+
+export interface AProps extends ComponentProps {
+	href?: string;
+	target?: '_self' | '_blank' | '_parent' | '_top';
+	rel?: string;
+	children?: React.ReactNode;
+}
+
+export interface UlProps extends ComponentProps {
+	children?: React.ReactNode;
+}
+
+export interface LiProps extends ComponentProps {
+	children?: React.ReactNode;
+}
+
+export interface CanvasProps extends ComponentProps {
+	width?: number;
+	height?: number;
+}
+
+export interface IframeProps extends ComponentProps {
+	src?: string;
+	width?: number | string;
+	height?: number | string;
+	allow?: string;
+	sandbox?: string;
+	allowFullScreen?: boolean;
+}

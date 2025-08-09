@@ -38,6 +38,15 @@ export const ComponentTypeOptions = [
 	{ label: '加载中', value: ComponentType.SPIN },
 	{ label: '空状态', value: ComponentType.EMPTY },
 	{ label: '结果页', value: ComponentType.RESULT },
+	// 原生 HTML 元素
+	{ label: 'div', value: ComponentType.DIV },
+	{ label: 'span', value: ComponentType.SPAN },
+	{ label: 'p', value: ComponentType.P },
+	{ label: 'a', value: ComponentType.A },
+	{ label: 'ul', value: ComponentType.UL },
+	{ label: 'li', value: ComponentType.LI },
+	{ label: 'canvas', value: ComponentType.CANVAS },
+	{ label: 'iframe', value: ComponentType.IFRAME },
 ];
 
 // 组件显示名称映射
@@ -79,4 +88,13 @@ export const ComponentDisplayNames: Record<ComponentType, string> = {
 	[ComponentType.SPIN]: '加载中',
 	[ComponentType.EMPTY]: '空状态',
 	[ComponentType.RESULT]: '结果页',
+	// 原生 HTML 元素
+	[ComponentType.DIV]: 'div',
+	[ComponentType.SPAN]: 'span',
+	[ComponentType.P]: 'p',
+	[ComponentType.A]: 'a',
+	[ComponentType.UL]: 'ul',
+	[ComponentType.LI]: 'li',
+	[ComponentType.CANVAS]: 'canvas',
+	[ComponentType.IFRAME]: 'iframe',
 };

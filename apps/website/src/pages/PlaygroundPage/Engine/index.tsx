@@ -322,7 +322,7 @@ export class SchemaEngine {
 		);
 
 		// 处理子组件
-		const children = schema.children?.map((child, index) =>
+		const childrenNodes = schema.children?.map((child, index) =>
 			this.renderComponent(child, `${key || 'root'}-${index}`)
 		);
 
@@ -340,13 +340,25 @@ export class SchemaEngine {
 					id={schema.formItem.properties?.id || `form-item-${key}`}
 					{...formItemProps}
 				>
-					{React.createElement(Component, { ...componentProps }, children)}
+					{childrenNodes && childrenNodes.length > 0
+						? React.createElement(
+								Component,
+								{ ...componentProps },
+								childrenNodes
+						  )
+						: React.createElement(Component, { ...componentProps })}
 				</FormItem>
 			);
 		}
 
 		// 直接渲染组件
-		return React.createElement(Component, { key, ...componentProps }, children);
+		return childrenNodes && childrenNodes.length > 0
+			? React.createElement(
+					Component,
+					{ key, ...componentProps },
+					childrenNodes
+			  )
+			: React.createElement(Component, { key, ...componentProps });
 	}
 
 	// 使用队列渲染组件

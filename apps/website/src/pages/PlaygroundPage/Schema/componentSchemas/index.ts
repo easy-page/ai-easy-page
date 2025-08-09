@@ -59,6 +59,16 @@ import {
 } from './dynamicForm';
 import { CustomPropsSchema, getDefaultCustomProps } from './custom';
 import { ComponentType } from '../../constant/componentTypes';
+import type {
+	DivPropsSchema,
+	SpanPropsSchema,
+	PPropsSchema,
+	APropsSchema,
+	UlPropsSchema,
+	LiPropsSchema,
+	CanvasPropsSchema,
+	IframePropsSchema,
+} from './native';
 
 // 组件属性 Schema 联合类型
 export type ComponentPropsSchema =
@@ -74,7 +84,15 @@ export type ComponentPropsSchema =
 	| TimePickerPropsSchema
 	| ContainerPropsSchema
 	| DynamicFormPropsSchema
-	| CustomPropsSchema;
+	| CustomPropsSchema
+	| DivPropsSchema
+	| SpanPropsSchema
+	| PPropsSchema
+	| APropsSchema
+	| UlPropsSchema
+	| LiPropsSchema
+	| CanvasPropsSchema
+	| IframePropsSchema;
 
 // 组件类型到Schema的映射
 export const ComponentPropsSchemaMap = {
@@ -91,6 +109,15 @@ export const ComponentPropsSchemaMap = {
 	Container: {} as ContainerPropsSchema,
 	DynamicForm: {} as DynamicFormPropsSchema,
 	Custom: {} as CustomPropsSchema,
+	// 原生 HTML 元素
+	div: {} as DivPropsSchema,
+	span: {} as SpanPropsSchema,
+	p: {} as PPropsSchema,
+	a: {} as APropsSchema,
+	ul: {} as UlPropsSchema,
+	li: {} as LiPropsSchema,
+	canvas: {} as CanvasPropsSchema,
+	iframe: {} as IframePropsSchema,
 };
 
 // 获取组件的默认属性Schema
@@ -124,6 +151,38 @@ export function getDefaultComponentPropsSchema(
 			return getDefaultDynamicFormProps();
 		case 'Custom':
 			return getDefaultCustomProps();
+		// HTML 原生元素默认 props
+		case 'div':
+			return { type: 'div', properties: {} } as DivPropsSchema;
+		case 'span':
+			return { type: 'span', properties: {} } as SpanPropsSchema;
+		case 'p':
+			return {
+				type: 'p',
+				properties: { children: '段落文本' },
+			} as PPropsSchema;
+		case 'a':
+			return {
+				type: 'a',
+				properties: { href: '#', children: '链接' },
+			} as APropsSchema;
+		case 'ul':
+			return { type: 'ul', properties: {} } as UlPropsSchema;
+		case 'li':
+			return {
+				type: 'li',
+				properties: { children: '列表项' },
+			} as LiPropsSchema;
+		case 'canvas':
+			return {
+				type: 'canvas',
+				properties: { width: 300, height: 150 },
+			} as CanvasPropsSchema;
+		case 'iframe':
+			return {
+				type: 'iframe',
+				properties: { src: 'https://example.com', width: '100%', height: 300 },
+			} as IframePropsSchema;
 		default:
 			return getDefaultInputProps();
 	}

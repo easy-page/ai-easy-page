@@ -171,6 +171,40 @@ export const COMPONENT_CONFIG: Record<ComponentType, ComponentConfig> = {
 		description: '结果页组件，用于显示操作结果',
 		note: '结果页组件通常不需要FormItem包裹',
 	},
+	// 原生 HTML 元素
+	[ComponentType.DIV]: {
+		canUseFormItem: false,
+		description: 'HTML 块级容器',
+		note: '原生元素直接渲染，不使用 FormItem 包裹',
+	},
+	[ComponentType.SPAN]: {
+		canUseFormItem: false,
+		description: 'HTML 行内容器',
+	},
+	[ComponentType.P]: {
+		canUseFormItem: false,
+		description: 'HTML 段落文本',
+	},
+	[ComponentType.A]: {
+		canUseFormItem: false,
+		description: 'HTML 超链接',
+	},
+	[ComponentType.UL]: {
+		canUseFormItem: false,
+		description: 'HTML 无序列表',
+	},
+	[ComponentType.LI]: {
+		canUseFormItem: false,
+		description: 'HTML 列表项',
+	},
+	[ComponentType.CANVAS]: {
+		canUseFormItem: false,
+		description: 'HTML 画布元素',
+	},
+	[ComponentType.IFRAME]: {
+		canUseFormItem: false,
+		description: 'HTML 内联框架',
+	},
 };
 
 // 获取组件配置

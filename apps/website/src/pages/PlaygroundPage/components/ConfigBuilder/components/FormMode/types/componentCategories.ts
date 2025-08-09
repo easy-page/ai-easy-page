@@ -8,6 +8,8 @@ export enum ComponentCategory {
 	FEEDBACK = 'feedback',
 	NAVIGATION = 'navigation',
 	DATA_ENTRY = 'data-entry',
+	// 新增：原生元素
+	HTML = 'html',
 }
 
 // 组件分类配置
@@ -67,5 +69,11 @@ export const COMPONENT_CATEGORIES: ComponentCategoryConfig[] = [
 		name: '导航组件',
 		description: '导航和步骤组件',
 		icon: '🧭',
+	},
+	{
+		id: ComponentCategory.HTML,
+		name: 'HTML 元素',
+		description: '基础 HTML 标签元素',
+		icon: '🔤',
 	},
 ];
