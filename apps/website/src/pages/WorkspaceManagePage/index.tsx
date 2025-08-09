@@ -49,6 +49,7 @@ import {
 } from '@/apis/project';
 import { TeamInfo } from '@/apis/team';
 import './index.less';
+import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -61,6 +62,7 @@ interface ProjectManagePageProps {
 const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 	onProjectSelect,
 }) => {
+	const navigate = useNavigate();
 	const [form] = Form.useForm();
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [editingProject, setEditingProject] = useState<ProjectInfo | null>(
@@ -215,7 +217,14 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 						style={{ backgroundColor: '#00ffff' }}
 					/>
 					<div className="project-details">
-						<div className="project-name">{record.name}</div>
+						<div
+							className="project-name clickable"
+							onClick={() =>
+								navigate(`/dashboard/workspace/projects/${record.id}`)
+							}
+						>
+							{record.name}
+						</div>
 						<div className="project-description">
 							{record.description || '暂无描述'}
 						</div>
@@ -281,11 +290,23 @@ const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
 			key: 'actions',
 			render: (record: ProjectInfo) => (
 				<Space size="small">
+					<Tooltip title="查看详情">
+						<Button
+							type="default"
+							size="small"
+							icon={<EyeOutlined />}
+							onClick={() =>
+								navigate(`/dashboard/workspace/projects/${record.id}`)
+							}
+						>
+							详情
+						</Button>
+					</Tooltip>
 					<Tooltip title="选择项目">
 						<Button
 							type={curProject?.id === record.id ? 'primary' : 'default'}
 							size="small"
-							icon={<EyeOutlined />}
+							icon={<FolderOutlined />}
 							onClick={() => handleSelectProject(record)}
 						>
 							{curProject?.id === record.id ? '当前项目' : '选择'}

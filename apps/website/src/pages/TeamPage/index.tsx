@@ -59,6 +59,7 @@ import {
 	VENUE_STATUS_CONFIG,
 } from '@/apis/venue';
 import './index.less';
+import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -70,6 +71,7 @@ interface TeamPageProps {
 }
 
 const TeamPage: React.FC<TeamPageProps> = ({ onTeamSelect }) => {
+	const navigate = useNavigate();
 	const [activeTab, setActiveTab] = useState('teams');
 	const [form] = Form.useForm();
 	const [isModalVisible, setIsModalVisible] = useState(false);
@@ -578,7 +580,13 @@ const TeamPage: React.FC<TeamPageProps> = ({ onTeamSelect }) => {
 
 			<Tabs
 				activeKey={activeTab}
-				onChange={setActiveTab}
+				onChange={(key) => {
+					if (key === 'workspaces') {
+						navigate('/dashboard/workspace/projects');
+						return;
+					}
+					setActiveTab(key);
+				}}
 				className="manage-tabs"
 				items={[
 					{
@@ -679,163 +687,9 @@ const TeamPage: React.FC<TeamPageProps> = ({ onTeamSelect }) => {
 							<span className="tab-label">
 								<FolderOutlined />
 								项目管理
-								{curTeam && (
-									<Text type="secondary" className="current-indicator">
-										(团队项目)
-									</Text>
-								)}
-								{!curTeam && (
-									<Text type="secondary" className="current-indicator">
-										(个人项目)
-									</Text>
-								)}
-								{curVenue && (
-									<Text type="secondary" className="current-indicator">
-										({curVenue.name})
-									</Text>
-								)}
 							</span>
 						),
-						children: (
-							<>
-								<Row gutter={[24, 24]} className="stats-row">
-									<Col xs={24} sm={12} lg={6}>
-										<Card className="stat-card">
-											<Statistic
-												title="总项目数"
-												value={workspaceList.length}
-												prefix={<FolderOutlined />}
-												valueStyle={{ color: '#00ffff' }}
-											/>
-										</Card>
-									</Col>
-									<Col xs={24} sm={12} lg={6}>
-										<Card className="stat-card">
-											<Statistic
-												title={curTeam ? '团队项目' : '个人项目'}
-												value={
-													workspaceList.filter(
-														(w) => w.status === VenueStatus.NORMAL
-													).length
-												}
-												prefix={<UserOutlined />}
-												valueStyle={{ color: '#52c41a' }}
-											/>
-										</Card>
-									</Col>
-									<Col xs={24} sm={12} lg={6}>
-										<Card className="stat-card">
-											<Statistic
-												title="当前项目"
-												value={curVenue ? 1 : 0}
-												prefix={<SettingOutlined />}
-												valueStyle={{ color: '#1890ff' }}
-											/>
-										</Card>
-									</Col>
-									<Col xs={24} sm={12} lg={6}>
-										<Card className="stat-card">
-											<Statistic
-												title="总访问量"
-												value={workspaceList.reduce(
-													(sum, w) => sum + w.view_count,
-													0
-												)}
-												prefix={<EyeOutlined />}
-												valueStyle={{ color: '#722ed1' }}
-											/>
-										</Card>
-									</Col>
-								</Row>
-
-								<Card className="filter-card">
-									<Row gutter={[16, 16]} align="middle">
-										<Col xs={24} sm={8}>
-											<Input
-												placeholder="搜索项目名称或描述"
-												prefix={<SearchOutlined />}
-												value={searchText}
-												onChange={(e) => setSearchText(e.target.value)}
-												onPressEnter={handleSearch}
-												allowClear
-											/>
-										</Col>
-										<Col xs={24} sm={6}>
-											<Select
-												placeholder="状态筛选"
-												value={statusFilter}
-												onChange={setStatusFilter}
-												style={{ width: '100%' }}
-											>
-												<Option value="all">全部状态</Option>
-												<Option value={VenueStatus.NORMAL}>正常</Option>
-												<Option value={VenueStatus.DELETED}>已删除</Option>
-											</Select>
-										</Col>
-										<Col xs={24} sm={10}>
-											<Space>
-												<Button
-													type="primary"
-													icon={<SearchOutlined />}
-													onClick={handleSearch}
-												>
-													搜索
-												</Button>
-												<Button icon={<FilterOutlined />} onClick={handleReset}>
-													重置
-												</Button>
-												<Button
-													icon={<ExportOutlined />}
-													onClick={() => message.info('导出功能开发中')}
-												>
-													导出
-												</Button>
-											</Space>
-										</Col>
-									</Row>
-								</Card>
-
-								<Card className="workspace-table-card">
-									<Table
-										columns={workspaceColumns}
-										dataSource={workspaceList}
-										rowKey="id"
-										loading={workspaceTableLoading}
-										pagination={false}
-										className="workspace-table"
-										locale={{
-											emptyText: (
-												<div className="empty-state">
-													<FolderOutlined
-														style={{ fontSize: 32, color: '#666' }}
-													/>
-													<Text
-														type="secondary"
-														style={{ display: 'block', marginTop: 16 }}
-													>
-														{!curTeam
-															? '暂无个人项目，创建您的第一个项目吧！'
-															: '暂无团队项目，创建您的第一个项目吧！'}
-													</Text>
-													<Button
-														type="primary"
-														icon={<PlusOutlined />}
-														style={{ marginTop: 16 }}
-														onClick={() => {
-															setEditingWorkspace(null);
-															form.resetFields();
-															setIsModalVisible(true);
-														}}
-													>
-														创建项目
-													</Button>
-												</div>
-											),
-										}}
-									/>
-								</Card>
-							</>
-						),
+						children: null,
 						disabled: false,
 					},
 				]}
