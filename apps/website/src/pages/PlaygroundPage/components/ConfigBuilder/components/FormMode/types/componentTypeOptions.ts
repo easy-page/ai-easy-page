@@ -47,6 +47,7 @@ export const ComponentTypeOptions = [
 	{ label: 'li', value: ComponentType.LI },
 	{ label: 'canvas', value: ComponentType.CANVAS },
 	{ label: 'iframe', value: ComponentType.IFRAME },
+	{ label: '文本', value: ComponentType.TEXT },
 ];
 
 // 组件显示名称映射
@@ -97,4 +98,5 @@ export const ComponentDisplayNames: Record<ComponentType, string> = {
 	[ComponentType.LI]: 'li',
 	[ComponentType.CANVAS]: 'canvas',
 	[ComponentType.IFRAME]: 'iframe',
+	[ComponentType.TEXT]: '文本',
 };

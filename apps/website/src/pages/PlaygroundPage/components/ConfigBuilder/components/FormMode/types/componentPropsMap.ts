@@ -96,4 +96,6 @@ export const ComponentPropsMap: Record<ComponentType, any> = {
 	[ComponentType.LI]: {} as LiProps,
 	[ComponentType.CANVAS]: {} as CanvasProps,
 	[ComponentType.IFRAME]: {} as IframeProps,
+	// 简单文本组件（仅 text）
+	[ComponentType.TEXT]: {} as { text?: string },
 };
