@@ -1029,3 +1029,66 @@ if (res.message) {
 - 其他属性，比如：边框、阴影、圆角、背景色、透明度、动画、过渡等，可以采用丰富的组件来表达
   属性名用中文展示，配置到 JSON 里是 style 的属性。
   帮我设计的交互科技感、美观、易用。
+
+# 优化 preview 这里
+
+1. 优化：apps/website/src/pages/PlaygroundPage/components/PreviewPanel 这里，增加一个 panel 叫做 canvasPanel，将 schema 渲染的内容展示到这个里面
+2. canvasPanel 内容：
+
+- 里面是一个可缩放的画布，当前页面就是其中一个可编辑的 schema 节点树页面。
+- 下方有一个工具栏，可以选择画布上的节点和页面
+  - 可以如图一样，在画布上画线、画正方形、画原型
+  - 可以选择一个地方进行打字，输入文字
+
+在画布上的任意操作，我希望都能映射到一个 schema 动作，对 schema 做对应动作：
+
+- 比如：画了一个长方形，我希望这个正方形能映射到一个 schema 节点，这个节点是 div，div 的宽高就是所画长方形宽高，切换到预览页面就可以看到添加 schema 节点后的效果
+- 比如：在画布上打字，我希望这个打字能映射到一个 schema 节点，这个节点是 OnlyText，
+  在哪个 div 上画的字，就放到对应的 div children 里，切换到预览页面就可以看到添加 schema 节点后的效果
+
+## 重要
+
+- CanvasPanel 放在 apps/website/src/pages/PlaygroundPage/components/CanvasPanel 目录下
+- 每个文件不要太大，注意合理拆分文件大小
+
+## 相关项目上下文：
+
+- 组件对应关系 Map：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/types/componentPropsMap.ts
+- 组件 Props 定义：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/types/componentProps.ts
+- 组件分类：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/types/componentCategories.ts
+- 组件选项：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/types/componentTypeOptions.ts
+- 配置面板位置：apps/website/src/pages/PlaygroundPage/components/NodeConfigPanel/components
+- 组件解析渲染引擎：apps/website/src/pages/PlaygroundPage/Engine
+- JSX 语法解析：apps/website/src/pages/PlaygroundPage/JSXParser
+- Schema 定义：apps/website/src/pages/PlaygroundPage/Schema
+- 语法树解析：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder
+
+# 实现一个 Canvas 画布
+
+1. 帮我实现一个 Canvas 画布，CanvasPanel 放在 apps/website/src/pages/PlaygroundPage/components/CanvasPanel 目录下
+
+- 里面是一个可缩放的画布，当前页面就是其中一个可编辑的 schema 节点树页面。
+- 下方有一个工具栏，可以选择画布上的节点和页面
+  - 可以如图一样，在画布上画线、画正方形、画原型
+  - 可以选择一个地方进行打字，输入文字
+- 给每一个操作都定义一个操作对象，并根据操作能在画布上画出对应内容，比如画线、画正方形、画原型、打字 - 比如打字：{opType: 'text', content: 'hello world'}
+  帮我合理的设计所有操作对象，在画布上操作的结果应该是一个节点树，在画布左侧展示
+
+## 重要
+
+- CanvasPanel 和 PreviewPanel 都放在表单预览这里，一个是预览，一个是画布
+- 每个文件不要太大，注意合理拆分文件大小
+- 画布所有内容都放在 CanvasPanel 里
+- 画布结构分为：左侧节点树、中间画布、右侧属性面板
+
+## 相关项目上下文：
+
+- 组件对应关系 Map：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/types/componentPropsMap.ts
+- 组件 Props 定义：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/types/componentProps.ts
+- 组件分类：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/types/componentCategories.ts
+- 组件选项：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder/components/FormMode/types/componentTypeOptions.ts
+- 配置面板位置：apps/website/src/pages/PlaygroundPage/components/NodeConfigPanel/components
+- 组件解析渲染引擎：apps/website/src/pages/PlaygroundPage/Engine
+- JSX 语法解析：apps/website/src/pages/PlaygroundPage/JSXParser
+- Schema 定义：apps/website/src/pages/PlaygroundPage/Schema
+- 语法树解析：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder
