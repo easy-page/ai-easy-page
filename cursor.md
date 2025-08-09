@@ -920,7 +920,7 @@ const userTeams = useObservable(chatService.globalState.userTeams$, []);
 
 # 增加项目管理相关功能
 
-目前整体管理链路是：用户 -> 团队（team） -> 项目(workspace) -> 页面(venue)
+目前整体管理链路是：用户 -> 团队（team） -> 项目(project) -> 页面(venue)
 
 现有能力：
 
@@ -934,11 +934,11 @@ const userInfo = useObservable(chatService.globalState.userInfo$, null);
 const userTeams = useObservable(chatService.globalState.userTeams$, []);
 ```
 
-后端接口项目相关 API：/Users/kp/Documents/ai-works/easy-page-v2-server/app/api/endpoints/workspace.py(项目接口)
-项目表：/Users/kp/Documents/ai-works/easy-page-v2-server/app/models/workspace.py
+后端接口项目相关 API：/Users/kp/Documents/ai-works/easy-page-v2-server/app/api/endpoints/project.py(项目接口)
+项目表：/Users/kp/Documents/ai-works/easy-page-v2-server/app/models/project.py
 
-- workspace 相关接口前缀都是：/zspt-agent-api/v1
-  因此，比如创建 workspace 结合上面的文档，路径为：/zspt-agent-api/v1/workspaces/create-wsp
+- project 相关接口前缀都是：/zspt-agent-api/v1
+  因此，比如创建 project 结合上面的文档，路径为：/zspt-agent-api/v1/project/create-prj
 
 - ioc 机制和服务管理：apps/website/src/infra
 - 服务放这里：apps/website/src/services
@@ -957,4 +957,4 @@ venues$: LiveData<VenueListInfo | null> = new LiveData<VenueListInfo | null>(
 );
 ```
 
-帮我增加项目管理相关 AI，结合表和接口优化项目管理 Tab 下内容
+帮我增加项目管理相关 API，结合表和接口优化项目管理 Tab 下内容

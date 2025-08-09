@@ -1,11 +1,11 @@
-.workspace-manage-page {
+.project-manage-page {
 	padding: 24px;
 	max-width: 1400px;
 	margin: 0 auto;
 	background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
 	min-height: 100vh;
 
-	.workspace-header {
+	.project-header {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -177,7 +177,7 @@
 		}
 	}
 
-	.workspace-table-card {
+	.project-table-card {
 		background: rgba(15, 15, 15, 0.8);
 		border: 1px solid rgba(0, 255, 255, 0.2);
 		border-radius: 12px;
@@ -189,7 +189,7 @@
 		}
 	}
 
-	.workspace-table {
+	.project-table {
 		.ant-table {
 			background: transparent;
 			color: #ffffff;
@@ -217,7 +217,7 @@
 			}
 		}
 
-		.workspace-info-cell {
+		.project-info-cell {
 			display: flex;
 			align-items: flex-start;
 			gap: 16px;
@@ -228,18 +228,18 @@
 				flex-shrink: 0;
 			}
 
-			.workspace-details {
+			.project-details {
 				flex: 1;
 				min-width: 0;
 
-				.workspace-name {
+				.project-name {
 					color: #ffffff;
 					font-weight: 600;
 					font-size: 16px;
 					margin-bottom: 4px;
 				}
 
-				.workspace-description {
+				.project-description {
 					color: rgba(255, 255, 255, 0.6);
 					font-size: 14px;
 					margin-bottom: 8px;
@@ -249,7 +249,7 @@
 					white-space: nowrap;
 				}
 
-				.workspace-tags {
+				.project-tags {
 					display: flex;
 					flex-wrap: wrap;
 					gap: 4px;
@@ -266,6 +266,17 @@
 		}
 
 		.creator-info {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			color: rgba(255, 255, 255, 0.8);
+
+			.anticon {
+				color: #00ffff;
+			}
+		}
+
+		.venue-count {
 			display: flex;
 			align-items: center;
 			gap: 8px;
@@ -326,7 +337,7 @@
 		}
 	}
 
-	.workspace-modal {
+	.project-modal {
 		.ant-modal-content {
 			background: rgba(15, 15, 15, 0.95);
 			border: 1px solid rgba(0, 255, 255, 0.3);
@@ -362,7 +373,7 @@
 			padding: 16px 24px 24px;
 		}
 
-		.workspace-form {
+		.project-form {
 			.ant-form-item-label > label {
 				color: rgba(255, 255, 255, 0.9);
 				font-weight: 500;
@@ -433,10 +444,10 @@
 }
 
 @media (max-width: 768px) {
-	.workspace-manage-page {
+	.project-manage-page {
 		padding: 16px;
 
-		.workspace-header {
+		.project-header {
 			flex-direction: column;
 			gap: 16px;
 			text-align: center;
@@ -460,7 +471,7 @@
 			}
 		}
 
-		.workspace-table {
+		.project-table {
 			.ant-table {
 				.ant-table-thead > tr > th,
 				.ant-table-tbody > tr > td {
@@ -468,11 +479,11 @@
 				}
 			}
 
-			.workspace-info-cell {
+			.project-info-cell {
 				gap: 12px;
 
-				.workspace-details {
-					.workspace-description {
+				.project-details {
+					.project-description {
 						max-width: 200px;
 					}
 				}

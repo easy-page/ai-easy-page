@@ -29,6 +29,7 @@ import { getQueryString } from '../../common/utils/url';
 import { ConversationMessageType } from '../../common/interfaces/messages/chatMessages/interface';
 import { TeamInfo } from '@/apis/team';
 import { VenueInfo } from '@/apis/venue';
+import { ProjectInfo } from '@/apis/project';
 
 export const MAX_NAME_LENGTH = 10;
 const MAX_CONVERSATION_COUNT = 8;
@@ -75,6 +76,13 @@ export type VenueListInfo = {
 	pageNo: number;
 };
 
+export type ProjectListInfo = {
+	data: ProjectInfo[];
+	total: number;
+	pageSize: number;
+	pageNo: number;
+};
+
 export class ChatGlobalStateEntity extends Entity {
 	/** 当前是否在输入中 */
 	isWaiting$: LiveData<boolean> = new LiveData<boolean>(false);
@@ -93,6 +101,12 @@ export class ChatGlobalStateEntity extends Entity {
 	venues$: LiveData<VenueListInfo | null> = new LiveData<VenueListInfo | null>(
 		null
 	);
+
+	curProject$: LiveData<ProjectInfo | null> = new LiveData<ProjectInfo | null>(
+		null
+	);
+	projects$: LiveData<ProjectListInfo | null> =
+		new LiveData<ProjectListInfo | null>(null);
 
 	csrfToken$: LiveData<string> = new LiveData<string>('');
 
@@ -165,6 +179,14 @@ export class ChatGlobalStateEntity extends Entity {
 
 	setVenues(venues: VenueListInfo | null) {
 		this.venues$.next(venues);
+	}
+
+	setCurProject(project: ProjectInfo | null) {
+		this.curProject$.next(project);
+	}
+
+	setProjects(projects: ProjectListInfo | null) {
+		this.projects$.next(projects);
 	}
 
 	setUserTeams(teams: TeamInfo[]) {

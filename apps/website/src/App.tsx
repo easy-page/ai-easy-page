@@ -11,6 +11,7 @@ import LoginPage from './pages/AuthPage/LoginPage';
 import RegisterPage from './pages/AuthPage/RegisterPage';
 import WorkspacePage from './pages/WorkspacePage';
 import ProjectsPage from './pages/WorkspacePage/ProjectsPage';
+import ProjectDetailPage from './pages/ProjectDetailPage';
 import TemplatesPage from './pages/WorkspacePage/TemplatesPage';
 import ProfilePage from './pages/ProfilePage';
 import TeamPage from './pages/TeamPage';
@@ -55,6 +56,10 @@ const App: React.FC = () => {
 						>
 							<Route path="workspace" element={<WorkspacePage />} />
 							<Route path="workspace/projects" element={<ProjectsPage />} />
+							<Route
+								path="workspace/projects/:projectId"
+								element={<ProjectDetailPage />}
+							/>
 							<Route path="workspace/templates" element={<TemplatesPage />} />
 							<Route path="profile" element={<ProfilePage />} />
 							<Route path="team" element={<TeamPage />} />

@@ -19,6 +19,18 @@ import { ServerMessage } from '../../common/interfaces/messages/chatMessages/ser
 import { ServerMessageCardType } from '../../common/constants/message';
 import { Toast } from '@douyinfe/semi-ui';
 import { ConversationMessageType } from '../../common/interfaces/messages/chatMessages/interface';
+import {
+	ProjectInfo,
+	createProject,
+	updateProject,
+	queryProjects,
+	deleteProject,
+	archiveProject,
+	copyProject,
+	ProjectCreateParams,
+	ProjectUpdateParams,
+	ProjectQueryParams,
+} from '../../apis/project';
 
 export class ChatService extends Service {
 	globalState = this.framework.createEntity(ChatGlobalStateEntity, [
@@ -345,6 +357,180 @@ export class ChatService extends Service {
 				console.error('发生其他错误:', error);
 			}
 		}
+	}
+
+	// 项目管理相关方法
+	async getProjects(params: ProjectQueryParams) {
+		try {
+			const response = await queryProjects(params);
+			if (response.success && response.data) {
+				this.globalState.setProjects(response.data);
+				return response.data;
+			} else {
+				Toast.error({
+					content: '获取项目列表失败',
+				});
+				return undefined;
+			}
+		} catch (error) {
+			console.error('获取项目列表失败:', error);
+			Toast.error({
+				content: '获取项目列表失败',
+			});
+			return undefined;
+		}
+	}
+
+	async createNewProject(params: ProjectCreateParams) {
+		try {
+			const response = await createProject(params);
+			if (response.success && response.data) {
+				Toast.success({
+					content: '项目创建成功',
+				});
+				// 刷新项目列表
+				await this.getProjects({
+					team_id: params.team_id,
+					page_size: 100,
+					page_num: 1,
+				});
+				return response.data;
+			} else {
+				Toast.error({
+					content: '项目创建失败',
+				});
+				return undefined;
+			}
+		} catch (error) {
+			console.error('创建项目失败:', error);
+			Toast.error({
+				content: '项目创建失败',
+			});
+			return undefined;
+		}
+	}
+
+	async updateExistingProject(projectId: number, params: ProjectUpdateParams) {
+		try {
+			const response = await updateProject({
+				project_id: projectId,
+				project_data: params,
+			});
+			if (response.success && response.data) {
+				Toast.success({
+					content: '项目更新成功',
+				});
+				// 刷新项目列表
+				await this.getProjects({
+					team_id: this.globalState.curTeam$.value?.id,
+					page_size: 100,
+					page_num: 1,
+				});
+				return response.data;
+			} else {
+				Toast.error({
+					content: '项目更新失败',
+				});
+				return undefined;
+			}
+		} catch (error) {
+			console.error('更新项目失败:', error);
+			Toast.error({
+				content: '项目更新失败',
+			});
+			return undefined;
+		}
+	}
+
+	async deleteExistingProject(projectId: number) {
+		try {
+			const response = await deleteProject({ project_id: projectId });
+			if (response.success) {
+				Toast.success({
+					content: '项目删除成功',
+				});
+				// 刷新项目列表
+				await this.getProjects({
+					team_id: this.globalState.curTeam$.value?.id,
+					page_size: 100,
+					page_num: 1,
+				});
+				return true;
+			} else {
+				Toast.error({
+					content: '项目删除失败',
+				});
+				return false;
+			}
+		} catch (error) {
+			console.error('删除项目失败:', error);
+			Toast.error({
+				content: '项目删除失败',
+			});
+			return false;
+		}
+	}
+
+	async archiveExistingProject(projectId: number) {
+		try {
+			const response = await archiveProject({ project_id: projectId });
+			if (response.success && response.data) {
+				Toast.success({
+					content: '项目归档成功',
+				});
+				// 刷新项目列表
+				await this.getProjects({
+					team_id: this.globalState.curTeam$.value?.id,
+					page_size: 100,
+					page_num: 1,
+				});
+				return response.data;
+			} else {
+				Toast.error({
+					content: '项目归档失败',
+				});
+				return undefined;
+			}
+		} catch (error) {
+			console.error('归档项目失败:', error);
+			Toast.error({
+				content: '项目归档失败',
+			});
+			return undefined;
+		}
+	}
+
+	async copyExistingProject(projectId: number, name: string) {
+		try {
+			const response = await copyProject({ project_id: projectId, name });
+			if (response.success && response.data) {
+				Toast.success({
+					content: '项目复制成功',
+				});
+				// 刷新项目列表
+				await this.getProjects({
+					team_id: this.globalState.curTeam$.value?.id,
+					page_size: 100,
+					page_num: 1,
+				});
+				return response.data;
+			} else {
+				Toast.error({
+					content: '项目复制失败',
+				});
+				return undefined;
+			}
+		} catch (error) {
+			console.error('复制项目失败:', error);
+			Toast.error({
+				content: '项目复制失败',
+			});
+			return undefined;
+		}
+	}
+
+	setCurrentProject(project: ProjectInfo | null) {
+		this.globalState.setCurProject(project);
 	}
 }
 

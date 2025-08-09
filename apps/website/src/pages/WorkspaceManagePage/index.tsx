@@ -19,6 +19,7 @@ import {
 	Badge,
 	Select,
 	DatePicker,
+	Divider,
 } from 'antd';
 import {
 	PlusOutlined,
@@ -32,21 +33,20 @@ import {
 	SearchOutlined,
 	FilterOutlined,
 	ExportOutlined,
+	InboxOutlined,
+	ReloadOutlined,
+	TeamOutlined,
+	CalendarOutlined,
 } from '@ant-design/icons';
 import { useObservable } from '@/hooks/useObservable';
 import { useService } from '@/infra';
 import { ChatService } from '@/services/chatGlobalState';
 import {
-	VenueInfo,
-	createVenue,
-	updateVenue,
-	queryVenues,
-	deleteVenue,
-	VenueCreateParams,
-	VenueUpdateParams,
-	VenueStatus,
-	VENUE_STATUS_CONFIG,
-} from '@/apis/venue';
+	ProjectInfo,
+	ProjectCreateParams,
+	ProjectStatus,
+	PROJECT_STATUS_CONFIG,
+} from '@/apis/project';
 import { TeamInfo } from '@/apis/team';
 import './index.less';
 
@@ -54,16 +54,16 @@ const { Title, Text } = Typography;
 const { TextArea } = Input;
 const { Option } = Select;
 
-interface WorkspaceManagePageProps {
-	onWorkspaceSelect?: (workspace: VenueInfo) => void;
+interface ProjectManagePageProps {
+	onProjectSelect?: (project: ProjectInfo) => void;
 }
 
-const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
-	onWorkspaceSelect,
+const ProjectManagePage: React.FC<ProjectManagePageProps> = ({
+	onProjectSelect,
 }) => {
 	const [form] = Form.useForm();
 	const [isModalVisible, setIsModalVisible] = useState(false);
-	const [editingWorkspace, setEditingWorkspace] = useState<VenueInfo | null>(
+	const [editingProject, setEditingProject] = useState<ProjectInfo | null>(
 		null
 	);
 	const [loading, setLoading] = useState(false);
@@ -73,29 +73,25 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 
 	const chatService = useService(ChatService);
 
-	const venues = useObservable(chatService.globalState.venues$, null);
-	const curVenue = useObservable(chatService.globalState.curVenue$, null);
+	const projects = useObservable(chatService.globalState.projects$, null);
+	const curProject = useObservable(chatService.globalState.curProject$, null);
 	const curTeam = useObservable(chatService.globalState.curTeam$, null);
 	const userTeams = useObservable(chatService.globalState.userTeams$, []);
 
 	// 获取项目列表
-	const fetchWorkspaces = async () => {
+	const fetchProjects = async () => {
 		setTableLoading(true);
 		try {
-			const response = await queryVenues({
+			await chatService.getProjects({
 				team_id: curTeam?.id,
 				page_size: 100,
 				page_num: 1,
 				keyword: searchText || undefined,
 				status:
-					statusFilter === 'all' ? undefined : (statusFilter as VenueStatus),
+					statusFilter === 'all' ? undefined : (statusFilter as ProjectStatus),
 			});
-			if (response.data) {
-				chatService.globalState.setVenues(response.data);
-			}
 		} catch (error) {
-			message.error('获取项目列表失败');
-			console.error('Fetch workspaces error:', error);
+			console.error('Fetch projects error:', error);
 		} finally {
 			setTableLoading(false);
 		}
@@ -105,58 +101,67 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 	const handleSubmit = async (values: any) => {
 		setLoading(true);
 		try {
-			if (editingWorkspace) {
-				await updateVenue({
-					venue_id: editingWorkspace.id.toString(),
-					venue_data: values,
-				});
-				message.success('项目更新成功');
+			if (editingProject) {
+				await chatService.updateExistingProject(editingProject.id, values);
 			} else {
-				await createVenue({
+				await chatService.createNewProject({
 					...values,
 					team_id: curTeam?.id,
-				} as VenueCreateParams);
-				message.success('项目创建成功');
+				} as ProjectCreateParams);
 			}
 			setIsModalVisible(false);
 			form.resetFields();
-			setEditingWorkspace(null);
-			fetchWorkspaces();
+			setEditingProject(null);
 		} catch (error) {
-			message.error(editingWorkspace ? '项目更新失败' : '项目创建失败');
-			console.error('Submit workspace error:', error);
+			console.error('Submit project error:', error);
 		} finally {
 			setLoading(false);
 		}
 	};
 
 	// 删除项目
-	const handleDelete = async (venueId: number) => {
+	const handleDelete = async (projectId: number) => {
 		try {
-			await deleteVenue({ venue_id: venueId.toString() });
-			message.success('项目删除成功');
-			fetchWorkspaces();
+			await chatService.deleteExistingProject(projectId);
 		} catch (error) {
-			message.error('项目删除失败');
-			console.error('Delete workspace error:', error);
+			console.error('Delete project error:', error);
+		}
+	};
+
+	// 归档项目
+	const handleArchive = async (projectId: number) => {
+		try {
+			await chatService.archiveExistingProject(projectId);
+		} catch (error) {
+			console.error('Archive project error:', error);
+		}
+	};
+
+	// 复制项目
+	const handleCopy = async (projectId: number, name: string) => {
+		try {
+			await chatService.copyExistingProject(projectId, `${name} - 副本`);
+		} catch (error) {
+			console.error('Copy project error:', error);
 		}
 	};
 
 	// 选择项目
-	const handleSelectWorkspace = (workspace: VenueInfo) => {
-		chatService.globalState.setCurVenue(workspace);
-		onWorkspaceSelect?.(workspace);
-		message.success(`已选择项目：${workspace.name}`);
+	const handleSelectProject = (project: ProjectInfo) => {
+		chatService.setCurrentProject(project);
+		onProjectSelect?.(project);
+		message.success(`已选择项目：${project.name}`);
 	};
 
 	// 打开编辑模态框
-	const showEditModal = (workspace: VenueInfo) => {
-		setEditingWorkspace(workspace);
+	const showEditModal = (project: ProjectInfo) => {
+		setEditingProject(project);
 		form.setFieldsValue({
-			name: workspace.name,
-			description: workspace.description,
-			icon: workspace.icon,
-			tags: workspace.tags,
+			name: project.name,
+			description: project.description,
+			icon: project.icon,
+			tags: project.tags,
+			status: project.status,
 		});
 		setIsModalVisible(true);
 	};
@@ -167,7 +172,7 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 			message.warning('请先选择一个团队');
 			return;
 		}
-		setEditingWorkspace(null);
+		setEditingProject(null);
 		form.resetFields();
 		setIsModalVisible(true);
 	};
@@ -175,25 +180,25 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 	// 关闭模态框
 	const handleCancel = () => {
 		setIsModalVisible(false);
-		setEditingWorkspace(null);
+		setEditingProject(null);
 		form.resetFields();
 	};
 
 	// 搜索和筛选
 	const handleSearch = () => {
-		fetchWorkspaces();
+		fetchProjects();
 	};
 
 	// 重置筛选
 	const handleReset = () => {
 		setSearchText('');
 		setStatusFilter('all');
-		fetchWorkspaces();
+		fetchProjects();
 	};
 
 	useEffect(() => {
 		if (curTeam) {
-			fetchWorkspaces();
+			fetchProjects();
 		}
 	}, [curTeam, searchText, statusFilter]);
 
@@ -201,23 +206,23 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 	const columns = [
 		{
 			title: '项目信息',
-			key: 'workspace_info',
-			render: (record: VenueInfo) => (
-				<div className="workspace-info-cell">
+			key: 'project_info',
+			render: (record: ProjectInfo) => (
+				<div className="project-info-cell">
 					<Avatar
 						size={40}
 						icon={<FolderOutlined />}
 						style={{ backgroundColor: '#00ffff' }}
 					/>
-					<div className="workspace-details">
-						<div className="workspace-name">{record.name}</div>
-						<div className="workspace-description">
+					<div className="project-details">
+						<div className="project-name">{record.name}</div>
+						<div className="project-description">
 							{record.description || '暂无描述'}
 						</div>
 						{record.tags && (
-							<div className="workspace-tags">
+							<div className="project-tags">
 								{record.tags.split(',').map((tag, index) => (
-									<Tag key={index} size="small" color="cyan">
+									<Tag key={index} color="cyan">
 										{tag.trim()}
 									</Tag>
 								))}
@@ -230,12 +235,12 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 		{
 			title: '状态',
 			key: 'status',
-			render: (record: VenueInfo) => {
-				const statusConfig = VENUE_STATUS_CONFIG[record.status];
+			render: (record: ProjectInfo) => {
+				const statusConfig = PROJECT_STATUS_CONFIG[record.status];
 				return (
 					<Badge
 						status={
-							record.status === VenueStatus.NORMAL ? 'success' : 'default'
+							record.status === ProjectStatus.ACTIVE ? 'success' : 'default'
 						}
 						text={<Tag color={statusConfig.color}>{statusConfig.text}</Tag>}
 					/>
@@ -243,9 +248,19 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 			},
 		},
 		{
+			title: '会场数量',
+			key: 'venue_count',
+			render: (record: ProjectInfo) => (
+				<div className="venue-count">
+					<FolderOutlined style={{ marginRight: 4 }} />
+					<Text>{record.venue_count}</Text>
+				</div>
+			),
+		},
+		{
 			title: '创建者',
 			key: 'created_by',
-			render: (record: VenueInfo) => (
+			render: (record: ProjectInfo) => (
 				<div className="creator-info">
 					<UserOutlined />
 					<Text>{record.created_by}</Text>
@@ -253,16 +268,9 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 			),
 		},
 		{
-			title: '访问量',
-			key: 'view_count',
-			render: (record: VenueInfo) => (
-				<Text type="secondary">{record.view_count}</Text>
-			),
-		},
-		{
 			title: '创建时间',
 			key: 'created_at',
-			render: (record: VenueInfo) => (
+			render: (record: ProjectInfo) => (
 				<Text type="secondary">
 					{new Date(record.created_at).toLocaleDateString()}
 				</Text>
@@ -271,16 +279,16 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 		{
 			title: '操作',
 			key: 'actions',
-			render: (record: VenueInfo) => (
+			render: (record: ProjectInfo) => (
 				<Space size="small">
 					<Tooltip title="选择项目">
 						<Button
-							type={curVenue?.id === record.id ? 'primary' : 'default'}
+							type={curProject?.id === record.id ? 'primary' : 'default'}
 							size="small"
 							icon={<EyeOutlined />}
-							onClick={() => handleSelectWorkspace(record)}
+							onClick={() => handleSelectProject(record)}
 						>
-							{curVenue?.id === record.id ? '当前项目' : '选择'}
+							{curProject?.id === record.id ? '当前项目' : '选择'}
 						</Button>
 					</Tooltip>
 					<Tooltip title="编辑项目">
@@ -291,17 +299,24 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 							onClick={() => showEditModal(record)}
 						/>
 					</Tooltip>
-					<Tooltip title="复制项目ID">
+					<Tooltip title="复制项目">
 						<Button
 							type="text"
 							size="small"
 							icon={<CopyOutlined />}
-							onClick={() => {
-								navigator.clipboard.writeText(record.id.toString());
-								message.success('项目ID已复制到剪贴板');
-							}}
+							onClick={() => handleCopy(record.id, record.name)}
 						/>
 					</Tooltip>
+					{record.status !== ProjectStatus.ARCHIVED && (
+						<Tooltip title="归档项目">
+							<Button
+								type="text"
+								size="small"
+								icon={<InboxOutlined />}
+								onClick={() => handleArchive(record.id)}
+							/>
+						</Tooltip>
+					)}
 					<Tooltip title="删除项目">
 						<Popconfirm
 							title="确定要删除这个项目吗？"
@@ -323,35 +338,53 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 		},
 	];
 
-	const workspaceList = venues?.data || [];
+	const projectList = projects?.data || [];
+
+	// 统计数据
+	const stats = {
+		total: projectList.length,
+		active: projectList.filter((p) => p.status === ProjectStatus.ACTIVE).length,
+		archived: projectList.filter((p) => p.status === ProjectStatus.ARCHIVED)
+			.length,
+		totalVenues: projectList.reduce((sum, p) => sum + p.venue_count, 0),
+	};
 
 	return (
-		<div className="workspace-manage-page">
+		<div className="project-manage-page">
 			{/* 页面头部 */}
-			<div className="workspace-header">
+			<div className="project-header">
 				<div className="header-content">
 					<Title level={2} className="page-title">
 						<FolderOutlined /> 项目管理
 					</Title>
 					<Text type="secondary" className="page-subtitle">
-						管理您的项目和页面
+						管理您的项目和关联的会场
 					</Text>
 					{curTeam && (
 						<Text type="secondary" className="current-team">
-							当前团队：{curTeam.name}
+							<TeamOutlined /> 当前团队：{curTeam.name}
 						</Text>
 					)}
 				</div>
-				<Button
-					type="primary"
-					icon={<PlusOutlined />}
-					size="large"
-					onClick={showCreateModal}
-					className="create-btn"
-					disabled={!curTeam}
-				>
-					创建项目
-				</Button>
+				<Space>
+					<Button
+						icon={<ReloadOutlined />}
+						onClick={fetchProjects}
+						loading={tableLoading}
+					>
+						刷新
+					</Button>
+					<Button
+						type="primary"
+						icon={<PlusOutlined />}
+						size="large"
+						onClick={showCreateModal}
+						className="create-btn"
+						disabled={!curTeam}
+					>
+						创建项目
+					</Button>
+				</Space>
 			</div>
 
 			{/* 统计卡片 */}
@@ -360,7 +393,7 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 					<Card className="stat-card">
 						<Statistic
 							title="总项目数"
-							value={workspaceList.length}
+							value={stats.total}
 							prefix={<FolderOutlined />}
 							valueStyle={{ color: '#00ffff' }}
 						/>
@@ -369,11 +402,8 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 				<Col xs={24} sm={12} lg={6}>
 					<Card className="stat-card">
 						<Statistic
-							title="正常项目"
-							value={
-								workspaceList.filter((w) => w.status === VenueStatus.NORMAL)
-									.length
-							}
+							title="活跃项目"
+							value={stats.active}
 							prefix={<UserOutlined />}
 							valueStyle={{ color: '#52c41a' }}
 						/>
@@ -383,7 +413,7 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 					<Card className="stat-card">
 						<Statistic
 							title="当前项目"
-							value={curVenue ? 1 : 0}
+							value={curProject ? 1 : 0}
 							prefix={<SettingOutlined />}
 							valueStyle={{ color: '#1890ff' }}
 						/>
@@ -392,8 +422,8 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 				<Col xs={24} sm={12} lg={6}>
 					<Card className="stat-card">
 						<Statistic
-							title="总访问量"
-							value={workspaceList.reduce((sum, w) => sum + w.view_count, 0)}
+							title="总会场数"
+							value={stats.totalVenues}
 							prefix={<EyeOutlined />}
 							valueStyle={{ color: '#722ed1' }}
 						/>
@@ -422,8 +452,9 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 							style={{ width: '100%' }}
 						>
 							<Option value="all">全部状态</Option>
-							<Option value={VenueStatus.NORMAL}>正常</Option>
-							<Option value={VenueStatus.DELETED}>已删除</Option>
+							<Option value={ProjectStatus.ACTIVE}>活跃</Option>
+							<Option value={ProjectStatus.INACTIVE}>非活跃</Option>
+							<Option value={ProjectStatus.ARCHIVED}>已归档</Option>
 						</Select>
 					</Col>
 					<Col xs={24} sm={10}>
@@ -450,14 +481,14 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 			</Card>
 
 			{/* 项目列表 */}
-			<Card className="workspace-table-card">
+			<Card className="project-table-card">
 				<Table
 					columns={columns}
-					dataSource={workspaceList}
+					dataSource={projectList}
 					rowKey="id"
 					loading={tableLoading}
 					pagination={false}
-					className="workspace-table"
+					className="project-table"
 					locale={{
 						emptyText: (
 							<div className="empty-state">
@@ -490,7 +521,7 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 			<Modal
 				title={
 					<div className="modal-title">
-						{editingWorkspace ? (
+						{editingProject ? (
 							<>
 								<EditOutlined /> 编辑项目
 							</>
@@ -506,15 +537,15 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 				onCancel={handleCancel}
 				confirmLoading={loading}
 				width={600}
-				className="workspace-modal"
-				okText={editingWorkspace ? '更新' : '创建'}
+				className="project-modal"
+				okText={editingProject ? '更新' : '创建'}
 				cancelText="取消"
 			>
 				<Form
 					form={form}
 					layout="vertical"
 					onFinish={handleSubmit}
-					className="workspace-form"
+					className="project-form"
 				>
 					<Form.Item
 						name="name"
@@ -557,10 +588,20 @@ const WorkspaceManagePage: React.FC<WorkspaceManagePageProps> = ({
 							prefix={<SettingOutlined />}
 						/>
 					</Form.Item>
+
+					{editingProject && (
+						<Form.Item name="status" label="项目状态">
+							<Select placeholder="请选择项目状态">
+								<Option value={ProjectStatus.ACTIVE}>活跃</Option>
+								<Option value={ProjectStatus.INACTIVE}>非活跃</Option>
+								<Option value={ProjectStatus.ARCHIVED}>已归档</Option>
+							</Select>
+						</Form.Item>
+					)}
 				</Form>
 			</Modal>
 		</div>
 	);
 };
 
-export default WorkspaceManagePage;
+export default ProjectManagePage;

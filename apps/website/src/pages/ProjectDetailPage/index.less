@@ -1,0 +1,90 @@
+.project-detail-page {
+	padding: 24px;
+	max-width: 1400px;
+	margin: 0 auto;
+
+	.project-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 24px;
+
+		.page-title {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			margin: 0;
+		}
+	}
+
+	.project-info-card {
+		margin-bottom: 24px;
+	}
+
+	.project-basic-info {
+		display: flex;
+		align-items: flex-start;
+		gap: 16px;
+	}
+
+	.project-details {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.project-description {
+		color: rgba(0, 0, 0, 0.65);
+	}
+
+	.project-meta {
+		margin-top: 8px;
+		.meta-item {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			color: rgba(0, 0, 0, 0.65);
+		}
+	}
+
+	.project-tags {
+		margin-top: 8px;
+		display: flex;
+		gap: 6px;
+		flex-wrap: wrap;
+	}
+
+	.stats-row {
+		margin-bottom: 24px;
+	}
+
+	.venues-card {
+		.card-title {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.venue-info-cell {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+
+			.venue-details {
+				.venue-name {
+					font-weight: 600;
+				}
+				.venue-description {
+					color: rgba(0, 0, 0, 0.45);
+				}
+			}
+		}
+	}
+
+	.loading-state,
+	.error-state {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 200px;
+	}
+}
