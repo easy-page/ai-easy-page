@@ -9,6 +9,7 @@ import { getQueryString } from '@/common/utils/url';
 import ConfigBuilder from './components/ConfigBuilder';
 import AIBuilder from './components/AIBuilder';
 import PreviewPanel from './components/PreviewPanel';
+import CanvasPanel from './components/CanvasPanel';
 import NodeConfigPanel from './components/NodeConfigPanel';
 import VenueProjectModal from '@/components/VenueProjectModal';
 import { FormSchema, EMPTY_FORM_SCHEMA } from './Schema';
@@ -27,6 +28,7 @@ const PlaygroundPage: FC = () => {
 	const [previewMode, setPreviewMode] = useState<'create' | 'edit' | 'view'>(
 		'create'
 	);
+	const [centerTab, setCenterTab] = useState<'preview' | 'canvas'>('preview');
 
 	const [selectedNode, setSelectedNode] = useState<string | null>(null);
 	const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
@@ -209,13 +211,30 @@ const PlaygroundPage: FC = () => {
 						</Card>
 					</Sider>
 
-					{/* 中间：预览区域 */}
+					{/* 中间：预览/画布 区域 */}
 					<Content className="playground-content">
 						<Card className="preview-card">
-							<PreviewPanel
-								previewMode={previewMode}
-								onPreviewModeChange={handlePreviewModeChange}
-								schema={currentSchema}
+							<Tabs
+								activeKey={centerTab}
+								onChange={(k) => setCenterTab(k as any)}
+								items={[
+									{
+										key: 'preview',
+										label: '预览',
+										children: (
+											<PreviewPanel
+												previewMode={previewMode}
+												onPreviewModeChange={handlePreviewModeChange}
+												schema={currentSchema}
+											/>
+										),
+									},
+									{
+										key: 'canvas',
+										label: '画布',
+										children: <CanvasPanel />,
+									},
+								]}
 							/>
 						</Card>
 					</Content>
