@@ -39,6 +39,7 @@ export type ApiStreamCardChunk = ApiStreamBaseChunk & {
 	id: string; // 卡片唯一 ID
 	type: ServerMessageType.CARD;
 	cardType: ServerMessageCardType;
+	cardInStream?: boolean;
 	cardContent?: string;
 };
 

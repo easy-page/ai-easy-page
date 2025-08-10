@@ -382,7 +382,7 @@ export class AgnoServer extends ApiProvider {
 		return newContext;
 	}
 
-	async convertToAgoMsg(
+	async convertToVenueMsg(
 		curMessage: UserClientMessage | AssistantClientMessage,
 		venueId: number,
 		conversationId: string | undefined
@@ -418,11 +418,15 @@ export class AgnoServer extends ApiProvider {
 		};
 	}
 
-	getServerMessageFromChunk(
+	getVenueServerMessageFromChunk(
 		chunk: ApiStreamChunk,
 		venueId: number
 	): ServerMessage {
 		if (chunk.type === ServerMessageType.CARD) {
+			console.log(
+				'cards===>: newCardsnewCards: chunk.cardContent12321321:',
+				chunk.cardInStream
+			);
 			return {
 				conversation_id: chunk.conversationId || '',
 				id: chunk.messageId || '',
@@ -438,6 +442,7 @@ export class AgnoServer extends ApiProvider {
 						type: chunk.cardType,
 						id: chunk.id,
 						content: chunk.cardContent || '',
+						isStream: chunk.cardInStream,
 					},
 				},
 			};
@@ -469,7 +474,7 @@ export class AgnoServer extends ApiProvider {
 		venueId,
 	}: CreateMessageOptions): ApiStream {
 		try {
-			const lastMessage = await this.convertToAgoMsg(
+			const lastMessage = await this.convertToVenueMsg(
 				curMessage,
 				venueId,
 				conversationId
@@ -526,7 +531,10 @@ export class AgnoServer extends ApiProvider {
 							const newConversationId = `${item?.conversationId || ''}`;
 
 							yield {
-								serverMessage: this.getServerMessageFromChunk(item, venueId),
+								serverMessage: this.getVenueServerMessageFromChunk(
+									item,
+									venueId
+								),
 								messageId: messageId,
 								text: item.text,
 								originalMessageId: oriMessageId,

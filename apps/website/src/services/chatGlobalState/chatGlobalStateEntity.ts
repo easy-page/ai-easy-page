@@ -31,6 +31,7 @@ import { TeamInfo } from '@/apis/team';
 import { VenueInfo } from '@/apis/venue';
 import { FormSchema } from '@/pages/PlaygroundPage/Schema';
 import { ProjectInfo } from '@/apis/project';
+import { toJson } from '@/common/utils/json';
 
 export const MAX_NAME_LENGTH = 10;
 const MAX_CONVERSATION_COUNT = 8;
@@ -424,13 +425,20 @@ export class ChatGlobalStateEntity extends Entity {
 		const curVal = this.currentStreamMsg$.value || ({} as ServerMessage);
 		const newCards = { ...(curVal.cards || {}) };
 		Object.keys(message.cards || {}).forEach((cardId) => {
+			const oriCardContent = newCards[cardId]?.content || '';
+			const newCardContent = message.cards?.[cardId]?.content || '';
+			const oriDetail = newCards[cardId]?.detail;
+			const isStream = message.cards?.[cardId]?.isStream || false;
+			// const oriDetail = message.cards?.[cardId]?.detail;
+			const curDetail =
+				oriDetail && isStream ? oriDetail : toJson({}, newCardContent);
+
 			if (newCards[cardId]) {
 				newCards[cardId] = {
 					...newCards[cardId],
-					detail: {
-						...(newCards[cardId].detail || {}),
-						...(message.cards?.[cardId].detail || {}),
-					},
+					content: isStream ? oriCardContent + newCardContent : newCardContent,
+					detail: curDetail,
+					isStream: isStream,
 				};
 			} else if (message.cards?.[cardId]) {
 				newCards[cardId] = message.cards?.[cardId];
