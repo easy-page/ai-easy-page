@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { observer } from 'mobx-react';
 
 import { FormProps, FieldValue, FormMode } from '../types';
 import { FormStoreImpl } from '../store/store';
 import { FormProvider } from '../context';
+import { createFormStore, getFormStore } from '../store/storeManager';
 
 export const Form: React.FC<FormProps> = observer(
 	({
@@ -14,15 +15,30 @@ export const Form: React.FC<FormProps> = observer(
 		onSubmit,
 		onValuesChange,
 		store: externalStore,
+		storeId, // 新增：store ID 参数
 		loadingComponent,
 	}) => {
+		// 使用 storeId 或生成唯一 ID
+		const finalStoreId = useMemo(() => {
+			if (storeId) return storeId;
+			if (externalStore) return 'external-store';
+			return `form-${Math.random().toString(36).substr(2, 9)}`;
+		}, [storeId, externalStore]);
+
 		const [store] = useState<FormStoreImpl>(() => {
 			if (externalStore) {
 				return externalStore as FormStoreImpl;
 			} else {
-				return new FormStoreImpl(initialValues);
+				// 尝试从 storeManager 获取已存在的 store
+				const existingStore = getFormStore(finalStoreId);
+				if (existingStore) {
+					return existingStore;
+				}
+				// 创建新的 store
+				return createFormStore(finalStoreId, initialValues);
 			}
 		});
+
 		const validator = store.getValidator();
 
 		// 设置表单模式和初始化请求配置

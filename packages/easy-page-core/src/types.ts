@@ -171,6 +171,7 @@ export interface FormProps {
 		allValues: Record<string, FieldValue>
 	) => void;
 	store?: FormStore;
+	storeId?: string; // 新增：store 的唯一标识，用于多实例管理
 	children: ReactNode;
 	loadingComponent?: ReactNode | (() => ReactNode); // 自定义 loading 组件
 }

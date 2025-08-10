@@ -1,7 +1,12 @@
 import React, { useEffect, cloneElement, isValidElement, useMemo } from 'react';
 import { observer } from 'mobx-react';
 import { FormItemProps } from '../types';
-import { useFormContext } from '../context';
+import {
+	useFormContext,
+	useFormValue,
+	useFormFieldState,
+	useFormDisabled,
+} from '../context';
 import { useRowInfo } from './DynamicForm';
 
 const FormItemComponent: React.FC<FormItemProps> = ({
@@ -22,10 +27,14 @@ const FormItemComponent: React.FC<FormItemProps> = ({
 	noLabel = false,
 }) => {
 	const { store } = useFormContext();
-	const fieldState = store.getFieldState(id);
+
+	// 使用优化的 hooks，只订阅需要的状态
+	const fieldValue = useFormValue(id);
+	const fieldState = useFormFieldState(id);
+	const isFormDisabled = useFormDisabled();
+
 	const hasError = fieldState.errors.length > 0;
 	const isProcessing = fieldState.processing;
-	const isFormDisabled = store.isDisabled(); // Get global disabled state
 	const rowInfo = useRowInfo();
 
 	// 获取字段请求状态
@@ -69,7 +78,6 @@ const FormItemComponent: React.FC<FormItemProps> = ({
 	// 注册动作
 	useEffect(() => {
 		if (actions.length > 0) {
-			// 直接注册actions，handler的参数结构已经在store中处理
 			store.registerActions(id, actions);
 		}
 	}, [id, actions, store]);
@@ -87,7 +95,6 @@ const FormItemComponent: React.FC<FormItemProps> = ({
 			store.registerFieldRequest(id, req);
 		}
 
-		// 清理函数
 		return () => {
 			if (req) {
 				store.unregisterFieldRequest(id);
@@ -95,18 +102,15 @@ const FormItemComponent: React.FC<FormItemProps> = ({
 		};
 	}, [id, req, store]);
 
-	// 处理子组件的值绑定
+	// 处理字段值变化
 	const handleChange = (value: any) => {
-		console.log(
-			`FormItem ${id} - handleChange called with:`,
-			value,
-			'type:',
-			typeof value
-		);
+		console.log(`FormItem ${id} - handleChange:`, value);
 		store.setValue(id, value);
 	};
 
+	// 处理字段失焦
 	const handleBlur = () => {
+		console.log(`FormItem ${id} - handleBlur`);
 		store.setFieldState(id, { touched: true });
 		store.validate(id);
 	};
@@ -127,8 +131,6 @@ const FormItemComponent: React.FC<FormItemProps> = ({
 			return children;
 		}
 
-		const fieldValue = store.getValue(id);
-		const fieldState = store.getFieldState(id);
 		const fieldProps = (fieldState as any).fieldProps || {};
 
 		console.log(
@@ -175,115 +177,95 @@ const FormItemComponent: React.FC<FormItemProps> = ({
 
 	// 渲染 extra 内容
 	const renderExtra = () => {
-		if (typeof extra === 'function') {
-			const fieldValue = store.getValue(id);
-			const fieldState = store.getFieldState(id);
-			const fieldProps = (fieldState as any).fieldProps || {};
+		if (!extra) return null;
 
-			// 使用在组件顶层获取的行信息
-			if (rowInfo) {
-				return extra({
-					store,
-					fieldValue,
-					fieldState,
-					fieldProps,
-					fieldId: id,
-					...rowInfo,
-				});
-			} else {
-				// 如果没有行信息，只传递基本字段信息
-				return extra({
-					store,
-					fieldValue,
-					fieldState,
-					fieldProps,
-					fieldId: id,
-				});
-			}
+		if (typeof extra === 'function') {
+			const extraParams = {
+				store,
+				fieldValue,
+				fieldState,
+				fieldProps: (fieldState as any).fieldProps || {},
+				currentRow: rowInfo?.currentRow,
+				totalRows: rowInfo?.totalRows,
+				isLast: rowInfo?.isLast,
+				fieldId: id,
+			};
+			return extra(extraParams);
 		}
+
 		return extra;
 	};
 
-	// 计算样式
-	const getLabelStyle = () => {
-		if (labelLayout === 'horizontal' && labelWidth) {
-			return {
-				width: typeof labelWidth === 'number' ? `${labelWidth}px` : labelWidth,
-				flexShrink: 0,
-			};
-		}
-		return {};
-	};
+	// 渲染 label
+	const renderLabel = () => {
+		if (noLabel) return null;
 
-	const getContainerStyle = () => {
-		if (labelLayout === 'horizontal') {
-			return {
-				display: 'flex',
-				alignItems: 'flex-start',
-				gap: '8px',
-			};
-		}
-		return {};
-	};
-
-	// 渲染问号提示
-	const renderHelp = () => {
-		if (!help) return null;
-
-		return (
-			<span className="form-item-help" title={help}>
-				<span className="form-item-help-icon">?</span>
-			</span>
+		const labelContent = (
+			<label
+				htmlFor={id}
+				className={`easy-form-item-label ${
+					required ? 'easy-form-item-required' : ''
+				}`}
+				style={
+					labelWidth
+						? {
+								width:
+									typeof labelWidth === 'number'
+										? `${labelWidth}px`
+										: labelWidth,
+						  }
+						: undefined
+				}
+			>
+				{label}
+			</label>
 		);
+
+		if (labelLayout === 'horizontal') {
+			return (
+				<div
+					className="easy-form-item-label-wrapper"
+					style={{ display: 'flex', alignItems: 'center' }}
+				>
+					{labelContent}
+				</div>
+			);
+		}
+
+		return labelContent;
 	};
 
 	return (
 		<div
-			className={`form-item form-item-${labelLayout} ${
-				isProcessing ? 'form-item-processing' : ''
-			} ${isFormDisabled ? 'form-item-disabled' : ''} ${
-				isFieldRequesting ? 'form-item-requesting' : ''
+			className={`easy-form-item ${
+				hasError ? 'easy-form-item-has-error' : ''
+			} ${isProcessing ? 'easy-form-item-processing' : ''} ${
+				isFieldRequesting ? 'easy-form-item-requesting' : ''
 			}`}
-			style={getContainerStyle()}
 		>
-			{!noLabel && label && (
-				<label className="form-item-label" style={getLabelStyle()}>
-					{label}
-					{required && <span className="form-item-required">*</span>}
-					{renderHelp()}
-					{tips && <span className="form-item-tips">{tips}</span>}
-					{isProcessing && (
-						<span className="form-item-processing-indicator">处理中...</span>
-					)}
-					{isFieldRequesting && (
-						<span className="form-item-requesting-indicator">请求中...</span>
-					)}
-				</label>
-			)}
-
-			<div className="form-item-control">
+			{renderLabel()}
+			<div className="easy-form-item-control">
 				{renderChildren()}
-				{isFieldRequesting && (
-					<div className="form-item-requesting-overlay">
-						<div className="form-item-requesting-spinner"></div>
+				{hasError && (
+					<div className="easy-form-item-error">
+						{fieldState.errors.map((error, index) => (
+							<div key={index} className="easy-form-item-error-message">
+								{error}
+							</div>
+						))}
+					</div>
+				)}
+				{renderExtra()}
+				{tips && <div className="easy-form-item-tips">{tips}</div>}
+				{help && (
+					<div className="easy-form-item-help">
+						<span className="easy-form-item-help-icon">?</span>
+						<span className="easy-form-item-help-text">{help}</span>
 					</div>
 				)}
 			</div>
-
-			{hasError && (
-				<div className="form-item-error">
-					{fieldState.errors.map((error, index) => (
-						<div key={index} className="form-item-error-message">
-							{error}
-						</div>
-					))}
-				</div>
-			)}
-
-			{extra && <div className="form-item-extra">{renderExtra()}</div>}
 		</div>
 	);
 };
 
-// 导出组件
-export const FormItem: React.FC<FormItemProps> = observer(FormItemComponent);
+export const FormItem = observer(FormItemComponent);
