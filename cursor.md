@@ -1092,3 +1092,151 @@ if (res.message) {
 - JSX 语法解析：apps/website/src/pages/PlaygroundPage/JSXParser
 - Schema 定义：apps/website/src/pages/PlaygroundPage/Schema
 - 语法树解析：apps/website/src/pages/PlaygroundPage/components/ConfigBuilder
+
+# 设计一个前端框架
+
+基于 javascript + html + css，设计一个前端框架，使用方式如下：
+
+1. 启动应用
+
+```js
+import { createApp } from 'my-framework';
+import App from './App';
+const app = createApp({
+	el: '#app',
+	root: App,
+});
+app.mount();
+```
+
+2. 组件写法
+
+```js
+export const App = {
+	state: {
+		message: 'Hello, World!',
+	},
+};
+```
+
+1. 组件需要考虑生命周期：挂载、卸载、状态变更时
+
+```js
+import { createApp } from 'my-framework';
+
+const app = createApp({
+	el: '#app',
+	data: {
+		message: 'Hello, World!',
+	},
+	methods: {
+		handleClick() {
+			this.message = 'Hello, World!';
+		},
+	},
+	template: `
+    <div>
+      <h1>{{ message }}</h1>
+      <button @click="handleClick">Click me</button>
+    </div>
+  `,
+});
+
+app.mount();
+```
+
+## 功能
+
+- 支持组件化开发
+- 支持数据绑定
+
+## 示例场景
+
+1. 发送请求，并回填数据，支持 loading 效果
+
+```js
+import { createApp } from 'my-framework';
+
+const app = createApp({
+	el: '#app',
+	data: {
+		loading: false,
+		data: null,
+	},
+	methods: {
+		async fetchData() {
+			this.loading = true;
+			const response = await fetch('https://api.example.com/data');
+			const data = await response.json();
+			this.data = data;
+			this.loading = false;
+		},
+	},
+	template: `
+    <div>
+      <button @click="fetchData">Fetch Data</button>
+      <div v-if="loading">Loading...</div>
+      <div v-else>{{ data }}</div>
+    </div>
+  `,
+});
+
+app.mount();
+```
+
+2. 表单验证
+
+```js
+``;
+import { createApp } from 'my-framework';
+
+const app = createApp({
+	el: '#app',
+	data: {
+		form: {
+			username: '',
+			password: '',
+		},
+		errors: {},
+	},
+	methods: {
+		async handleSubmit() {
+			if (!this.form.username) {
+				this.errors.username = 'Username is required';
+			}
+			if (!this.form.password) {
+				this.errors.password = 'Password is required';
+			}
+			if (!this.errors.username && !this.errors.password) {
+				// Submit form
+			}
+		},
+	},
+	template: `
+    <div>
+      <h1>Login</h1>
+      <form @submit.prevent="handleSubmit">
+        <div>
+          <label for="username">Username:</label>
+          <input type="text" id="username" v-model="form.username" />
+          <span v-if="errors.username">{{ errors.username }}</span>
+        </div>
+        <div>
+          <label for="password">Password:</label>
+          <input type="password" id="password" v-model="form.password" />
+          <span v-if="errors.password">{{ errors.password }}</span>
+        </div>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  `,
+});
+
+app.mount();
+```
+
+3. 路由
+
+```js
+
+```

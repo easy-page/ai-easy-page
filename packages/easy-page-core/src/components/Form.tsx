@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { observer } from 'mobx-react';
 
-import { FormProps, FieldValue, FormMode } from '../types';
+import { FormProps, FormMode } from '../types';
 import { FormStoreImpl } from '../store/store';
 import { FormProvider } from '../context';
 import { createFormStore, getFormStore } from '../store/storeManager';
@@ -12,6 +12,7 @@ export const Form: React.FC<FormProps> = observer(
 		initialValues = {},
 		mode = FormMode.CREATE,
 		initReqs = {},
+		initialRouteParams = {},
 		onSubmit,
 		onValuesChange,
 		store: externalStore,
@@ -35,7 +36,13 @@ export const Form: React.FC<FormProps> = observer(
 					return existingStore;
 				}
 				// 创建新的 store
-				return createFormStore(finalStoreId, initialValues);
+				return createFormStore(
+					finalStoreId,
+					initialValues,
+					5,
+					mode,
+					initialRouteParams
+				);
 			}
 		});
 
@@ -46,6 +53,15 @@ export const Form: React.FC<FormProps> = observer(
 			store.setFormMode(mode);
 			store.setInitReqs(initReqs);
 		}, [mode, initReqs, store]);
+
+		// 自动解析URL参数并设置到store中
+		useEffect(() => {
+			// 如果store中没有路由参数，则从URL解析
+			const currentParams = store.getRouteParams();
+			if (Object.keys(currentParams).length === 0) {
+				store.parseRouteParamsFromUrl();
+			}
+		}, [store]);
 
 		// 执行初始化请求
 		useEffect(() => {

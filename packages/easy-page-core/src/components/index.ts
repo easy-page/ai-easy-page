@@ -1,4 +1,4 @@
-export { Form } from './Form';
-export { FormItem } from './FormItem';
-export { When } from './When';
-export { DynamicForm } from './DynamicForm';
+export * from './Form';
+export * from './FormItem';
+export * from './When';
+export * from './DynamicForm';

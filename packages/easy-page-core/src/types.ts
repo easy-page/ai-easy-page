@@ -63,9 +63,32 @@ export interface FieldState {
 	processing?: boolean; // 是否正在处理 effects/actions
 }
 
+// 新增：路由参数动作枚举
+export enum RouteParamsAction {
+	SET = 'set', // 设置单个参数
+	BATCH_SET = 'batchSet', // 批量设置参数
+	REMOVE = 'remove', // 移除单个参数
+	UPDATE = 'update', // 更新参数（合并）
+	CLEAR = 'clear', // 清空所有参数
+	RESET = 'reset', // 重置到初始状态
+	PARSE = 'parse', // 从URL解析
+}
+
+// 新增：路由参数变化事件类型
+export interface RouteParamsChangeEvent {
+	action: RouteParamsAction;
+	key?: string; // 操作的参数键（SET、REMOVE 时有值）
+	value?: string; // 设置的值（SET 时有值）
+	params?: Record<string, string>; // 批量操作的参数（BATCH_SET、UPDATE、RESET、PARSE 时有值）
+	previousParams: Record<string, string>; // 变化前的参数
+	currentParams: Record<string, string>; // 变化后的参数
+}
+
 // 表单状态
 export interface FormState {
+	// 字段的值
 	values: Record<string, FieldValue>;
+	// 字段的一些其他状态如：validating 等
 	fields: Record<string, FieldState>;
 	submitting: boolean;
 	submitted: boolean;
@@ -73,6 +96,8 @@ export interface FormState {
 	processing: boolean; // 全局处理状态
 	disabled: boolean; // 全局禁用状态
 	requesting: boolean; // 全局请求状态
+	// 新增：路由参数状态
+	routeParams: Record<string, string>; // 路由参数
 }
 
 // 副作用配置
@@ -162,6 +187,7 @@ export interface FormProps {
 	initialValues?: Record<string, FieldValue>;
 	mode?: FormMode; // 表单模式
 	initReqs?: Record<string, FormContextRequestConfig>; // 初始化请求配置
+	initialRouteParams?: Record<string, string>; // 初始路由参数
 	onSubmit?: (
 		values: Record<string, FieldValue>,
 		store: FormStore
@@ -329,6 +355,22 @@ export interface FormStore {
 		queueLength: number;
 		maxConcurrent: number;
 	};
+	// 新增：路由参数管理方法
+	getRouteParams: () => Record<string, string>;
+	getRouteParam: (key: string) => string | undefined;
+	setRouteParams: (params: Record<string, string>) => void;
+	setRouteParam: (key: string, value: string) => void;
+	removeRouteParam: (key: string) => void;
+	updateRouteParams: (params: Record<string, string>) => void;
+	clearRouteParams: () => void;
+	// 新增：额外的路由参数管理方法
+	setRouteParamsChangeCallback: (
+		callback: (event: RouteParamsChangeEvent) => void
+	) => void;
+	parseRouteParamsFromUrl: (url?: string) => void;
+	buildQueryString: () => string;
+	updateBrowserUrl: (replace?: boolean) => void;
+	resetRouteParams: () => void;
 }
 
 // 动态表单行配置

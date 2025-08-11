@@ -17,6 +17,8 @@ import {
 	FormContextRequestState,
 	FormMode,
 	ApiResponse,
+	RouteParamsChangeEvent,
+	RouteParamsAction,
 } from '../types';
 import { FormValidator } from '../validator';
 import { Scheduler } from './scheduler';
@@ -51,14 +53,20 @@ export class FormStoreImpl implements FormStore {
 	private initReqsExecuted = false;
 	private fieldRequestDependencies: Map<string, Set<string>> = new Map();
 
+	// 新增：路由参数管理相关属性
+	private routeParamsChangeCallback?: (event: RouteParamsChangeEvent) => void;
+	private initialRouteParams: Record<string, string> = {};
+
 	constructor(
 		initialValues: Record<string, FieldValue> = {},
 		maxConcurrentRequests: number = 5,
-		mode: FormMode = FormMode.CREATE
+		mode: FormMode = FormMode.CREATE,
+		initialRouteParams: Record<string, string> = {}
 	) {
 		this.formMode = mode;
 		this.validator = new FormValidator();
 		this.requestScheduler.setMaxConcurrent(maxConcurrentRequests);
+		this.initialRouteParams = { ...initialRouteParams };
 
 		// 初始化状态
 		const fields: Record<string, FieldState> = {};
@@ -82,6 +90,7 @@ export class FormStoreImpl implements FormStore {
 			processing: false,
 			disabled: false,
 			requesting: false,
+			routeParams: { ...initialRouteParams }, // 初始化路由参数
 		});
 
 		makeAutoObservable(this);
@@ -1233,6 +1242,194 @@ export class FormStoreImpl implements FormStore {
 					await this.dispatchFieldRequest(field);
 				}
 			}
+		}
+	}
+
+	// 新增：路由参数管理方法实现
+
+	// 获取所有路由参数
+	getRouteParams(): Record<string, string> {
+		return { ...this.state.routeParams };
+	}
+
+	// 获取单个路由参数
+	getRouteParam(key: string): string | undefined {
+		return this.state.routeParams[key];
+	}
+
+	// 设置所有路由参数（替换现有参数）
+	setRouteParams(params: Record<string, string>): void {
+		const previousParams = { ...this.state.routeParams };
+
+		runInAction(() => {
+			this.state.routeParams = { ...params };
+		});
+
+		// 触发回调
+		if (this.routeParamsChangeCallback) {
+			this.routeParamsChangeCallback({
+				action: RouteParamsAction.BATCH_SET,
+				params,
+				previousParams,
+				currentParams: this.state.routeParams,
+			});
+		}
+	}
+
+	// 设置单个路由参数
+	setRouteParam(key: string, value: string): void {
+		const previousParams = { ...this.state.routeParams };
+
+		runInAction(() => {
+			this.state.routeParams[key] = value;
+		});
+
+		// 触发回调
+		if (this.routeParamsChangeCallback) {
+			this.routeParamsChangeCallback({
+				action: RouteParamsAction.SET,
+				key,
+				value,
+				previousParams,
+				currentParams: this.state.routeParams,
+			});
+		}
+	}
+
+	// 移除单个路由参数
+	removeRouteParam(key: string): void {
+		const previousParams = { ...this.state.routeParams };
+
+		runInAction(() => {
+			delete this.state.routeParams[key];
+		});
+
+		// 触发回调
+		if (this.routeParamsChangeCallback) {
+			this.routeParamsChangeCallback({
+				action: RouteParamsAction.REMOVE,
+				key,
+				previousParams,
+				currentParams: this.state.routeParams,
+			});
+		}
+	}
+
+	// 更新路由参数（合并现有参数）
+	updateRouteParams(params: Record<string, string>): void {
+		const previousParams = { ...this.state.routeParams };
+
+		runInAction(() => {
+			this.state.routeParams = { ...this.state.routeParams, ...params };
+		});
+
+		// 触发回调
+		if (this.routeParamsChangeCallback) {
+			this.routeParamsChangeCallback({
+				action: RouteParamsAction.UPDATE,
+				params,
+				previousParams,
+				currentParams: this.state.routeParams,
+			});
+		}
+	}
+
+	// 清空所有路由参数
+	clearRouteParams(): void {
+		const previousParams = { ...this.state.routeParams };
+
+		runInAction(() => {
+			this.state.routeParams = {};
+		});
+
+		// 触发回调
+		if (this.routeParamsChangeCallback) {
+			this.routeParamsChangeCallback({
+				action: RouteParamsAction.CLEAR,
+				previousParams,
+				currentParams: this.state.routeParams,
+			});
+		}
+	}
+
+	// 设置路由参数变化回调
+	setRouteParamsChangeCallback(
+		callback: (event: RouteParamsChangeEvent) => void
+	): void {
+		this.routeParamsChangeCallback = callback;
+	}
+
+	// 从URL自动解析并设置路由参数
+	parseRouteParamsFromUrl(url?: string): void {
+		const previousParams = { ...this.state.routeParams };
+		const targetUrl = url || window.location.href;
+		const urlObj = new URL(targetUrl);
+		const params: Record<string, string> = {};
+
+		// 解析查询参数
+		urlObj.searchParams.forEach((value, key) => {
+			params[key] = value;
+		});
+
+		// 设置路由参数
+		runInAction(() => {
+			this.state.routeParams = { ...params };
+		});
+
+		// 触发回调
+		if (this.routeParamsChangeCallback) {
+			this.routeParamsChangeCallback({
+				action: RouteParamsAction.PARSE,
+				params,
+				previousParams,
+				currentParams: this.state.routeParams,
+			});
+		}
+	}
+
+	// 构建URL查询字符串
+	buildQueryString(): string {
+		const params = new URLSearchParams();
+		Object.entries(this.state.routeParams).forEach(([key, value]) => {
+			if (value !== undefined && value !== null && value !== '') {
+				params.append(key, value);
+			}
+		});
+		return params.toString();
+	}
+
+	// 更新浏览器URL（不刷新页面）
+	updateBrowserUrl(replace: boolean = false): void {
+		if (typeof window === 'undefined') return;
+
+		const queryString = this.buildQueryString();
+		const newUrl = queryString
+			? `${window.location.pathname}?${queryString}`
+			: window.location.pathname;
+
+		if (replace) {
+			window.history.replaceState(null, '', newUrl);
+		} else {
+			window.history.pushState(null, '', newUrl);
+		}
+	}
+
+	// 重置路由参数到初始状态
+	resetRouteParams(): void {
+		const previousParams = { ...this.state.routeParams };
+
+		runInAction(() => {
+			this.state.routeParams = { ...this.initialRouteParams };
+		});
+
+		// 触发回调
+		if (this.routeParamsChangeCallback) {
+			this.routeParamsChangeCallback({
+				action: RouteParamsAction.RESET,
+				params: this.initialRouteParams,
+				previousParams,
+				currentParams: this.state.routeParams,
+			});
 		}
 	}
 }

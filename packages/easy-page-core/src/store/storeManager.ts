@@ -24,12 +24,14 @@ export class StoreManager {
 	 * @param initialValues 初始值
 	 * @param maxConcurrentRequests 最大并发请求数
 	 * @param mode 表单模式
+	 * @param initialRouteParams 初始路由参数
 	 */
 	createStore(
 		id: string,
 		initialValues: Record<string, FieldValue> = {},
 		maxConcurrentRequests: number = 5,
-		mode: FormMode = FormMode.CREATE
+		mode: FormMode = FormMode.CREATE,
+		initialRouteParams: Record<string, string> = {}
 	): FormStoreImpl {
 		if (this.stores.has(id)) {
 			console.warn(
@@ -38,7 +40,12 @@ export class StoreManager {
 			return this.stores.get(id)!;
 		}
 
-		const store = new FormStoreImpl(initialValues, maxConcurrentRequests, mode);
+		const store = new FormStoreImpl(
+			initialValues,
+			maxConcurrentRequests,
+			mode,
+			initialRouteParams
+		);
 		this.stores.set(id, store);
 		return store;
 	}
@@ -104,13 +111,15 @@ export const createFormStore = (
 	id: string,
 	initialValues: Record<string, FieldValue> = {},
 	maxConcurrentRequests: number = 5,
-	mode: FormMode = FormMode.CREATE
+	mode: FormMode = FormMode.CREATE,
+	initialRouteParams: Record<string, string> = {}
 ): FormStoreImpl => {
 	return storeManager.createStore(
 		id,
 		initialValues,
 		maxConcurrentRequests,
-		mode
+		mode,
+		initialRouteParams
 	);
 };
 

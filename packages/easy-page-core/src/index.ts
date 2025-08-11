@@ -1,7 +1,5 @@
 // 导出核心组件
-export { Form } from './components/Form';
-export { FormItem } from './components/FormItem';
-export { DynamicForm } from './components/DynamicForm';
+export * from './components';
 
 // 导出类型
 export type {
@@ -34,7 +32,7 @@ export type {
 } from './types';
 
 // 导出枚举
-export { FormMode } from './types';
+export { FormMode, RouteParamsAction } from './types';
 
 // 导出 Context
 export {
@@ -63,6 +61,9 @@ export {
 	useFieldRequest,
 	useContextRequest,
 } from './hooks/useFormRequest';
+
+// 导出新的 Hooks
+export { useFormStore, useRouteParams } from './hooks';
 
 // 导出工具函数
 export { createFormStore as createFormStoreLegacy } from './utils';
