@@ -8,7 +8,7 @@ const StateManagementDemo: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 
 	// 创建表单 Store
-	const store = createFormStore({
+	const store = createFormStore('state-management-demo', {
 		username: '',
 		email: '',
 		role: '',
@@ -133,7 +133,9 @@ const StateManagementDemo: React.FC = () => {
 									handler: async ({ store }) => {
 										const role = store.getValue('role');
 										if (role) {
-											const result = await mockApi.fetchPermissions(role);
+											const result = await mockApi.fetchPermissions(
+												role as string
+											);
 											return {
 												permissions: {
 													fieldValue: result.data,

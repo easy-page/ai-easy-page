@@ -74,7 +74,7 @@ const DynamicFormDemo: React.FC = () => {
 							},
 							{
 								rowIndexs: [3],
-								resetAll: true,
+
 								rowSpan: [2, 3],
 								fields: [
 									<FormItem
@@ -82,6 +82,8 @@ const DynamicFormDemo: React.FC = () => {
 										label="姓名"
 										noLabel
 										required
+										effects={[]}
+										extra={<div>暂不统计</div>}
 										validate={[{ required: true, message: '请输入姓名' }]}
 									>
 										<Input placeholder="请输入姓名" />

@@ -11,7 +11,7 @@ import { Input } from '@easy-page/pc';
 const ExternalStateDemo: React.FC = () => {
 	// 创建外部的 store
 	const [externalStore] = useState(() =>
-		createFormStore({
+		createFormStore('external-store', {
 			username: 'external-user',
 			email: 'external@example.com',
 			age: 25,
