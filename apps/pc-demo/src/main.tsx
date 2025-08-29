@@ -5,7 +5,7 @@ import 'antd/dist/reset.css';
 import '@easy-page/core/dist/style.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-	<React.StrictMode>
-		<App />
-	</React.StrictMode>
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
 );
