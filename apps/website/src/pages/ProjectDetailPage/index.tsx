@@ -198,7 +198,11 @@ const ProjectDetailPage: React.FC = () => {
 							type="text"
 							size="small"
 							icon={<EditOutlined />}
-							onClick={() => navigate(`/venue/${record.id}/edit`)}
+							onClick={() =>
+								navigate(
+									`/dashboard/playground?projectId=${project?.id}&venueId=${record.id}`
+								)
+							}
 						/>
 					</Tooltip>
 				</Space>

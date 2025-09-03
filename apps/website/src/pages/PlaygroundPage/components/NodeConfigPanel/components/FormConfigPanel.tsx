@@ -111,6 +111,7 @@ const FormConfigPanel: FC<FormConfigPanelProps> = ({
 								value={(properties.onSubmit as FunctionProperty)?.content || ''}
 								language="typescript"
 								height="80px"
+								updateOnBlur
 								onChange={(value: string) => {
 									onPropertyChange('properties.onSubmit', {
 										type: 'function',
@@ -141,6 +142,7 @@ const FormConfigPanel: FC<FormConfigPanelProps> = ({
 								}
 								language="typescript"
 								height="80px"
+								updateOnBlur
 								onChange={(value: string) => {
 									onPropertyChange('properties.onValuesChange', {
 										type: 'function',

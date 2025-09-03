@@ -34,7 +34,9 @@ export class ComponentMapper {
 		if (['Option', 'TabPane', 'Step', 'Item', 'BreadcrumbItem'].includes(name))
 			return 'sub-components';
 		if (
-			['div', 'span', 'p', 'a', 'ul', 'li', 'canvas', 'iframe'].includes(name)
+			['div', 'h1', 'span', 'p', 'a', 'ul', 'li', 'canvas', 'iframe'].includes(
+				name
+			)
 		)
 			return 'html';
 		return 'components';

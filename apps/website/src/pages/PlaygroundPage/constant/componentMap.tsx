@@ -280,6 +280,9 @@ export const DEFAULT_COMPONENT_MAP: ComponentMap = {
 	div: (props) => {
 		return <div {...props} />;
 	},
+	h1: (props) => {
+		return <h1 {...props} />;
+	},
 	span: (props) => {
 		return <span {...props} />;
 	},

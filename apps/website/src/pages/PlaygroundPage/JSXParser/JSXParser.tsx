@@ -93,26 +93,67 @@ export class JSXParser {
 	private parseAttributes(attributesString: string): Record<string, any> {
 		const props: Record<string, any> = {};
 
-		const attrRegex = /(\w+)=["']([^"']*)["']/g;
-		const booleanAttrRegex = /(\w+)/g;
+		let rest = attributesString;
 
-		attributesString.replace(attrRegex, (match, name, value) => {
+		// 1) 解析 style={{ ... }} 表达式
+		const styleExp = /style=\{\{([\s\S]*?)\}\}/m;
+		const styleMatch = rest.match(styleExp);
+		if (styleMatch) {
+			const raw = styleMatch[1];
+			props.style = this.parseStyleObject(raw);
+			// 移除已处理的 style 片段，避免后续被当作布尔属性
+			rest = rest.replace(styleExp, '').trim();
+		}
+
+		// 2) 解析 形如 attr="value" 的字符串属性
+		const attrRegex = /(\w+)=["']([^"']*)["']/g;
+		let m: RegExpExecArray | null;
+		while ((m = attrRegex.exec(rest)) !== null) {
+			const [, name, value] = m;
 			try {
 				props[name] = JSON.parse(value);
 			} catch {
 				props[name] = value;
 			}
-			return match;
-		});
+		}
 
-		attributesString.replace(booleanAttrRegex, (match, name) => {
+		// 3) 解析无值布尔属性（排除已解析的 attr=... 以及 style）
+		const withoutAssigned = rest.replace(/\w+\s*=\s*[^\s]+/g, '');
+		const booleanAttrRegex = /\b(\w+)\b/g;
+		let bm: RegExpExecArray | null;
+		while ((bm = booleanAttrRegex.exec(withoutAssigned)) !== null) {
+			const name = bm[1];
 			if (!props.hasOwnProperty(name)) {
 				props[name] = true;
 			}
-			return match;
-		});
+		}
 
 		return props;
+	}
+
+	// 将 "color: 'red', fontSize: 12px" 这类对象文本解析为 { color: 'red', fontSize: '12px' }
+	private parseStyleObject(styleContent: string): Record<string, any> {
+		const style: Record<string, any> = {};
+		// 简单解析：按逗号分割，再按冒号分割
+		const parts = styleContent
+			.split(',')
+			.map((s) => s.trim())
+			.filter(Boolean);
+		for (const part of parts) {
+			const idx = part.indexOf(':');
+			if (idx === -1) continue;
+			const key = part.slice(0, idx).trim();
+			let value = part.slice(idx + 1).trim();
+			// 去掉包裹引号
+			if (
+				(value.startsWith('"') && value.endsWith('"')) ||
+				(value.startsWith("'") && value.endsWith("'"))
+			) {
+				value = value.slice(1, -1);
+			}
+			style[key] = value;
+		}
+		return style;
 	}
 
 	// 解析内容
