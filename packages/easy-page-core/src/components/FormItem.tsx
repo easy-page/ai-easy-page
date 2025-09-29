@@ -9,23 +9,24 @@ import {
 } from '../context';
 import { useRowInfo } from './DynamicForm';
 
-const FormItemComponent: React.FC<FormItemProps> = ({
-  id,
-  label,
-  required = false,
-  validate = [],
-  validateEffects = [],
-  effects = [],
-  actions = [],
-  req,
-  extra,
-  tips,
-  help,
-  children,
-  labelLayout = 'vertical',
-  labelWidth,
-  noLabel = false,
-}) => {
+const FormItemComponent: React.FC<FormItemProps> = (props: FormItemProps) => {
+  const {
+    id,
+    label,
+    required = false,
+    validate = [],
+    validateEffects = [],
+    effects = [],
+    actions = [],
+    req,
+    extra,
+    tips,
+    help,
+    children,
+    labelLayout = 'vertical',
+    labelWidth,
+    noLabel = false,
+  } = props;
   const { store } = useFormContext();
 
   // 使用优化的 hooks，只订阅需要的状态
@@ -184,7 +185,7 @@ const FormItemComponent: React.FC<FormItemProps> = ({
         store,
         fieldValue,
         fieldState,
-        fieldProps: (fieldState as any).fieldProps || {},
+        fieldProps: props || {},
         currentRow: rowInfo?.currentRow,
         totalRows: rowInfo?.totalRows,
         isLast: rowInfo?.isLast,
