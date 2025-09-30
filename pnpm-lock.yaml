@@ -670,7 +670,7 @@ packages:
       outdent: 0.5.0
       prettier: 2.8.8
       resolve-from: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.0
     dev: true
 
   /@changesets/assemble-release-plan@6.0.9:
@@ -681,7 +681,7 @@ packages:
       '@changesets/should-skip-package': 0.1.2
       '@changesets/types': 6.1.0
       '@manypkg/get-packages': 1.1.3
-      semver: 7.7.2
+      semver: 7.7.0
     dev: true
 
   /@changesets/changelog-git@0.2.1:
@@ -719,7 +719,7 @@ packages:
       package-manager-detector: 0.2.11
       picocolors: 1.1.1
       resolve-from: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.0
       spawndamnit: 3.0.1
       term-size: 2.2.1
     transitivePeerDependencies:
@@ -750,7 +750,7 @@ packages:
       '@changesets/types': 6.1.0
       '@manypkg/get-packages': 1.1.3
       picocolors: 1.1.1
-      semver: 7.7.2
+      semver: 7.7.0
     dev: true
 
   /@changesets/get-release-plan@4.0.13:
@@ -1756,7 +1756,7 @@ packages:
       '@rushstack/rig-package': 0.5.2
       '@rushstack/terminal': 0.10.0(@types/node@20.19.17)
       '@rushstack/ts-command-line': 4.19.1(@types/node@20.19.17)
-      lodash: 4.17.21
+      lodash: 4.17.20
       minimatch: 3.0.8
       resolve: 1.22.10
       semver: 7.5.4
@@ -2616,7 +2616,7 @@ packages:
       graphemer: 1.4.0
       ignore: 5.3.2
       natural-compare-lite: 1.4.0
-      semver: 7.7.2
+      semver: 7.7.0
       tsutils: 3.21.0(typescript@4.9.5)
       typescript: 4.9.5
     transitivePeerDependencies:
@@ -2690,7 +2690,7 @@ packages:
       debug: 4.4.3
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.7.2
+      semver: 7.7.0
       tsutils: 3.21.0(typescript@4.9.5)
       typescript: 4.9.5
     transitivePeerDependencies:
@@ -2711,7 +2711,7 @@ packages:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@4.9.5)
       eslint: 8.57.1
       eslint-scope: 5.1.1
-      semver: 7.7.2
+      semver: 7.7.0
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -3092,8 +3092,8 @@ packages:
   /balanced-match@1.0.2:
     resolution: {integrity: sha1-6D46fj8wCzTLnYf2FfoMvzV2kO4=, tarball: http://r.npm.sankuai.com/balanced-match/download/balanced-match-1.0.2.tgz}
 
-  /baseline-browser-mapping@2.8.7:
-    resolution: {integrity: sha1-TTYG/bFzj9kC2kDF/MBZXofOwEQ=, tarball: http://r.npm.sankuai.com/baseline-browser-mapping/download/baseline-browser-mapping-2.8.7.tgz}
+  /baseline-browser-mapping@2.8.9:
+    resolution: {integrity: sha1-/QuFQ8TxcllRMelJZTNVNrMQG3U=, tarball: http://r.npm.sankuai.com/baseline-browser-mapping/download/baseline-browser-mapping-2.8.9.tgz}
     hasBin: true
 
   /better-path-resolve@1.0.0:
@@ -3135,7 +3135,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      baseline-browser-mapping: 2.8.7
+      baseline-browser-mapping: 2.8.9
       caniuse-lite: 1.0.30001745
       electron-to-chromium: 1.5.227
       node-releases: 2.0.21
@@ -4716,8 +4716,13 @@ packages:
     resolution: {integrity: sha1-lDbjTtJgk+1/+uGTYUQ1CRXZrdg=, tarball: http://r.npm.sankuai.com/lodash.startcase/download/lodash.startcase-4.4.0.tgz}
     dev: true
 
+  /lodash@4.17.20:
+    resolution: {integrity: sha1-tEqbYpe8tpjxxRo1RaKzs2jVnFI=, tarball: http://r.npm.sankuai.com/lodash/download/lodash-4.17.20.tgz}
+    dev: true
+
   /lodash@4.17.21:
     resolution: {integrity: sha1-Z5WRxWTDv/quhFTPCz3zcMPWkRw=, tarball: http://r.npm.sankuai.com/lodash/download/lodash-4.17.21.tgz}
+    dev: false
 
   /longest-streak@3.1.0:
     resolution: {integrity: sha1-YvpnzZWHQqFXSvnzmGY2QQLZDNQ=, tarball: http://r.npm.sankuai.com/longest-streak/download/longest-streak-3.1.0.tgz}
@@ -7092,8 +7097,8 @@ packages:
       lru-cache: 6.0.0
     dev: true
 
-  /semver@7.7.2:
-    resolution: {integrity: sha1-Z9mf3NNc7CHm+Lh6f9UVoz+YK1g=, tarball: http://r.npm.sankuai.com/semver/download/semver-7.7.2.tgz}
+  /semver@7.7.0:
+    resolution: {integrity: sha1-nG/mHQxvn6niZXUWLuWpGANhsJw=, tarball: http://r.npm.sankuai.com/semver/download/semver-7.7.0.tgz}
     engines: {node: '>=10'}
     hasBin: true
     dev: true
@@ -7831,7 +7836,7 @@ packages:
     dependencies:
       '@volar/typescript': 1.11.1
       '@vue/language-core': 1.8.27(typescript@5.9.2)
-      semver: 7.7.2
+      semver: 7.7.0
       typescript: 5.9.2
     dev: true
 

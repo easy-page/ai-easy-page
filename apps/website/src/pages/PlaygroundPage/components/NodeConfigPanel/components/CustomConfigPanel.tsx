@@ -63,6 +63,7 @@ const CustomConfigPanel: FC<CustomConfigPanelProps> = ({ props, onChange }) => {
 						value={props.content || ''}
 						language="javascript"
 						height="200px"
+						updateOnBlur
 						onChange={handleContentChange}
 					/>
 					<Button
