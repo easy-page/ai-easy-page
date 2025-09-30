@@ -1,6 +1,6 @@
 import React, { useEffect, cloneElement, isValidElement } from 'react';
 import { observer } from 'mobx-react';
-import { FormItemProps } from '../types';
+import { FormItemProps, FormItemRenderContext } from '../types';
 import {
   useFormContext,
   useFormValue,
@@ -8,6 +8,22 @@ import {
   useFormDisabled,
 } from '../context';
 import { useRowInfo } from './DynamicForm';
+import { Tooltip } from './Tooltip';
+import { QuestionCircle } from './Icons/QuestionCircle';
+
+// 通用渲染函数，支持 ReactNode 或函数签名
+const renderWithContext = (
+  prop:
+    | React.ReactNode
+    | ((params: FormItemRenderContext) => React.ReactNode)
+    | undefined,
+  context: FormItemRenderContext,
+) => {
+  if (!prop) return null;
+  return typeof prop === 'function'
+    ? (prop as (p: FormItemRenderContext) => React.ReactNode)(context)
+    : prop;
+};
 
 const FormItemComponent: React.FC<FormItemProps> = (props: FormItemProps) => {
   const {
@@ -176,28 +192,26 @@ const FormItemComponent: React.FC<FormItemProps> = (props: FormItemProps) => {
     }
   };
 
-  // 渲染 extra 内容
-  const renderExtra = () => {
-    if (!extra) return null;
-
-    if (typeof extra === 'function') {
-      const extraParams = {
-        store,
-        fieldValue,
-        fieldState,
-        fieldProps: props || {},
-        currentRow: rowInfo?.currentRow,
-        totalRows: rowInfo?.totalRows,
-        isLast: rowInfo?.isLast,
-        fieldId: id,
-      };
-      return extra(extraParams);
-    }
-
-    return extra;
+  // 生成通用上下文
+  const commonContext: FormItemRenderContext = {
+    store,
+    fieldValue,
+    fieldState,
+    fieldProps: props || {},
+    currentRow: rowInfo?.currentRow,
+    totalRows: rowInfo?.totalRows,
+    isLast: rowInfo?.isLast,
+    fieldId: id,
   };
 
+  // 渲染 extra 内容
+  const renderExtra = () => renderWithContext(extra, commonContext);
+  // 预先渲染，避免重复执行函数型 props
+  const tipsNode = renderWithContext(tips, commonContext);
+  const helpNode = renderWithContext(help, commonContext);
+
   // 渲染 label
+
   const renderLabel = () => {
     if (noLabel) return null;
 
@@ -216,51 +230,114 @@ const FormItemComponent: React.FC<FormItemProps> = (props: FormItemProps) => {
             : undefined
         }
       >
-        {label}
+        {renderWithContext(label, commonContext)}
       </label>
     );
 
-    if (labelLayout === 'horizontal') {
-      return (
-        <div
-          className="form-item-label-wrapper"
-          style={{ display: 'flex', alignItems: 'center' }}
-        >
-          {labelContent}
-        </div>
-      );
+    const helpInline = helpNode ? (
+      <div
+        className="form-item-help"
+        style={{ marginLeft: 8, display: 'flex', alignItems: 'center' }}
+      >
+        <Tooltip content={helpNode} placement="top">
+          <QuestionCircle size={14} backgroundColor="#9aa0a6" color="#fff" />
+        </Tooltip>
+      </div>
+    ) : null;
+    if (!helpInline && !tipsNode) {
+      return labelContent;
     }
 
-    return labelContent;
+    return (
+      <div
+        className="form-item-label-wrapper"
+        style={{ display: 'flex', alignItems: 'center' }}
+      >
+        {labelContent}
+        {helpInline}
+        {tipsNode && (
+          <div
+            className="form-item-tips"
+            style={{ marginLeft: 8, color: 'rgba(0,0,0,0.4)' }}
+          >
+            {tipsNode}
+          </div>
+        )}
+      </div>
+    );
   };
 
+  // 根据布局渲染
+  if (labelLayout === 'horizontal') {
+    return (
+      <div
+        className={`form-item ${hasError ? 'form-item-has-error' : ''} ${
+          isProcessing ? 'form-item-processing' : ''
+        } ${isFieldRequesting ? 'form-item-requesting' : ''}`}
+      >
+        {/* 第一行：label、tips、help、children */}
+        <div
+          className="form-item-row form-item-row-horizontal"
+          style={{ display: 'flex', alignItems: 'center' }}
+        >
+          {renderLabel()}
+          <div
+            className="form-item-control"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flex: 1,
+              marginTop: '4px',
+            }}
+          >
+            {renderChildren()}
+          </div>
+        </div>
+        {/* 第二行：extra（在上）、errors（在下） */}
+        <div className="form-item-row form-item-row-horizontal-secondary">
+          {renderExtra()}
+          {hasError && (
+            <div className="form-item-error">
+              {fieldState.errors.map((error, index) => (
+                <div key={index} className="form-item-error-message">
+                  {error}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // 垂直布局
   return (
     <div
       className={`form-item ${hasError ? 'form-item-has-error' : ''} ${
         isProcessing ? 'form-item-processing' : ''
       } ${isFieldRequesting ? 'form-item-requesting' : ''}`}
     >
+      {/* 第一行：label、tips、help */}
       {renderLabel()}
-      <div className="form-item-control">
+      {/* 第二行：children */}
+      <div
+        className="form-item-control"
+        style={{ marginTop: '4px', marginBottom: '4px' }}
+      >
         {renderChildren()}
-        {hasError && (
-          <div className="form-item-error">
-            {fieldState.errors.map((error, index) => (
-              <div key={index} className="form-item-error-message">
-                {error}
-              </div>
-            ))}
-          </div>
-        )}
-        {renderExtra()}
-        {tips && <div className="form-item-tips">{tips}</div>}
-        {help && (
-          <div className="form-item-help">
-            <span className="form-item-help-icon">?</span>
-            <span className="form-item-help-text">{help}</span>
-          </div>
-        )}
       </div>
+      {/* 第三行：extra */}
+      {renderExtra()}
+      {/* 第四行：errors */}
+      {hasError && (
+        <div className="form-item-error">
+          {fieldState.errors.map((error, index) => (
+            <div key={index} className="form-item-error-message">
+              {error}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

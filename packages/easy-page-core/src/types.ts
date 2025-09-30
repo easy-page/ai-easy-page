@@ -149,8 +149,8 @@ export interface WhenListener {
   rowInfo?: ExtendedRowInfo; // 行信息（用于动态表单）
 }
 
-// FormItem extra 函数参数类型
-export interface FormItemExtraParams {
+// FormItem 通用渲染上下文
+export interface FormItemRenderContext {
   store: FormStore;
   fieldValue: FieldValue;
   fieldState: FieldState;
@@ -171,10 +171,13 @@ export interface FormItemProps {
   effects?: EffectConfig[]; // 副作用配置
   actions?: ActionConfig[]; // 动作配置
   req?: FieldRequestConfig; // 字段请求配置
-  label?: string;
-  extra?: ReactNode | ((params: FormItemExtraParams) => ReactNode);
-  tips?: ReactNode;
-  help?: string; // 问号提示文案
+  label?: ReactNode | ((params: FormItemRenderContext) => ReactNode);
+  /** 字段底部提示 */
+  extra?: ReactNode | ((params: FormItemRenderContext) => ReactNode);
+  /** label 旁边纯文字提示 */
+  tips?: ReactNode | ((params: FormItemRenderContext) => ReactNode);
+  /** label 旁边问号提示文案 */
+  help?: ReactNode | ((params: FormItemRenderContext) => ReactNode); // 问号提示文案
   children: ReactNode;
   // 新增布局相关属性
   labelLayout?: 'horizontal' | 'vertical'; // label 布局方式
